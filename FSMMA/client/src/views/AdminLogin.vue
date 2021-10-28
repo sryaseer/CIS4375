@@ -2,27 +2,20 @@
   <v-container>
     <v-form v-model="valid" @submit.prevent="submit">
     <br></br>
-      <h3> Admin Login Page </h3>
+    <p style="text-align: center; font-size: 28px;"> Admin Login Page </p>
+    <div id="login-form">
 
-        <v-row justify="center" align="center">
-
-        <v-col cols="15" md="9">
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required>
-          </v-text-field>
-        </v-col>
-
-          <v-col cols="15" md="9">
-            <v-text-field
-              v-model="password"
-              :rules="passwordRules"
-              label="Password"
-              required>
+          <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+            <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
             </v-text-field>
-          </v-col>
+          </validation-provider>
+
+          <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+            <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+                          :type="show1 ? 'text' : 'password'"
+                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                          @click:append="show1 = !show1"></v-text-field>
+          </validation-provider>
 
           <v-col cols="15" md="9">
             <v-btn
@@ -32,37 +25,41 @@
               submit
             </v-btn>
 
-            <v-btn @click="clear">
-              clear
-            </v-btn>
-          </v-col>
-
-        </v-row>
-      </v-form>
+          <v-btn @click="clear">
+            clear
+          </v-btn>
+        </v-col>
+      </div>
+    </v-form>
   </v-container>
 </template>
 
 <script>
+import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
+import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+
+setInteractionMode('eager')
+extend('digits', { ...digits, message: '{_field_} needs to be {length} digits. ({_value_})', })
+extend('required', {  ...required,  message: '{_field_} can not be empty', })
+extend('max', { ...max, message: '{_field_} may not be greater than {length} characters', })
+extend('min', { ...min, message: '{_field_} may not be less than {length} characters', })
+extend('regex', {  ...regex,  message: '{_field_} {_value_} does not match {regex}', })
+extend('email', {...email, message: 'Email must be valid', })
+extend('between', {...between, message: '{_field_} is invalid.'})
+
 export default {
   name: 'AdminLogin',
   components: {
+    ValidationProvider,
+    ValidationObserver,
   },
   data: () => ({
-    valid: false,
-    password: '',
-    passwordRules: [
-      v => !!v || 'Password is required',
-      v => v.length >= 8 || 'Password must be at least 8 characters',
-    ],
     email: '',
-    emailRules: [
-      v => !!v || 'E-mail is required',
-      v => /.+@.+/.test(v) || 'E-mail must be valid',
-    ],
+    password: '',
+    show1: false,
   }),
   methods: {
       submit () {
-        this.$refs.observer.validate()
       },
       clear () {
         this.email = ''
@@ -73,6 +70,11 @@ export default {
 </script>
 
 <style scoped>
+#login-form {
+  padding-top: 10px;
+  margin: auto;
+  width: 60%;
+}
 
 h3 {
   text-align: center;

@@ -27,7 +27,33 @@ const routes = [
     path: '/studentlogin',
     name: 'StudentLogin',
     component: () => import('../views/StudentLogin.vue')
-  }
+  },
+  {
+    path: '/eventlist',
+    name: 'EventList',
+    component: () => import('../views/EventList.vue')
+  },
+  {
+    path: '/createstudentaccount',
+    name: 'CreateStudentAccount',
+    component: () => import('../views/CreateStudentAccount.vue')
+  },
+  {
+    path: '/AdminViewStudent',
+    name: 'AdminViewStudent',
+    component: () => import('../views/AdminViewStudent.vue')
+  },
+  {
+    path: '/StudentBuySession',
+    name: 'StudentBuySession',
+    component: () => import('../views/StudentBuySession.vue')
+  },
+  {
+    path: '/StudentHistory',
+    name: 'StudentHistory',
+    component: () => import('../views/StudentHistory.vue')
+  },
+
 ]
 
 const router = new VueRouter({

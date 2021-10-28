@@ -1,23 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from './router/router'
 import store from './store'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-// Import Bootstrap an BootstrapVue CSS files (order is important)
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
+import { ValidationProvider, extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
 //Vuetify
 import Vuetify from 'vuetify';
-
 import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
-// Make BootstrapVue available throughout your project
-Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
-Vue.use(IconsPlugin)
+//Vue.use(ValidationProvider)
 
 Vue.use(Vuetify)
 
