@@ -21,25 +21,3 @@ app.use(accountRouter)
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
-
-
-//THIS IS FOR TESTING
-app.post('/users', (req, res) => {
-  const con = mysql.createConnection(connection);
-  con.connect(function(err) {
-      if (err) throw err;
-      console.log("Connected!");
-      if (req.query.email && req.query.password){
-        console.log('Request Received!');
-          con.query(`INSERT INTO testdatabase1.Test_Table (email, password) VALUES ('${req.query.email}', '${req.query.password}')`, function(err, result, fields) {
-            if (err) res.send(err);
-            if (result) {
-              res.send({email: req.query.email, password: req.query.password})
-              console.log("Entered " + req.query.email + " into the DB.");
-            };
-          })
-        }
-      con.end();
-  });
-});
-//END OF TESTIN

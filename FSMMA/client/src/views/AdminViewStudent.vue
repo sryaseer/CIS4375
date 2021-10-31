@@ -1,37 +1,26 @@
 <template>
 <validation-observer ref="observer" v-slot="{ invalid }" >
     <div class="ma-5 pa-5">
-        <div class="ma-5 pa-5">
-            <h4>Student Information</h4>
-        </div>
+        <p class = "pageTitle">Student Information</p>
         <v-container class="grey lighten-5">
           <v-row>
 
             <v-col cols="12" sm="6" md="4">
-              <!-- <p>First Name</p> -->
               <validation-provider v-slot="{ errors }" name="First Name" rules="required|max:20" >
                 <v-text-field v-model="firstName" :error-messages="errors" label="First Name" required :disabled="disable"></v-text-field>
               </validation-provider>
-              <!--  <v-text-field label="Fname" solo dense :disabled="disable ">
-              </v-text-field>
-              -->
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
               <validation-provider v-slot="{ errors }" name="Last Name" rules="required|max:20" >
                 <v-text-field v-model="lastName" :error-messages="errors" label="Last Name" required :disabled="disable"></v-text-field>
               </validation-provider>
-              <!--
-              <p>Last Name</p>
-              <v-text-field label="Lname" solo dense :disabled="disable ">
-              </v-text-field>
-            -->
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
-            <p>Email</p>
-              <v-text-field label="@email.com" solo dense :disabled="disable">
-              </v-text-field>
+              <validation-provider v-slot="{ errors }" name="Last Name" rules="required|email" >
+                <v-text-field v-model="email" :error-messages="errors" label="Email" required :disabled="disable"></v-text-field>
+              </validation-provider>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
@@ -60,7 +49,7 @@
 
             <v-col cols="12" sm="6" md="4">
               <p>Date</p>
-              <v-text-field label="00-00-0000" solo dense :disabled="disable">
+              <v-text-field label="00-00-0000" v-model="dob" solo dense :disabled="disable">
               </v-text-field>
             </v-col>
 
@@ -73,6 +62,12 @@
           </v-row>
         </v-container>
 
+          <p> {{id}} </p>
+          <p> {{msg}} </p>
+          <p> {{msg2}} </p>
+          <p> {{msg3}} </p>
+          <p> {{databaseResponse}} </p>
+
        <div class="ma-5 pa-5 text-center">
         <v-btn rounded color="primary" dark>
           Submit Changes
@@ -82,6 +77,10 @@
         <div class="ma-5 pa-5 text-left">
           <v-btn rounded color="primary" dark  @click="enableFields" >
             Edit
+          </v-btn>
+
+          <v-btn @click="getStudentInfo" color="primary" dark>
+            Get Info
           </v-btn>
         </div>
 
@@ -95,7 +94,7 @@
 
 
 <script>
-//for this to work you need to run: npm i vee-validate
+import AdminService from '@/services/AdminService.js';
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 
@@ -111,25 +110,46 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
   export default {
     name: 'AdminViewStudent',
-    data: () => ({
-      disable: true,
-      firstName: 'John', //you can keep these blank
-      lastName: 'Doe',
-      email: '',
-      //keep on adding your variables
-    }),
+    data() {
+      return{
+        id: this.$route.params.id,
+        disable: true,
+        firstName: 'John', //you can keep these blank
+        lastName: 'Doe',
+        email: '',
+        dob: '',
+        msg: '',
+        msg2: '',
+        msg3: '',
+        databaseResponse: null,
+        //keep on adding your variables
+      }
+    },
     components: {
       ValidationProvider,
       ValidationObserver,
     },
     methods:{
+      async getStudentInfo(){
+        try {
+          var student_id = this.$route.params.id;
+          const response = await AdminService.viewStudent(student_id);
+          this.firstName = response.first_name;
+          this.lastName = response.last_name;
+          this.email = response.email;
+          this.dob = new Date(response.dob).toLocaleDateString("en-US");
+          this.msg2 = "retrieved data for student!"
 
+        } catch (error) {
+          this.msg = error.response.data.msg;
+        }
+      },
       enableFields () {
         this.disable = false;
-      }
+       
     },
   }
-
+}
 </script>
 
 
@@ -137,6 +157,10 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
 <style>
 
+.pageTitle {
+  text-align: center;
+  font-size: 25px;
+}
 
 
 </style>

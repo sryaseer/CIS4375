@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home2 from '../views/Home2.vue'
+import StudentHome from '../views/StudentHome.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home2',
-    component: Home2
+    name: 'StudentHome',
+    component: StudentHome
   },
   {
     path: '/about',
@@ -29,19 +29,19 @@ const routes = [
     component: () => import('../views/StudentLogin.vue')
   },
   {
-    path: '/eventlist',
-    name: 'EventList',
-    component: () => import('../views/EventList.vue')
+    path: '/StudentCreateAccount',
+    name: 'StudentCreateAccount',
+    component: () => import('../views/StudentCreateAccount.vue')
   },
   {
-    path: '/createstudentaccount',
-    name: 'CreateStudentAccount',
-    component: () => import('../views/CreateStudentAccount.vue')
-  },
-  {
-    path: '/AdminViewStudent',
+    path: '/AdminViewStudent/:id',
     name: 'AdminViewStudent',
     component: () => import('../views/AdminViewStudent.vue')
+  },
+  {
+    path: '/AdminViewStudentSearch',
+    name: 'AdminViewStudentSearch',
+    component: () => import('../views/AdminViewStudentSearch.vue')
   },
   {
     path: '/StudentBuySession',
@@ -53,7 +53,6 @@ const routes = [
     name: 'StudentHistory',
     component: () => import('../views/StudentHistory.vue')
   },
-
 ]
 
 const router = new VueRouter({

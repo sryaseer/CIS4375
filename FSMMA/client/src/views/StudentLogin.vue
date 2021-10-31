@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form v-model="valid" @submit.prevent="submit">
+    <v-form @submit.prevent="submit">
     <br></br>
     <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
     <div id="login-form">
@@ -20,9 +20,8 @@
       <v-col cols="15" md="9">
         <v-btn
         class="mr-4"
-        type="submit"
-        :disabled="invalid">
-          submit
+        @click="login">
+          log in
         </v-btn>
 
       <v-btn @click="clear">
@@ -31,13 +30,16 @@
       </v-col>
 
         <br>
-        <p style="text-align: center;"> New student? Make your account <a href="/createstudentaccount"> here! </a> </p>
+        <p> {{msg}} </p>
+        <br>
+        <p style="text-align: center;"> New student? Make your account <a href="/StudentCreateAccount"> here! </a> </p>
       </div>
     </v-form>
   </v-container>
 </template>
 
 <script>
+import AuthService from '@/services/AuthService.js';
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 
@@ -56,23 +58,47 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
-  data: () => ({
+  data() {
+    return {
     email: '',
     password: '',
     show1: false,
-  }),
+    msg: '',
+  }
+},
   methods: {
-      submit () {
-      },
+    async login() {
+      this.msg = this.email + this.password;
+      try {
+        const credentials = {
+          email: this.email,
+          password: this.password
+        };
+        const response = await AuthService.login(credentials);
+        this.msg = response.msg;
+
+        const token = response.token;
+        const user = response.user;
+
+        this.$store.dispatch('login', { token, user });
+        this.$router.push('/');
+    } catch (error) {
+        this.msg = error.response.data.msg;
+      }
+    },
       clear () {
         this.email = ''
         this.password = ''
       },
     },
 }
+
 </script>
 
+
+
 <style scoped>
+
 #login-form {
   padding-top: 10px;
   margin: auto;

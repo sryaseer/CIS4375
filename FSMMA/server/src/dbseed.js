@@ -18,7 +18,13 @@ const connection = mysql.createConnection({
   host: "test-database.chhxjp6se8lk.us-east-1.rds.amazonaws.com",
   user: "alextesting",
   database: 'testdatabase1',
-  password: "alextestingpwd"
+  password: "alextestingpwd",
+  port: 3306,
+  pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+    }    
 });
 
 connection.connect();

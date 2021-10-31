@@ -1,7 +1,6 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
 
-
     <div id="form-div">
       <p style="text-align: center; font-size: 28px;"> Create Student Account </p>
       <form @submit.prevent="submit" id="studentForm">
@@ -34,22 +33,22 @@
         </validation-provider>
 
         <div class="dateForm">
-          <div class="dateFormItem" style="min-width: 105px; width: 140px;">
-            <p>Date of Birth:</p>
+          <div class="dateFormItem" style="min-width: 105px; width: 80px;">
+            <p>DOB:</p>
           </div>
-          <div class="dateFormItem" style="min-width: 60px; max-width: 100px;">
+          <div class="dateFormItem" style="min-width: 60px; width: 100px;">
             <validation-provider v-slot="{ errors }" name="Day" rules="required|digits:2|between:1,31">
               <v-text-field v-model="day" :error-messages="errors" label="DD" required outlined>
               </v-text-field>
             </validation-provider>
           </div>
-          <div class="dateFormItem" style="min-width: 60px; max-width: 100px;">
+          <div class="dateFormItem" style="min-width: 60px; width: 100px;">
             <validation-provider v-slot="{ errors }" name="Month" rules="required|digits:2|between:1,12" >
               <v-text-field v-model="month" :error-messages="errors" label="MM" required outlined>
               </v-text-field>
             </validation-provider>
           </div>
-          <div class="dateFormItem" style="min-width: 85px; max-width: 320px;">
+          <div class="dateFormItem" style="min-width: 85px; width: 320px;">
             <validation-provider v-slot="{ errors }" name="Year" rules="required|digits:4|between:1900,2021">
               <v-text-field v-model="year" :error-messages="errors" label="YYYY" required outlined>
               </v-text-field>
@@ -57,44 +56,51 @@
           </div>
         </div>
 
-        <validation-provider v-slot="{ errors }" name="Address" rules="required|min:10">
+        <validation-provider v-slot="{ errors }" name="Address" rules="min:8">
           <v-text-field v-model="address" :error-messages="errors" label="Street Address" required outlined>
           </v-text-field>
         </validation-provider>
 
         <div class="addressForm">
-          <div class="addressFormItem" style="padding-right: 50px; width: 400px;">
-            <validation-provider v-slot="{ errors }" name="City" rules="required|max:30">
+          <div class="addressFormItem" style="padding-right: 10px; min-width: 120px; width: 460px;">
+            <validation-provider v-slot="{ errors }" name="City" rules="max:30">
               <v-text-field v-model="city" :error-messages="errors" label="City" required outlined>
               </v-text-field>
             </validation-provider>
           </div>
-          <div class="addressFormItem">
-            <validation-provider v-slot="{ errors }" name="State" rules="required|max:2">
+          <div class="addressFormItem" style="padding-right: 10px; width: 200px; min-width: 80px;">
+            <validation-provider v-slot="{ errors }" name="State" rules="max:2">
               <v-select v-model="state" :items="states" :error-messages="errors" label="State" data-vv-name="state" required outlined>
               </v-select>
+            </validation-provider>
+          </div>
+          <div class="addressFormItem" style="min-width: 100px; width: 280px;">
+            <validation-provider v-slot="{ errors }" name="Zip Code" rules="max:30">
+              <v-text-field v-model="zip" :error-messages="errors" label="Zip Code" required outlined>
+              </v-text-field>
             </validation-provider>
           </div>
         </div>
 
         <validation-provider v-slot="{ errors }" name="Goal">
-          <v-select v-model="goal" :items="goals" :error-messages="errors" label="Fitness Goal (Optional)" data-vv-name="goal" outlined>
+          <v-select v-model="goal" :items="goals" :item-text="'goal_desc'" :error-messages="errors" label="Fitness Goal (Optional)" data-vv-name="goal" outlined>
           </v-select>
         </validation-provider>
 
         <validation-provider v-slot="{ errors }" name="Sport">
-          <v-select v-model="sport" :items="sports" :error-messages="errors" label="Sport (Optional)" data-vv-name="sport" outlined>
+          <v-select v-model="sport" :items="sports" :item-text="'sport_desc'" :error-messages="errors" label="Sport (Optional)" data-vv-name="sport" outlined>
           </v-select>
         </validation-provider>
 
-
-        <v-btn class="mr-4" type="submit" :disabled="invalid">
+        <v-btn @click="submit" :disabled="invalid">
           submit
         </v-btn>
 
         <v-btn @click="clear">
           clear
         </v-btn>
+
+        <p>{{ msg }}</p>
 
       </form>
     </div>
@@ -107,6 +113,8 @@
 
 
 <script>
+import AuthService from '@/services/AuthService.js';
+import StudentService from '@/services/StudentService.js';
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 
@@ -120,52 +128,104 @@ extend('email', {...email, message: 'Email must be valid', })
 extend('between', {...between, message: '{_field_} is invalid.'})
 
 export default {
-  name: 'CreateStudentAccount',
+  name: 'StudentCreateAccount',
   components: {
       ValidationProvider,
       ValidationObserver,
     },
-  data: () => ({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      phoneNumber: '',
+  data() {
+      return {
+      firstName: null,
+      lastName: null,
+      email: null,
+      password: null,
+      phoneNumber: null,
       day: null,
       month: null,
       year: null,
-      address: '',
-      city: '',
+      address: null,
+      city: null,
       state: null,
+      zip_code: null,
       goal: null,
       sport: null,
       select: null,
-      goals: [
-        '',
-        'Body Building',
-        'Bootcamp',
-        'Competitive Training',
-        'Technique Improvement',
-        'Weight Loss',
-        'Overall Health',
-        'Other',
-      ],
-      sports: [
-        '',
-        'Brazilian Jiu Jitsu',
-        'Mixed Martial Arts',
-        'Kickboxing',
-        'Other',
-      ],
+      goals: [{ }],
+      sports: [{ }],
       states: ['AK', 'AL', 'AR', 'AS', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL',
         'GA', 'GU', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD',
         'ME', 'MI', 'MN', 'MO', 'MP', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ',
         'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN',
         'TX', 'UM', 'UT', 'VA', 'VI', 'VT', 'WA', 'WI', 'WV', 'WY'],
-      checkbox: null,
       show1: false,
-    }),
+      msg: '',
+      msg2: '',
+    }
+  },
 
+    methods: {
+      async submit(){
+        var goal_id_v = this.getGoalKey();
+        var sport_id_v = this.getSportKey();
+        try {
+          const credentials = {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            email: this.email,
+            password: this.password,
+            phone: this.phoneNumber,
+            dob: this.year + "-" + this.month + "-" + this.day,
+            address: this.address,
+            city: this.city,
+            state: this.state,
+            postal_code: this.postal_code,
+            goal_id: goal_id_v,
+            sport_id: sport_id_v,
+            student_location_id: 1 //katy
+          };
+          const response = await AuthService.signUp(credentials);
+          this.msg = response.msg;
+        } catch (error) {
+          this.msg = error.response.data.msg;
+        }
+      },
+      clear() {
+        this.firstName = null;
+        this.lastName= null;
+        this.email= null;
+        this.password= null;
+        this.phoneNumber= null;
+        this.day= null;
+        this.month= null;
+        this.year= null;
+        this.address= null;
+        this.city= null;
+        this.state= null;
+        this.zip_code = null,
+        this.goal= null;
+        this.sport= null;
+        this.select= null;
+      },
+      getGoalKey(){
+        let oneG = this.goals.filter(obj => { return obj.goal_desc === this.goal});
+        return oneG[0].goal_id;
+      },
+      getSportKey(){
+        let oneG = this.sports.filter(obj => { return obj.sport_desc === this.sport});
+        return oneG[0].sport_id;
+      },
+    },
+    async mounted() {
+      try {
+        const response1 = await StudentService.listGoals();
+        this.goals = response1;
+        const response2 = await StudentService.listSports();
+        this.sports = response2;
+      } catch (error) {
+        console.log(error);
+        this.msg = error.response.data.msg;
+      }
+    },
 }
 
 </script>
@@ -173,6 +233,7 @@ export default {
 <style>
   #form-div {
     padding-top: 10px;
+    padding-bottom: 60px;
     width: 100%;
     border: solid 1px black;
   }

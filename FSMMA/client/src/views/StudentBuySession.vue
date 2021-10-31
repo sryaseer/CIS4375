@@ -14,22 +14,18 @@
                 <p>5+ sessions = $55 per session.</p>
                 <p>10+ sessions = $50 per session.</p>
 
-                <v-text-field
-                  type="number"
-                  min="0"
-                  max="100"
-                  :rules="[rules.required]"
-                  v-model.number="sessions"/>
+                <v-text-field type="number" min="0" max="100" :rules="[rules.required]" v-model.number="sessions"/>
                 <br>
                 <v-row>
                 Total Cost: &nbsp
-                <p v-if="sessions > 5" style="color:#7e0f0f; text-decoration: line-through;">
+                <p v-if="sessions > 4" style="color:#7e0f0f; text-decoration: line-through;">
                   <b> ${{total + savings}} </b>
                 </p> &nbsp
                 <p> <b>${{ total }}</b> </p>
+
               </v-row>
               <v-row>
-                <p v-if="sessions > 5">
+                <p v-if="sessions > 4">
                   Savings: <b>${{savings}} </b> </p>
               </v-row>
               </v-flex>
@@ -43,8 +39,7 @@
                 <div>
                   <form
                     novalidate="novalidate"
-                    class="v-form py-5 align-center text-center"
-                  >
+                    class="v-form py-5 align-center text-center">
                     <div
                       class="
                         v-input v-input--is-label-active v-input--is-dirty
@@ -54,8 +49,7 @@
                         v-text-field--is-booted
                         v-text-field--enclosed
                         v-text-field--rounded
-                      "
-                    >
+                      ">
                       <div class="v-input__control">
                         <div class="v-input__slot">
                             <label
@@ -64,26 +58,6 @@
                               Payment Amount (USD)
                             </label>
                             <p style="left: 20px; top: 20px; position: absolute"> $ {{total}} </p>
-
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--clear">
-                              <i
-                                role="button"
-                                class="
-                                  v-icon
-                                  notranslate
-                                  v-icon--link
-                                  fa fa fa fa-times
-                                  theme--light
-                                "
-                              ></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="v-text-field__details">
-                          <div class="v-messages theme--light">
-                            <div class="v-messages__wrapper"></div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -173,6 +147,7 @@ export default {
 
 .card{
   height: 100%;
+  min-width: 400px;
 }
 
 .textgraycenter{

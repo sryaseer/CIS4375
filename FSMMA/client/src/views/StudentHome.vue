@@ -17,21 +17,27 @@
             </template>
           </v-calendar>
         </v-sheet>
+        <p> {{secretMessage}} </p>
+        <v-btn class="mr-4" @click="logout"> log out </v-btn>
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
+import AuthService from '@/services/AuthService.js';
 
 export default {
-  name: 'Home',
+  name: 'StudentHome',
   components: {
   },
-  data: () => ({
+  data() {
+    return{
       value: '',
       ready: false,
-    }),
+      secretMessage: '',
+      }
+    },
     computed: {
       cal () {
         return this.ready ? this.$refs.calendar : null
@@ -45,6 +51,13 @@ export default {
       this.scrollToTime()
       this.updateTime()
     },
+    async created() {
+      if (!this.$store.getters.isLoggedIn) {
+        this.$router.push('/StudentLogin');
+      }
+      this.username = this.$store.getters.getUser.username;
+      this.secretMessage = await AuthService.getSecretContent();
+    },
     methods: {
       getCurrentTime () {
         return this.cal ? this.cal.times.now.hour * 60 + this.cal.times.now.minute : 0
@@ -57,6 +70,10 @@ export default {
       },
       updateTime () {
         setInterval(() => this.cal.updateTimes(), 60 * 1000)
+      },
+      logout() {
+        this.$store.dispatch('logout');
+        this.$router.push('/StudentLogin');
       },
     },
   }
