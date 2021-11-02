@@ -53,6 +53,11 @@ const routes = [
     name: 'StudentHistory',
     component: () => import('../views/StudentHistory.vue')
   },
+  {
+    path: "/StudentSchedulePage",
+    name: "StudentSchedulePage",
+    component: () => import("../views/StudentSchedulePage.vue"),
+  },
 ]
 
 const router = new VueRouter({
