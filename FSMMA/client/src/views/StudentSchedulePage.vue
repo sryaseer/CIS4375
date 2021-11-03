@@ -204,7 +204,6 @@ export default {
       "Conference",
       "Party",
     ],
-
     //data coming from the DB
 
     // end of form data
@@ -306,39 +305,35 @@ export default {
 
       const min = new Date(`${start.date}T00:00:00`);
       const max = new Date(`${end.date}T23:59:59`);
-      const days = (max.getTime() - min.getTime()) / 86400000;
-      const eventCount = this.rnd(days, days + 20);
+      const days = 7;
+      const eventCount = 5;
 
-      for (let i = 0; i < eventCount; i++) {
-        // const allDay = this.rnd(0, 3) === 0;
-        // const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        // const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        // const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        // const second = new Date(first.getTime() + secondTimestamp);
+      for (let i = 0; i < days; i++) {
+        for (let j = 0; j < eventCount; j++){
+          // making our own dummy data to enter into
+          var year = "2021";
+          var month = "10";
+          var day = i;
+          var startDateTime = new Date(year, month, i, j+5, 0, 0);
+          var endDateTime = new Date(year, month, i, j+6, 0, 0);
+          //var ourtime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds;
 
-        // making our own dummy data to enter into
-        var year = "2021";
-        var month = "10";
-        var day = i;
-        var today = new Date(year, month, i, 17, 0, 0);
-        //var ourtime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds;
+          events.push({
+            //   date: today,
+            name: "event " + j,
+            //time: ourtime,
+            color: this.colors[j],
+            //   name: this.names[this.rnd(0, this.names.length - 1)],
+            start: startDateTime,
+            end: endDateTime,
+            timed: 1,
+          });
+        }
+        // set the date, start time and end time.
+        // when it pulls from db, it always start time, we have logically add 1hr to it.
+        this.events = events;
+        }
 
-        var tomorrow = new Date(year, month, i, 18, 0, 0);
-
-        events.push({
-          //   date: today,
-          name: "alex is the best",
-          //time: ourtime,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          //   name: this.names[this.rnd(0, this.names.length - 1)],
-          start: today,
-          end: tomorrow,
-          //   timed: !allDay,
-        });
-      }
-      this.events = events;
-      // set the date, start time and end time.
-      // when it pulls from db, it always start time, we have logically add 1hr to it.
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
