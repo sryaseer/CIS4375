@@ -54,9 +54,20 @@ const routes = [
     component: () => import('../views/StudentHistory.vue')
   },
   {
+<<<<<<< Updated upstream
     path: "/StudentSchedulePage",
     name: "StudentSchedulePage",
     component: () => import("../views/StudentSchedulePage.vue"),
+=======
+    path: '/StudentSchedulePage',
+    name: 'StudentSchedulePage',
+    component: () => import('../views/StudentSchedulePage.vue')
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import('../views/test.vue')
+>>>>>>> Stashed changes
   },
 ]
 

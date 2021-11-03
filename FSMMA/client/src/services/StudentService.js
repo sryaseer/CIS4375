@@ -16,4 +16,19 @@ export default {
       .get(url + 'get-sports/').then(response => response.data);
   },
 
+  loadStudentSignups(){
+    return axios
+      .get(url + 'get-student-signups/').then(response => response.data);
+  },
+
+  loadStudentSchedule(){
+    return axios
+      .get(url + 'get-student-schedule/').then(response => response.data);
+  },
+
+  SignupStudentSchedule(){
+    return axios
+      .push(url + 'set-schedule-signup/').then(response => response.data);
+  },
+
 };

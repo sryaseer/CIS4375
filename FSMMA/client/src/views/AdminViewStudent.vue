@@ -18,10 +18,49 @@
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
-              <validation-provider v-slot="{ errors }" name="Last Name" rules="required|email" >
+              <validation-provider v-slot="{ errors }" name="Email" rules="required|email" >
                 <v-text-field v-model="email" :error-messages="errors" label="Email" required :disabled="disable"></v-text-field>
               </validation-provider>
             </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider v-slot="{ errors }" name="Phone" rules="required|digits:10" >
+                <v-text-field v-model="phone" :counter="10" :error-messages="errors" label="832-555-0012" required :disabled="disable"></v-text-field>
+              </validation-provider>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider v-slot="{ errors }" name="dob" rules="required" >
+                <v-text-field v-model="dob" :error-messages="errors" label="DOB: MM/DD/YYYY" required :disabled="disable"></v-text-field>
+              </validation-provider>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider v-slot="{ errors }" name="goal" >
+                <v-text-field v-model="goal" label="Fitness Goal" required :disabled="disable"></v-text-field>
+              </validation-provider>
+            </v-col>
+
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider v-slot="{ errors }" name="sport" >
+                <v-text-field v-model="sport" label="Sport" required :disabled="disable"></v-text-field>
+              </validation-provider>
+            </v-col>
+
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider v-slot="{ errors }" name="session_credits" rules="required|digits:1" >
+                <v-text-field v-model="session_credits" :error-messages="errors" label="Session Credits" required :disabled="disable"></v-text-field>
+              </validation-provider>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <validation-provider name="wsd" >
+                <v-text-field v-model="waiver_signed_date" label="Waiver: MM/DD/YYYY" disabled></v-text-field>
+              </validation-provider>
+            </v-col>
+
 
             <v-col cols="12" sm="6" md="4">
               <p>BMI</p>
@@ -69,7 +108,7 @@
           <p> {{databaseResponse}} </p>
 
        <div class="ma-5 pa-5 text-center">
-        <v-btn rounded color="primary" dark>
+        <v-btn rounded color="primary" dark >
           Submit Changes
         </v-btn>
 
@@ -114,13 +153,19 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       return{
         id: this.$route.params.id,
         disable: true,
-        firstName: 'John', //you can keep these blank
-        lastName: 'Doe',
-        email: '',
-        dob: '',
-        msg: '',
-        msg2: '',
-        msg3: '',
+        firstName: null,
+        lastName: null,
+        email: null,
+        phone: null,
+        dob: null,
+        student_type: null,
+        goal: null,
+        sport: null,
+        sessions_attended: null,
+        session_credits: null,
+        msg: null,
+        msg2: null,
+        msg3: null,
         databaseResponse: null,
         //keep on adding your variables
       }
@@ -130,7 +175,12 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       ValidationObserver,
     },
     methods:{
-      async getStudentInfo(){
+      enableFields () {
+        this.disable = false;   
+    }
+  },
+    async mounted(){
+      this.msg2 = "starting";
         try {
           var student_id = this.$route.params.id;
           const response = await AdminService.viewStudent(student_id);
@@ -142,14 +192,9 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
         } catch (error) {
           this.msg = error.response.data.msg;
-        }
-      },
-      enableFields () {
-        this.disable = false;
-       
+      }
     },
   }
-}
 </script>
 
 

@@ -28,7 +28,7 @@ export default {
     items: [
       {title: 'Admin Home', link: '/'},
       {title: 'Admin Schedule', link: '/'},
-      {title: 'Admin View Student', link: '/adminviewstudent'},
+      {title: 'Admin View Student', link: '/adminviewstudentsearch'},
       {title: 'Admin Login', link: '/adminlogin'},
     ],
   }),

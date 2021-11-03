@@ -33,8 +33,8 @@ export default {
     items: [
         { title: 'Student Home', link: '/' },
         { title: 'Schedule Session', link: '/'},
-        { title: 'Purchase Sessions', link: 'StudentBuySession'},
-        { title: 'Student Login', link: 'studentlogin'},
+        { title: 'Purchase Sessions', link: '/StudentBuySession'},
+        { title: 'Student Login', link: '/studentlogin'},
       ],
   }),
 }

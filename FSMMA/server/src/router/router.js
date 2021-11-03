@@ -164,8 +164,10 @@ router.post('/student-login', (req, res, next) => {
 
 // ADMIN VIEW STUDENT - GET ALL STUDENTS
 router.get('/admin-view-student-search', (req, res, next) => {
-  db.pool(`SELECT student_id, first_name, last_name, dob FROM Student_Account;`),
-  (err, result) => {
+  let selectQuery = 'SELECT student_id, first_name, last_name, dob FROM Student_Account';
+  let query = mysql.format(selectQuery);
+  pool.query(query, (err, result) => {
+
     if (err){
       throw err;
       return res.status(400).send({
@@ -173,9 +175,11 @@ router.get('/admin-view-student-search', (req, res, next) => {
       });
     }
     else {
-      res.send(result[0]);
+      res.status(200).send(result);
+      console.log(result);
     }
-  }
+
+  })
 });
 
 // ADMIN VIEW STUDENT - GET SELECTED STUDENT BY ID
