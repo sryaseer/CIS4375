@@ -1,11 +1,10 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <h3>Mysss Schedule Page</h3>
+    <p class="pageTitle">Schedule a Session</p>
 
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>
-      <h3 class="p-2">Table of all schedule</h3>
       <v-row class="fill-height">
         <v-col>
           <v-sheet height="64">
@@ -68,14 +67,14 @@
               ref="calendar"
               v-model="focus"
               color="primary"
-              :events="events"
+              :events="privateSessions"
               :event-color="getEventColor"
               :type="type"
               @click:event="showEvent"
               @click:more="viewDay"
               @click:date="viewDay"
-              @change="updateRange"
             ></v-calendar>
+            <!-- @change="updateRange" -->
             <v-menu
               v-model="selectedOpen"
               :close-on-content-click="false"
@@ -187,7 +186,7 @@
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
     <div>
-      <h3 class="p-2">sessions they have attended</h3>
+      <h3 class="p-2">Sessions they have attended</h3>
     </div>
   </v-container>
 </template>
@@ -203,10 +202,8 @@ export default {
     instructorName: null,
     sessionStatus: null,
     studentName: null,
-    names: ["Meeting","Holiday","PTO","Travel","Event","Birthday","Conference","Party",],
-    //data coming from the DB
-
     // end of form data
+
     focus: "",
     type: "month",
     typeToLabel: {
@@ -219,7 +216,6 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     privateSessions: [],
-    events: [],
     colors: ["blue","indigo","deep-purple","cyan","green","orange","grey darken-1",],
     msg: null,
     msg2: null,
@@ -270,23 +266,20 @@ export default {
       nativeEvent.stopPropagation();
     },
     updateRange({ start, end }) {
-      const events = [];
+      var events = [];
 
-console.log(this.privateSessions);
       for (const event in this.privateSessions) {
-
+        console.log(this.privateSessions[event]);
           events.push({
-
-            name: event.id,
+            name: this.privateSessions[event]['session_id'],
             color: this.colors[2],
-            start: event.startDateTime,
-            end: event.endDateTime,
+            start: this.privateSessions[event]['startDateTime'],
+            end: this.privateSessions[event]['endDateTime'],
             timed: 1,
           });
         }
-    //     // set the date, start time and end time.
-    //     // when it pulls from db, it always start time, we have logically add 1hr to it.
     this.events = events;
+    console.log("events: ")
     console.log(events);
 
   },
@@ -297,8 +290,9 @@ console.log(this.privateSessions);
     try {
       const response = await StudentService.viewStudentSchedule();
       for (const session_student of response){
-        var obj = {};
-        obj['session_id'] = session_student.session_id;
+        var obj = {
+          session_id: session_student.session_id,
+        };
 
         var date = new Date(session_student.date);
         var date2 = new Date(session_student.date);
@@ -311,12 +305,13 @@ console.log(this.privateSessions);
         //Setting our date to the right time.
         date.setHours(hour);
         date.setMinutes(minutes);
-        obj['startDateTime'] = date;
+        obj['start'] = date;
 
         date2.setHours(hour+1);
-        date.setMinutes(minutes);
-        obj['endDateTime'] = date2;
+        date2.setMinutes(minutes);
+        obj['end'] = date2;
         obj['color'] = this.colors[2];
+        obj['timed'] = 1;
 
 
         this.privateSessions.push(obj);
@@ -332,8 +327,9 @@ console.log(this.privateSessions);
 </script>
 
 <style scoped>
-h3 {
+.pageTitle {
   text-align: center;
+  font-size: 26px;
 }
 .bottomBar {
   margin: auto;
