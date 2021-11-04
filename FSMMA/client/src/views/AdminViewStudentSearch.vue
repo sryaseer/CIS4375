@@ -39,7 +39,6 @@ import AdminService from '@/services/AdminService.js';
         var response = res;
         //this.msg = res;
         for (const account of response){
-          this.msg = "hi";
           var obj = {};
           obj['id'] = account.student_id;
           obj['name'] = account.first_name + " " + account.last_name;

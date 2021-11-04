@@ -31,4 +31,8 @@ export default {
       .push(url + 'set-schedule-signup/').then(response => response.data);
   },
 
+  viewStudentSchedule() {
+    return axios.get(url + 'student-view-schedule/').then(response => response.data);
+  },
+
 };

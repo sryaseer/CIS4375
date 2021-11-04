@@ -180,7 +180,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     }
   },
     async mounted(){
-      this.msg2 = "starting";
         try {
           var student_id = this.$route.params.id;
           const response = await AdminService.viewStudent(student_id);

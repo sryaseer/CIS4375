@@ -7,12 +7,14 @@ export default {
   },
 
   listStudents() {
-    return axios
-      .get(url + 'admin-view-student-search/')
-      .then(response => response.data);
+    return axios.get(url + 'admin-view-student-search/').then(response => response.data);
   },
 
   viewStudentTest(id) {
     return axios.get(url + 'admin-view-student-test/' + id).then(response => response.data);
+  },
+
+  viewAdminSchedule() {
+    return axios.get(url + 'admin-view-schedule/').then(response => response.data);
   },
 };

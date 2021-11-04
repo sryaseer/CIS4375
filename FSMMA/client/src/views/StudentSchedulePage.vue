@@ -175,6 +175,13 @@
             </v-btn>
           </v-col>
         </v-row>
+
+        <br><br>
+        <br>
+        <p> {{privateSessions}} </p>
+        <p> {{events}} </p>
+        <p> {{msg2}} </p>
+        <p> {{msg}} </p>
       </v-form>
     </div>
 
@@ -186,6 +193,8 @@
 </template>
 
 <script>
+import StudentService from '@/services/StudentService.js';
+
 export default {
   data: () => ({
     //form data
@@ -194,16 +203,7 @@ export default {
     instructorName: null,
     sessionStatus: null,
     studentName: null,
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party",
-    ],
+    names: ["Meeting","Holiday","PTO","Travel","Event","Birthday","Conference","Party",],
     //data coming from the DB
 
     // end of form data
@@ -218,16 +218,11 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    privateSessions: [],
     events: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
-    ],
+    colors: ["blue","indigo","deep-purple","cyan","green","orange","grey darken-1",],
+    msg: null,
+    msg2: null,
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -274,83 +269,66 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    // updateRange({ start, end }) {
-    //   const events = [];
-    //
-    //   const min = new Date(`${start.date}T00:00:00`);
-    //   const max = new Date(`${end.date}T23:59:59`);
-    //   const days = (max.getTime() - min.getTime()) / 86400000;
-    //   const eventCount = this.rnd(days, days + 20);
-    //
-    //   for (let i = 0; i < eventCount; i++) {
-    //     const allDay = this.rnd(0, 3) === 0;
-    //     const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-    //     const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-    //     const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-    //     const second = new Date(first.getTime() + secondTimestamp);
-    //
-    //     events.push({
-    //       name: this.names[this.rnd(0, this.names.length - 1)],
-    //       start: first,
-    //       end: second,
-    //       color: this.colors[this.rnd(0, this.colors.length - 1)],
-    //       timed: !allDay,
-    //     });
-    //   }
-    //
-    //   this.events = events;
-    // },
     updateRange({ start, end }) {
       const events = [];
 
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      const days = 7;
-      const eventCount = 5;
-
-      for (let i = 0; i < days; i++) {
-        for (let j = 0; j < eventCount; j++){
-          // making our own dummy data to enter into
-          var year = "2021";
-          var month = "10";
-          var day = i;
-          var startDateTime = new Date(year, month, i, j+5, 0, 0);
-          var endDateTime = new Date(year, month, i, j+6, 0, 0);
-          //var ourtime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds;
+console.log(this.privateSessions);
+      for (const event in this.privateSessions) {
 
           events.push({
-            //   date: today,
-            name: "event " + j,
-            //time: ourtime,
-            color: this.colors[j],
-            //   name: this.names[this.rnd(0, this.names.length - 1)],
-            start: startDateTime,
-            end: endDateTime,
+
+            name: event.id,
+            color: this.colors[2],
+            start: event.startDateTime,
+            end: event.endDateTime,
             timed: 1,
           });
         }
-        // set the date, start time and end time.
-        // when it pulls from db, it always start time, we have logically add 1hr to it.
-        this.events = events;
-        }
+    //     // set the date, start time and end time.
+    //     // when it pulls from db, it always start time, we have logically add 1hr to it.
+    this.events = events;
+    console.log(events);
 
-    },
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
-    },
-    sendInfoToForm() {
-      this.sessionDate = this.selectedEvent.start; //this.selectedEvent.date
-      this.sessionTime = this.selectedEvent.time; //this.selectedEvent.time
-      this.instructorName = this.selectedEvent.name; //this.selectedEvent.instructorName
-      this.sessionStatus = null; //this.selectedEvent.sessionStatus
-      this.studentName = null; //this.selectedEvent.studentName
-      // this.studentID
-    },
-    submitFormDateToDB() {
-      console.log("hello world");
-    },
+  },
+},
+
+  async mounted(){
+    this.events = [];
+    try {
+      const response = await StudentService.viewStudentSchedule();
+      for (const session_student of response){
+        var obj = {};
+        obj['session_id'] = session_student.session_id;
+
+        var date = new Date(session_student.date);
+        var date2 = new Date(session_student.date);
+
+        //getting our STARTING TIME! DO NOT DELETE
+        var hourVar = '2021-11-15 ' + session_student.time;
+        var mockDate = new Date(hourVar);
+        let hour = mockDate.getHours(hourVar);
+        let minutes = mockDate.getMinutes(hourVar);
+        //Setting our date to the right time.
+        date.setHours(hour);
+        date.setMinutes(minutes);
+        obj['startDateTime'] = date;
+
+        date2.setHours(hour+1);
+        date.setMinutes(minutes);
+        obj['endDateTime'] = date2;
+        obj['color'] = this.colors[2];
+
+
+        this.privateSessions.push(obj);
+      }
+      //this.msg = this.privateSessions;
+    } catch (error) {
+      console.log(error);
+      this.msg = error.response.data.msg;
+    }
   },
 };
+
 </script>
 
 <style scoped>
