@@ -30,6 +30,7 @@ export default {
       {title: 'Admin Schedule', link: '/'},
       {title: 'Admin View Student', link: '/adminviewstudentsearch'},
       {title: 'Admin Login', link: '/adminlogin'},
+      {title: 'Admin Create Instructor', link: '/InstructorCreate'},
     ],
   }),
 }
