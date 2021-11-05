@@ -32,7 +32,7 @@ export default {
   data: () => ({
     items: [
         { title: 'Student Home', link: '/' },
-        { title: 'Schedule Session', link: '/'},
+        { title: 'Schedule Session', link: '/StudentSchedulePage'},
         { title: 'Purchase Sessions', link: '/StudentBuySession'},
         { title: 'Student Login', link: '/studentlogin'},
       ],
