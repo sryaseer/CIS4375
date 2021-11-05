@@ -59,6 +59,12 @@ const routes = [
     component: () => import('../views/StudentSchedulePage.vue')
   },
   {
+    //router for Admin View/Edit Instructor
+    path: '/InstructorCreate',
+    name: 'InstructorCreate',
+    component: () => import('../views/InstructorCreate.vue')
+  },
+  {
     path: '/test',
     name: 'test',
     component: () => import('../views/test.vue')
