@@ -26,11 +26,11 @@ export default {
   },
   data: () => ({
     items: [
-      {title: 'Admin Home', link: '/'},
-      {title: 'Admin Schedule', link: '/'},
+      {title: 'Admin Home', link: '/adminhome'},
+      {title: 'Admin Schedule', link: '/adminschedule'},
       {title: 'Admin View Student', link: '/adminviewstudentsearch'},
       {title: 'Admin Login', link: '/adminlogin'},
-      {title: 'Admin Create Instructor', link: '/InstructorCreate'},
+      {title: 'Admin Create Instructor', link: '/instructorcreate'},
     ],
   }),
 }

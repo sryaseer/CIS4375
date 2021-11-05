@@ -2,21 +2,6 @@
   <div id="calendar">
     <v-row>
       <v-col>
-        <v-sheet height="500">
-          <v-calendar
-            ref="calendar"
-            v-model="value"
-            type="month"
-          >
-            <template v-slot:day-body="{ date, week }">
-              <div
-                class="v-current-time"
-                :class="{ first: date === week[0].date }"
-                :style="{ top: nowY }"
-              ></div>
-            </template>
-          </v-calendar>
-        </v-sheet>
         <p> {{secretMessage}} </p>
         <v-btn class="mr-4" @click="logout"> log out </v-btn>
       </v-col>

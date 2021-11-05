@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import StudentHome from '../views/StudentHome.vue'
+import StudentLogin from '../views/StudentLogin.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'StudentHome',
-    component: StudentHome
+    name: 'StudentLogin',
+    component: StudentLogin
   },
   {
     path: '/about',
@@ -32,6 +32,11 @@ const routes = [
     path: '/StudentCreateAccount',
     name: 'StudentCreateAccount',
     component: () => import('../views/StudentCreateAccount.vue')
+  },
+  {
+    path: '/StudentHome',
+    name: 'StudentHome',
+    component: () => import('../views/StudentHome.vue')
   },
   {
     path: '/AdminViewStudent/:id',
@@ -62,12 +67,22 @@ const routes = [
     //router for Admin View/Edit Instructor
     path: '/InstructorCreate',
     name: 'InstructorCreate',
-    component: () => import('../views/InstructorCreate.vue')
+    //component: () => import('../views/InstructorCreate.vue')
   },
   {
     path: '/test',
     name: 'test',
     component: () => import('../views/test.vue')
+  },
+  {
+    path: '/AdminHome',
+    name: 'AdminHome',
+    component: () => import('../views/AdminHome.vue')
+  },
+  {
+    path: '/AdminSchedule',
+    name: 'AdminSchedule',
+    component: () => import('../views/AdminSchedule.vue')
   },
 ]
 

@@ -1,0 +1,4 @@
+.DS_Store
+FSMMA/client/node_modules
+FSMMA/server/node_modules
+token.txt

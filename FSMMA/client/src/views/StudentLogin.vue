@@ -68,7 +68,6 @@ export default {
 },
   methods: {
     async login() {
-      this.msg = this.email + this.password;
       try {
         const credentials = {
           email: this.email,
@@ -81,7 +80,7 @@ export default {
         const user = response.user;
 
         this.$store.dispatch('login', { token, user });
-        this.$router.push('/');
+        this.$router.push('/studenthome');
     } catch (error) {
         this.msg = error.response.data.msg;
       }
