@@ -40,7 +40,6 @@ export default {
       if (!this.$store.getters.isLoggedIn) {
         this.$router.push('/StudentLogin');
       }
-      this.username = this.$store.getters.getUser.username;
       this.secretMessage = await AuthService.getSecretContent();
     },
     methods: {

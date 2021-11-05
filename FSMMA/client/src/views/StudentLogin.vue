@@ -1,41 +1,43 @@
 <template>
-  <v-container>
-    <v-form @submit.prevent="submit">
-    <br></br>
-    <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
-    <div id="login-form">
+  <validation-observer ref="observer" v-slot="{ invalid }" >
+    <v-container>
+      <v-form @submit.prevent="submit">
+      <br></br>
+      <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
+      <div id="login-form">
 
-      <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-        <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
-        </v-text-field>
-      </validation-provider>
+        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
+          </v-text-field>
+        </validation-provider>
 
-      <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-        <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                      :type="show1 ? 'text' : 'password'"
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      @click:append="show1 = !show1"></v-text-field>
-      </validation-provider>
+        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+                        :type="show1 ? 'text' : 'password'"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append="show1 = !show1"></v-text-field>
+        </validation-provider>
 
-      <v-col cols="15" md="9">
-        <v-btn
-        class="mr-4"
-        @click="login">
-          log in
+        <v-col cols="15" md="9">
+          <v-btn
+          class="mr-4"
+          @click="login" :disabled="invalid">
+            log in
+          </v-btn>
+
+        <v-btn @click="clear">
+          clear
         </v-btn>
+        </v-col>
 
-      <v-btn @click="clear">
-        clear
-      </v-btn>
-      </v-col>
-
-        <br>
-        <p> {{msg}} </p>
-        <br>
-        <p style="text-align: center;"> New student? Make your account <a href="/StudentCreateAccount"> here! </a> </p>
-      </div>
-    </v-form>
-  </v-container>
+          <br>
+          <p> {{msg}} </p>
+          <br>
+          <p style="text-align: center;"> New student? Make your account <a href="/StudentCreateAccount"> here! </a> </p>
+        </div>
+      </v-form>
+    </v-container>
+  </validation-observer >
 </template>
 
 <script>
@@ -79,7 +81,7 @@ export default {
         const token = response.token;
         const user = response.user;
 
-        this.$store.dispatch('login', { token, user });
+        this.$store.dispatch('studentLogin', { token, user });
         this.$router.push('/studenthome');
     } catch (error) {
         this.msg = error.response.data.msg;

@@ -197,7 +197,6 @@ router.post('/admin-login', (req, res, next) => {
           if (bResult) {
             const token = jwt.sign({
                 email: result[0].email,
-                userId: result[0].id
               },
               'ADMINSTUDENTKEY', {
                 expiresIn: '2000'
@@ -209,7 +208,7 @@ router.post('/admin-login', (req, res, next) => {
             return res.status(200).send({
               msg: 'Logged in!',
               token,
-              user: result[0]
+              admin: result[0]
             });
           }
           return res.status(401).send({
@@ -334,6 +333,11 @@ router.get('/student-view-schedule', (req, res, next) => {
 router.get('/student-secret-route', (req, res, next) => {
   res.send('This is the secret content. Only logged in students can see that!');
 });
+
+router.get('/admin-secret-route', (req, res, next) => {
+  res.send('This is the secret content. Only logged in admins can see that!');
+});
+
 
 
 

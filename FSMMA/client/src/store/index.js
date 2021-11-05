@@ -8,7 +8,8 @@ Vue.use(Vuex)
 const getDefaultState = () => {
   return {
     token: '',
-    user: {}
+    user: {},
+    admin: {},
   };
 };
 
@@ -22,7 +23,15 @@ export default new Vuex.Store({
     },
     getUser: state => {
       return state.user;
-    }
+    },
+    getAdmin: state => {
+      return state.admin;
+    },
+    isAdminLoggedIn: state => {
+      if (state.admin.admin_id){
+        return state.token;
+      }
+    },
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -31,14 +40,23 @@ export default new Vuex.Store({
     SET_USER: (state, user) => {
       state.user = user;
     },
+    SET_ADMIN: (state, admin) => {
+      state.admin = admin;
+    },
     RESET: state => {
       Object.assign(state, getDefaultState());
     }
   },
   actions: {
-    login: ({ commit, dispatch }, { token, user }) => {
+    studentLogin: ({ commit, dispatch }, { token, user }) => {
       commit('SET_TOKEN', token);
       commit('SET_USER', user);
+      // set auth header
+      Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    },
+    adminLogin:({ commit, dispatch }, { token, admin }) => {
+      commit('SET_TOKEN', token);
+      commit('SET_ADMIN', admin);
       // set auth header
       Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     },

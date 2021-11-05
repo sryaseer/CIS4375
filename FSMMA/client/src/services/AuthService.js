@@ -14,5 +14,13 @@ export default {
   },
   getSecretContent() {
     return axios.get(url + 'student-secret-route/').then(response => response.data);
-  }
+  },
+  getSecretAdminContent() {
+    return axios.get(url + 'admin-secret-route/').then(response => response.data);
+  },
+  adminLogin(credentials) {
+    return axios
+      .post(url + 'admin-login/', credentials)
+      .then(response => response.data);
+  },
 };

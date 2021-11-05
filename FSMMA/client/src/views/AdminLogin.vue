@@ -1,40 +1,47 @@
 <template>
-  <v-container>
-    <v-form v-model="valid" @submit.prevent="submit">
-    <br></br>
-    <p style="text-align: center; font-size: 28px;"> Admin Login Page </p>
-    <div id="login-form">
+  <validation-observer ref="observer" v-slot="{ invalid }" >
+    <v-container>
+      <v-form @submit.prevent="submit">
+      <br></br>
+      <p style="text-align: center; font-size: 28px;"> Admin Login </p>
+      <div id="login-form">
 
-          <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-            <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
-            </v-text-field>
-          </validation-provider>
+        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
+          </v-text-field>
+        </validation-provider>
 
-          <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-            <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                          :type="show1 ? 'text' : 'password'"
-                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                          @click:append="show1 = !show1"></v-text-field>
-          </validation-provider>
+        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+                        :type="show1 ? 'text' : 'password'"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append="show1 = !show1"></v-text-field>
+        </validation-provider>
 
-          <v-col cols="15" md="9">
-            <v-btn
-            class="mr-4"
-            type="submit"
-            :disabled="invalid">
-              submit
-            </v-btn>
-
-          <v-btn @click="clear">
-            clear
+        <v-col cols="15" md="9">
+          <v-btn
+          class="mr-4"
+          @click="adminLogin" :disabled="invalid">
+            log in
           </v-btn>
+
+        <v-btn @click="clear">
+          clear
+        </v-btn>
         </v-col>
-      </div>
-    </v-form>
-  </v-container>
+
+          <br>
+          <p> {{msg}} </p>
+          <br>
+        </div>
+      </v-form>
+    </v-container>
+  </validation-observer >
 </template>
 
+
 <script>
+import AuthService from '@/services/AuthService.js';
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 
@@ -48,25 +55,45 @@ extend('email', {...email, message: 'Email must be valid', })
 extend('between', {...between, message: '{_field_} is invalid.'})
 
 export default {
-  name: 'AdminLogin',
+  name: 'StudentLogin',
   components: {
     ValidationProvider,
     ValidationObserver,
   },
-  data: () => ({
+  data() {
+    return {
     email: '',
     password: '',
     show1: false,
-  }),
+    msg: '',
+  }
+},
   methods: {
-      submit () {
-      },
+    async adminLogin() {
+      try {
+        const credentials = {
+          email: this.email,
+          password: this.password
+        };
+        const response = await AuthService.adminLogin(credentials);
+        this.msg = response.msg;
+
+        const token = response.token;
+        const admin = response.admin;
+
+        this.$store.dispatch('adminLogin', { token, admin });
+        this.$router.push('/adminhome');
+    } catch (error) {
+        this.msg = error.response.data.msg;
+      }
+    },
       clear () {
         this.email = ''
         this.password = ''
       },
     },
 }
+
 </script>
 
 <style scoped>
