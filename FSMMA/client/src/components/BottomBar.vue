@@ -29,6 +29,7 @@ export default {
       {title: 'Admin Home', link: '/adminhome'},
       {title: 'Admin Schedule', link: '/adminschedule'},
       {title: 'View Student', link: '/adminviewstudentsearch'},
+      {title: 'View/Edit Instructor', link: '/viewinstructor'},
       {title: 'Create Instructor', link: '/instructorcreate'},
       {title: 'Admin Login', link: '/adminlogin'},
     ],

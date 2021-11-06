@@ -49,6 +49,11 @@ const routes = [
     component: () => import('../views/AdminViewStudentSearch.vue')
   },
   {
+    path: '/viewinstructor',
+    name: 'AdminViewInstructor',
+    component: () => import('../views/AdminViewInstructor.vue')
+  },
+  {
     path: '/StudentBuySession',
     name: 'StudentBuySession',
     component: () => import('../views/StudentBuySession.vue')
