@@ -1,7 +1,8 @@
 <template>
   <div>
-    <p> Loged in, admin </p>
-    <p> {{secretMessage}} </p>
+    <p> Loged in, admin {{this.admin_id}}</p>
+    <p> {{this.secretMessage}} </p>
+
     <v-btn class="mr-4" @click="logout"> log out </v-btn>
   </div>
 </template>
@@ -32,8 +33,9 @@ export default {
       if (!this.$store.getters.isAdminLoggedIn) {
           this.$router.push('/adminlogin');
       }
-
       this.secretMessage = await AuthService.getSecretAdminContent();
+      this.admin_id = this.$store.getters.getAdmin.admin_id;
+
     },
 }
 

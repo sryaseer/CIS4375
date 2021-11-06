@@ -19,6 +19,7 @@
 
 <script>
 import AdminService from '@/services/AdminService.js';
+import AuthService from '@/services/AuthService.js';
 
   export default {
     name: 'AdminViewStudentSearch',
@@ -52,7 +53,16 @@ import AdminService from '@/services/AdminService.js';
       }
       this.isLoading = false;
     },
-    watch: {
+    methods:{
+      logout() {
+        this.$store.dispatch('logout');
+        this.$router.push('/adminlogin');
+      },
+    },
+    async created() {
+      if (!this.$store.getters.isAdminLoggedIn) {
+          this.$router.push('/adminlogin');
+      }
     },
   }
 

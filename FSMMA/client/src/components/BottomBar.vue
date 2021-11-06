@@ -28,9 +28,9 @@ export default {
     items: [
       {title: 'Admin Home', link: '/adminhome'},
       {title: 'Admin Schedule', link: '/adminschedule'},
-      {title: 'Admin View Student', link: '/adminviewstudentsearch'},
+      {title: 'View Student', link: '/adminviewstudentsearch'},
+      {title: 'Create Instructor', link: '/instructorcreate'},
       {title: 'Admin Login', link: '/adminlogin'},
-      {title: 'Admin Create Instructor', link: '/instructorcreate'},
     ],
   }),
 }
@@ -42,6 +42,10 @@ export default {
   #admin-logo {
     display: block;
     padding-left: 300px;
+  }
+  .menu-links {
+    text-decoration: none;
+    color: navy;
   }
 
 </style>

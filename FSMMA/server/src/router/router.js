@@ -242,7 +242,7 @@ router.get('/admin-view-student-search', (req, res, next) => {
 
 // ADMIN VIEW STUDENT - GET SELECTED STUDENT BY ID
 router.get('/admin-view-student/:id', (req, res, next) => {
-  let selectQuery = 'SELECT first_name, last_name, email, dob, address, city, state, account_created_date FROM Student_Account WHERE student_id = ?';
+  let selectQuery = 'SELECT first_name, last_name, email, phone, dob, address, city, state, postal_code, account_created_date, waiver_signed_date, session_credits FROM Student_Account WHERE student_id = ?';
   let query = mysql.format(selectQuery, [req.params.id]);
 
   pool.query(query, (err, result) => {
