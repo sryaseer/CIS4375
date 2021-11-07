@@ -281,25 +281,6 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange({ events }) {
-      var events = [];
-      var randomItem = myArray[Math.floor(Math.random() * myArray.length)];
-      for (const event in this.privateSessions) {
-        console.log(this.privateSessions[event]);
-        events.push({
-          name: this.privateSessions[event]["session_id"], //session id as name
-          color: this.colors[randomItem],
-          start: this.privateSessions[event]["startDateTime"], //start of session
-          end: this.privateSessions[event]["endDateTime"], //end of session
-          i_first_name: this.privateSessions[event]["i_first_name"], //instructor first name
-          first_name: this.privateSessions[event]["first_name"],
-          timed: 1,
-        });
-      }
-      this.events = events;
-      console.log("events: ");
-      console.log(events);
-    },
     sendInfoToForm() {
       //able to get last name. but needs a parameter for privateSession...
       console.log(this.privateSessions);
