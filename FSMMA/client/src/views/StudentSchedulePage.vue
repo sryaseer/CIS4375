@@ -85,12 +85,17 @@
                 <v-toolbar :color="selectedEvent.color" dark>
                   <!-- Should be able to pull first name and last name -->
                   <!-- Currently throwing errors: "TypeError: Cannot read properties of undefined (reading 'i_first_name')" -->
+                  <v-btn icon>
+                    <v-icon @click="selectedOpen = false"
+                      >mdi-arrow-left</v-icon
+                    >
+                  </v-btn>
                   <v-toolbar-title
                     v-html="
                       'hello ' +
-                        this.privateSessions[1].i_first_name +
+                        this.selectedEvent.i_first_name +
                         ' ' +
-                        this.privateSessions[1].i_last_name
+                        this.selectedEvent.i_last_name
                     "
                   ></v-toolbar-title>
                   <v-spacer></v-spacer>
@@ -101,20 +106,41 @@
                   <span
                     v-html="
                       'Start Time: ' +
-                        this.privateSessions[1].start +
+                        this.selectedEvent.start +
                         '<br>' +
                         'End time:' +
-                        this.privateSessions[1].end +
-                        '<br>'
+                        this.selectedEvent.end +
+                        '<br>' +
+                        this.selectedEvent.student_id +
+                        '<br>' +
+                        this.selectedEvent.session_status_desc +
+                        '<br>' +
+                        this.selectedEvent.session_id
                     "
                   ></span>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text color="secondary" @click="selectedOpen = false">
+                  <v-btn
+                    v-if="selectedEvent.buttonCancel"
+                    text
+                    color="secondary"
+                    @click="selectedOpen = false"
+                  >
                     Cancel
+                    <v-icon dark right>
+                      mdi-minus-circle
+                    </v-icon>
                   </v-btn>
-                  <v-btn text color="secondary" @click="sendInfoToForm()">
+                  <v-btn
+                    v-if="selectedEvent.buttonRegister"
+                    text
+                    color="secondary"
+                    @click="sendInfoToForm()"
+                  >
                     Register
+                    <v-icon dark right>
+                      mdi-checkbox-marked-circle
+                    </v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -125,73 +151,10 @@
     </div>
 
     <!-- Middle - Form (when you click on an available slot, the form will auto populate info for session)  -->
-    <div class="bottomBar">
-      <v-form v-model="valid" @submit.prevent="submit">
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="sessionDate"
-              label="Session Date"
-              outlined
-              disabled
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="sessionTime"
-              label="Session Time"
-              outlined
-              disabled
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="instructorName"
-              label="Instructor Name"
-              outlined
-              disabled
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="sessionStatus"
-              label="Session Status"
-              outlined
-              disabled
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="studentName"
-              label="Student Name"
-              outlined
-              disabled
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="15" md="9">
-            <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()">
-              submit
-            </v-btn>
-
-            <v-btn @click="clear">
-              clear
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-    </div>
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
     <div>
       <h5 class="pageTitle">Sessions they have attended</h5>
-      <br /><br />
-
-      <p>privateSessions {{ privateSessions }}</p>
     </div>
   </v-container>
 </template>
@@ -209,7 +172,9 @@ export default {
     studentName: null,
     // end of form data
 
-    //dummy data
+    // double checking if customer is the right covers
+    validateStudentID: null,
+    loginStudent_id: null,
     msg: [],
     //end
 
@@ -227,13 +192,10 @@ export default {
     selectedOpen: false,
     privateSessions: [],
     colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
+      "#677fb5", //taken by you (blue)
+      "#8f1414", // cancelled (red)
+      "#659f6f", //available in general (green)
+      "#bcbcbc", //not available (grey)
     ],
   }),
   mounted() {
@@ -283,11 +245,18 @@ export default {
     },
     sendInfoToForm() {
       //able to get last name. but needs a parameter for privateSession...
-      console.log(this.privateSessions);
+      // console.log(events);
+      //events is undefined
+      // console.log(this.privateSessions);
+      // const parseData = JSON.parse(this.privateSessions);
+      // console.log(parseData);
+      this.sessionDate = this.selectedEvent.start;
     },
   },
 
   async mounted() {
+    this.loginStudent_id = this.$store.getters.getUser.student_id;
+    console.log(this.loginStudent_id);
     this.events = [];
     try {
       const response = await StudentService.viewStudentSchedule();
@@ -325,9 +294,47 @@ export default {
         date2.setHours(hour + 1);
         date2.setMinutes(minutes);
         obj["end"] = date2;
-        obj["color"] = this.colors[2];
+
+        //if session is cancelled
+
+        if (session_student.session_status_desc == "Cancelled") {
+          obj["color"] = this.colors[1];
+          //red
+        }
+        //if the session has a student and is upcoming
+        else if (
+          session_student.student_id == this.$store.getters.getUser.student_id
+        ) {
+          obj["color"] = this.colors[0];
+          obj["buttonCancel"] = true;
+          //blue
+        }
+        //if the session is Completed
+        else if (session_student.session_status_desc == "Completed") {
+          obj["color"] = this.colors[3];
+          //grey
+        }
+        //avaliable session
+        else if (
+          session_student.student_id == null &&
+          session_student.session_status_desc == "Upcoming"
+        ) {
+          obj["color"] = this.colors[2];
+          obj["buttonRegister"] = true;
+          //green
+        } else if (
+          session_student.student_id != null &&
+          session_student.session_status_desc == "Upcoming"
+        ) {
+          obj["color"] = this.colors[3];
+          //grey
+        } else {
+          obj["colocr"] = this.colors[3];
+          //grey
+        }
         obj["timed"] = 1;
 
+        // finished object
         this.privateSessions.push(obj);
       }
       //this.msg = this.privateSessions;
