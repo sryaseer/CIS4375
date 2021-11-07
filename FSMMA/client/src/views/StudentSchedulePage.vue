@@ -83,22 +83,31 @@
             >
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
-                  <v-btn icon>
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
+                  <!-- Should be able to pull first name and last name -->
+                  <!-- Currently throwing errors: "TypeError: Cannot read properties of undefined (reading 'i_first_name')" -->
                   <v-toolbar-title
-                    v-html="selectedEvent.name"
+                    v-html="
+                      'hello ' +
+                        this.privateSessions[1].i_first_name +
+                        ' ' +
+                        this.privateSessions[1].i_last_name
+                    "
                   ></v-toolbar-title>
                   <v-spacer></v-spacer>
-                  <v-btn icon>
-                    <v-icon>mdi-heart</v-icon>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
                 </v-toolbar>
                 <v-card-text>
-                  <span v-html="selectedEvent.details"></span>
+                  <!-- Should be able to pull the info about the hours start and end, and description shit -->
+                  <!-- Currently throwing errors: "TypeError: Cannot read properties of undefined (reading 'i_first_name')" -->
+                  <span
+                    v-html="
+                      'Start Time: ' +
+                        this.privateSessions[1].start +
+                        '<br>' +
+                        'End time:' +
+                        this.privateSessions[1].end +
+                        '<br>'
+                    "
+                  ></span>
                 </v-card-text>
                 <v-card-actions>
                   <v-btn text color="secondary" @click="selectedOpen = false">
@@ -174,25 +183,21 @@
             </v-btn>
           </v-col>
         </v-row>
-
-        <br><br>
-        <br>
-        <p> {{privateSessions}} </p>
-        <p> {{events}} </p>
-        <p> {{msg2}} </p>
-        <p> {{msg}} </p>
       </v-form>
     </div>
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
     <div>
-      <h3 class="p-2">Sessions they have attended</h3>
+      <h5 class="pageTitle">Sessions they have attended</h5>
+      <br /><br />
+
+      <p>privateSessions {{ privateSessions }}</p>
     </div>
   </v-container>
 </template>
 
 <script>
-import StudentService from '@/services/StudentService.js';
+import StudentService from "@/services/StudentService.js";
 
 export default {
   data: () => ({
@@ -204,6 +209,11 @@ export default {
     studentName: null,
     // end of form data
 
+    //dummy data
+    msg: [],
+    //end
+
+    //data for the calender, from vuetify
     focus: "",
     type: "month",
     typeToLabel: {
@@ -216,9 +226,15 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     privateSessions: [],
-    colors: ["blue","indigo","deep-purple","cyan","green","orange","grey darken-1",],
-    msg: null,
-    msg2: null,
+    colors: [
+      "blue",
+      "indigo",
+      "deep-purple",
+      "cyan",
+      "green",
+      "orange",
+      "grey darken-1",
+    ],
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -265,54 +281,71 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange({ start, end }) {
+    updateRange({ events }) {
       var events = [];
-
+      var randomItem = myArray[Math.floor(Math.random() * myArray.length)];
       for (const event in this.privateSessions) {
         console.log(this.privateSessions[event]);
-          events.push({
-            name: this.privateSessions[event]['session_id'],
-            color: this.colors[2],
-            start: this.privateSessions[event]['startDateTime'],
-            end: this.privateSessions[event]['endDateTime'],
-            timed: 1,
-          });
-        }
-    this.events = events;
-    console.log("events: ")
-    console.log(events);
-
+        events.push({
+          name: this.privateSessions[event]["session_id"], //session id as name
+          color: this.colors[randomItem],
+          start: this.privateSessions[event]["startDateTime"], //start of session
+          end: this.privateSessions[event]["endDateTime"], //end of session
+          i_first_name: this.privateSessions[event]["i_first_name"], //instructor first name
+          first_name: this.privateSessions[event]["first_name"],
+          timed: 1,
+        });
+      }
+      this.events = events;
+      console.log("events: ");
+      console.log(events);
+    },
+    sendInfoToForm() {
+      //able to get last name. but needs a parameter for privateSession...
+      console.log(this.privateSessions);
+    },
   },
-},
 
-  async mounted(){
+  async mounted() {
     this.events = [];
     try {
       const response = await StudentService.viewStudentSchedule();
-      for (const session_student of response){
+      for (const session_student of response) {
         var obj = {
           session_id: session_student.session_id,
+          i_first_name: session_student.i_first_name,
+          i_last_name: session_student.i_last_name,
+          instructor_id: session_student.instructor_id,
+          first_name: session_student.first_name,
+          last_name: session_student.last_name,
+          student_id: session_student.student_id,
+          session_status_desc: session_student.session_status_desc,
         };
+
+        // Session Date (disabled)
+        // Session Time
+        // Instructor Name
+        // Session Status
+        // Student Name
 
         var date = new Date(session_student.date);
         var date2 = new Date(session_student.date);
 
         //getting our STARTING TIME! DO NOT DELETE
-        var hourVar = '2021-11-15 ' + session_student.time;
+        var hourVar = "2021-11-15 " + session_student.time;
         var mockDate = new Date(hourVar);
         let hour = mockDate.getHours(hourVar);
         let minutes = mockDate.getMinutes(hourVar);
         //Setting our date to the right time.
         date.setHours(hour);
         date.setMinutes(minutes);
-        obj['start'] = date;
+        obj["start"] = date;
 
-        date2.setHours(hour+1);
+        date2.setHours(hour + 1);
         date2.setMinutes(minutes);
-        obj['end'] = date2;
-        obj['color'] = this.colors[2];
-        obj['timed'] = 1;
-
+        obj["end"] = date2;
+        obj["color"] = this.colors[2];
+        obj["timed"] = 1;
 
         this.privateSessions.push(obj);
       }
@@ -323,7 +356,6 @@ export default {
     }
   },
 };
-
 </script>
 
 <style scoped>
