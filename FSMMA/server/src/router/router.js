@@ -290,7 +290,8 @@ router.get('/student-view-schedule', (req, res, next) => {
                     'LEFT JOIN Session_Student SS ON S.session_id = SS.session_id '+
                     'LEFT JOIN Student_Account SA ON SA.student_id = SS.student_id '+
                     'LEFT JOIN Session_status SST ON SST.session_status_id = S.session_status_id '+
-                    'WHERE S.date BETWEEN (DATE_ADD(NOW(), INTERVAL -35 DAY)) AND (DATE_ADD(NOW(), INTERVAL 45 DAY));';
+                    'WHERE S.date BETWEEN (DATE_ADD(NOW(), INTERVAL -35 DAY)) AND (DATE_ADD(NOW(), INTERVAL 45 DAY)) '+
+                    'AND SST.session_status_desc NOT LIKE "Cancelled";';
   let query = mysql.format(selectQuery);
   pool.query(query, (err, result) => {
     if (err){
