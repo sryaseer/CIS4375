@@ -403,4 +403,9 @@ router.get("/student", async (req, res) => {
 
 //very important to export router or express won't route!
 
+//mailservice
+router.post("/mail-service-request", async (req, res) => {
+  console.log("request works.");
+});
+
 module.exports = router;
