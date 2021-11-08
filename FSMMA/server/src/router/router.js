@@ -6,6 +6,7 @@ const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const userMiddleware = require("../middleware/users.js");
 const mysql = require("mysql");
+const nodemailer = require("nodemailer");
 
 const pool = mysql.createPool({
   connectionLimit: 100, //important
@@ -406,6 +407,32 @@ router.get("/student", async (req, res) => {
 //mailservice
 router.post("/mail-service-request", async (req, res) => {
   console.log("request works.");
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mw1996white@gmail.com",
+      pass: "*Morgan12345white`",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: "mw1996white@gmail.com",
+    to: "murtuzaqasim@gmail.com",
+    subject: "testing",
+    text: "It works congrats",
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent succesfully ");
+    }
+  });
 });
 
 module.exports = router;
