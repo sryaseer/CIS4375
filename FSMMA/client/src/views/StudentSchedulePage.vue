@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <p class="pageTitle">Schedule a Session</p>
+    <p class="pageTitle">Student Schedule Page</p>
 
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>
@@ -124,9 +124,9 @@
                     v-if="selectedEvent.buttonCancel"
                     text
                     color="secondary"
-                    @click="selectedOpen = false"
+                    @click="cancelSession()"
                   >
-                    Cancel
+                    Unregister from class
                     <v-icon dark right>
                       mdi-minus-circle
                     </v-icon>
@@ -173,8 +173,6 @@ export default {
     // end of form data
 
     // double checking if customer is the right covers
-    validateStudentID: null,
-    loginStudent_id: null,
     msg: [],
     //end
 
@@ -251,6 +249,24 @@ export default {
       // const parseData = JSON.parse(this.privateSessions);
       // console.log(parseData);
       this.sessionDate = this.selectedEvent.start;
+    },
+    //method to cancel this
+    async cancelSession() {
+      let Session_Student_Signup = 0;
+      console.log("the sign up id is: " + Session_Student_Signup);
+      //payload to server to update
+      const credentials = {
+        session_id: this.selectedEvent.session_id,
+        student_id: this.$store.getters.getUser.student_id,
+        newSession_student_signup: (Session_Student_Signup = 1),
+      };
+      console.log(credentials);
+
+      // Session Date (disabled)
+      // Session Time
+      // Instructor Name
+      // Session Status
+      // Student Name
     },
   },
 
