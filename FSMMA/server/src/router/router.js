@@ -319,20 +319,16 @@ router.get("/student-view-schedule", (req, res, next) => {
   });
 });
 
+//removing from session
 router.post("/student-cancels-signup", (req, res, next) => {
-  console.log("in router");
+  console.log("sent to server");
   let selectQuery =
     "DELETE FROM Session_Student " +
     "WHERE student_id = ? AND session_id = ? AND attendance = 0 ;";
-  console.log("step 1: ");
   let query = mysql.format(selectQuery, [
     req.body.student_id,
     req.body.session_id,
   ]);
-  console.log(
-    "student id " + req.body.student_id + "session id " + req.body.session_id
-  );
-  console.log("query done ");
   pool.query(query, (err, result) => {
     if (err) {
       console.error(err);
@@ -346,23 +342,46 @@ router.post("/student-cancels-signup", (req, res, next) => {
   });
 });
 
-/*
-router.post('/add-student-note', (req, res, next){
-  let selectQuery ='INSERT INTO Notes (student_id, notes, date) '+
-                    'VALUES (?, ?, sysdate());'
-let query = mysql.format(selectQuery, [req.params.student_id], [req.params.notes]);
+//registering for a session
+router.post("/set-schedule-signup", (req, res, next) => {
+  let selectQuery = "INSERT INTO Session_Student " + "VALUES (?,?,0);";
+  let query = mysql.format(selectQuery, [
+    req.body.session_id,
+    req.body.student_id,
+  ]);
   pool.query(query, (err, result) => {
-    if (err){
+    if (err) {
       console.error(err);
       throw err;
       return res.status(400).send({
-        msg: err });
+        msg: err,
+      });
     }
     console.log(result);
     res.status(200).send(result);
+  });
+});
 
-})
-*/
+//adding a note
+router.post("/add-student-note", (req, res, next) => {
+  console.log("reqest went through");
+  let selectQuery =
+    "INSERT INTO Notes (student_id, notes, date) " +
+    "VALUES (?, ?, sysdate());";
+  let query = mysql.format(selectQuery, [req.body.student_id, req.body.notes]);
+  console.log("Query went through");
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
+    res.status(200).send(result);
+  });
+});
 
 router.get("/student-secret-route", (req, res, next) => {
   res.send("This is the secret content. Only logged in students can see that!");

@@ -30,9 +30,9 @@ export default {
       .then((response) => response.data);
   },
 
-  SignupStudentSchedule() {
+  SignupStudentSchedule(credentials) {
     return axios
-      .post(url + "set-schedule-signup/")
+      .post(url + "set-schedule-signup/", credentials)
       .then((response) => response.data);
   },
 
@@ -48,9 +48,9 @@ export default {
       .then((response) => response.data);
   },
 
-  studentAddNotes() {
+  studentAddNotes(information) {
     return axios
-      .post(url + "add-student-note/", credentials)
+      .post(url + "add-student-note/", information)
       .then((response) => response.data);
   },
 };

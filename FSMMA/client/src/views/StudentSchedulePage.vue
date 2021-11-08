@@ -134,7 +134,7 @@
                     v-if="selectedEvent.buttonRegister"
                     text
                     color="secondary"
-                    @click="sendInfoToForm()"
+                    @click="AddSession()"
                   >
                     Register
                     <v-icon dark right>
@@ -197,9 +197,7 @@ export default {
       ],
     };
   },
-  mounted() {
-    this.$refs.calendar.checkChange();
-  },
+  mounted: {},
   methods: {
     clear() {
       this.sessionDate = null;
@@ -224,6 +222,7 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
+    //pop up windows
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
@@ -242,19 +241,28 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    sendInfoToForm() {
-      //able to get last name. but needs a parameter for privateSession...
-      // console.log(events);
-      //events is undefined
-      // console.log(this.privateSessions);
-      // const parseData = JSON.parse(this.privateSessions);
-      // console.log(parseData);
-      this.sessionDate = this.selectedEvent.start;
+    async AddSession() {
+      console.log("inside");
+      try {
+        const credentials = {
+          session_id: this.selectedEvent.session_id,
+          student_id: this.$store.getters.getUser.student_id,
+          attandance_id: 0,
+        };
+        console.log("show credits:");
+        console.log(credentials);
+        const response = await StudentService.SignupStudentSchedule(
+          credentials
+        );
+        this.selectedOpen = false;
+        this.updateCalenderInfo();
+        console.log("went to back end"); //delete
+      } catch (error) {
+        console.log(error);
+      }
     },
-    //method to cancel this
-    async cancelSession() {
-      //payload to server to update
 
+    async cancelSession() {
       console.log("credentials set up");
       try {
         const credentials = {
@@ -263,108 +271,119 @@ export default {
         };
         console.log(credentials);
         const response = await StudentService.studentCancelSignUp(credentials);
-        location.reload();
+
+        const information = {
+          student_id: this.$store.getters.getUser.student_id,
+          notes:
+            "Session (" +
+            this.selectedEvent.start.toLocaleDateString("en-us") +
+            " " +
+            this.selectedEvent.start.toLocaleTimeString("it-IT") +
+            ") was Cancelled by Student",
+        };
+        const response2 = await StudentService.studentAddNotes(information);
+        this.selectedOpen = false;
+        this.updateCalenderInfo();
+        this.selectedOpen = false;
+        // this.updateCalenderInfo();
       } catch (error) {
         console.log(error);
-        // this.msg = error.response.data.msg;
       }
+    },
+    async updateCalenderInfo() {
+      this.privateSessions = [];
+      this.$refs.calendar.checkChange();
+      this.loginStudent_id = this.$store.getters.getUser.student_id;
+      console.log(this.loginStudent_id);
+      this.events = [];
+      try {
+        const response = await StudentService.viewStudentSchedule();
+        for (const session_student of response) {
+          var obj = {
+            session_id: session_student.session_id,
+            i_first_name: session_student.i_first_name,
+            i_last_name: session_student.i_last_name,
+            instructor_id: session_student.instructor_id,
+            first_name: session_student.first_name,
+            last_name: session_student.last_name,
+            student_id: session_student.student_id,
+            session_status_desc: session_student.session_status_desc,
+          };
 
-      // Session Date (disabled)
-      // Session Time
-      // Instructor Name
-      // Session Status
-      // Student Name
+          // Session Date (disabled)
+          // Session Time
+          // Instructor Name
+          // Session Status
+          // Student Name
+
+          var date = new Date(session_student.date);
+          var date2 = new Date(session_student.date);
+
+          //getting our STARTING TIME! DO NOT DELETE
+          var hourVar = "2021-11-15 " + session_student.time;
+          var mockDate = new Date(hourVar);
+          let hour = mockDate.getHours(hourVar);
+          let minutes = mockDate.getMinutes(hourVar);
+          //Setting our date to the right time.
+          date.setHours(hour);
+          date.setMinutes(minutes);
+          obj["start"] = date;
+
+          date2.setHours(hour + 1);
+          date2.setMinutes(minutes);
+          obj["end"] = date2;
+
+          //if session is cancelled
+
+          if (session_student.session_status_desc == "Cancelled") {
+            obj["color"] = this.colors[1];
+            //red
+          }
+          //if the session has a student and is upcoming
+          else if (
+            session_student.student_id == this.$store.getters.getUser.student_id
+          ) {
+            obj["color"] = this.colors[0];
+            obj["buttonCancel"] = true;
+            //blue
+          }
+          //if the session is Completed
+          else if (session_student.session_status_desc == "Completed") {
+            obj["color"] = this.colors[3];
+            //grey
+          }
+          //avaliable session
+          else if (
+            session_student.student_id == null &&
+            session_student.session_status_desc == "Upcoming"
+          ) {
+            obj["color"] = this.colors[2];
+            obj["buttonRegister"] = true;
+            //green
+          } else if (
+            session_student.student_id != null &&
+            session_student.session_status_desc == "Upcoming"
+          ) {
+            obj["color"] = this.colors[3];
+            //grey
+          } else {
+            obj["colocr"] = this.colors[3];
+            //grey
+          }
+          obj["timed"] = 1;
+
+          // finished object
+          this.privateSessions.push(obj);
+        }
+        //this.msg = this.privateSessions;
+      } catch (error) {
+        console.log(error);
+        this.msg = error.response.data.msg;
+      }
     },
   },
-
   async mounted() {
-    this.loginStudent_id = this.$store.getters.getUser.student_id;
-    console.log(this.loginStudent_id);
-    this.events = [];
-    try {
-      const response = await StudentService.viewStudentSchedule();
-      for (const session_student of response) {
-        var obj = {
-          session_id: session_student.session_id,
-          i_first_name: session_student.i_first_name,
-          i_last_name: session_student.i_last_name,
-          instructor_id: session_student.instructor_id,
-          first_name: session_student.first_name,
-          last_name: session_student.last_name,
-          student_id: session_student.student_id,
-          session_status_desc: session_student.session_status_desc,
-        };
-
-        // Session Date (disabled)
-        // Session Time
-        // Instructor Name
-        // Session Status
-        // Student Name
-
-        var date = new Date(session_student.date);
-        var date2 = new Date(session_student.date);
-
-        //getting our STARTING TIME! DO NOT DELETE
-        var hourVar = "2021-11-15 " + session_student.time;
-        var mockDate = new Date(hourVar);
-        let hour = mockDate.getHours(hourVar);
-        let minutes = mockDate.getMinutes(hourVar);
-        //Setting our date to the right time.
-        date.setHours(hour);
-        date.setMinutes(minutes);
-        obj["start"] = date;
-
-        date2.setHours(hour + 1);
-        date2.setMinutes(minutes);
-        obj["end"] = date2;
-
-        //if session is cancelled
-
-        if (session_student.session_status_desc == "Cancelled") {
-          obj["color"] = this.colors[1];
-          //red
-        }
-        //if the session has a student and is upcoming
-        else if (
-          session_student.student_id == this.$store.getters.getUser.student_id
-        ) {
-          obj["color"] = this.colors[0];
-          obj["buttonCancel"] = true;
-          //blue
-        }
-        //if the session is Completed
-        else if (session_student.session_status_desc == "Completed") {
-          obj["color"] = this.colors[3];
-          //grey
-        }
-        //avaliable session
-        else if (
-          session_student.student_id == null &&
-          session_student.session_status_desc == "Upcoming"
-        ) {
-          obj["color"] = this.colors[2];
-          obj["buttonRegister"] = true;
-          //green
-        } else if (
-          session_student.student_id != null &&
-          session_student.session_status_desc == "Upcoming"
-        ) {
-          obj["color"] = this.colors[3];
-          //grey
-        } else {
-          obj["colocr"] = this.colors[3];
-          //grey
-        }
-        obj["timed"] = 1;
-
-        // finished object
-        this.privateSessions.push(obj);
-      }
-      //this.msg = this.privateSessions;
-    } catch (error) {
-      console.log(error);
-      this.msg = error.response.data.msg;
-    }
+    this.updateCalenderInfo();
   },
 };
 </script>
