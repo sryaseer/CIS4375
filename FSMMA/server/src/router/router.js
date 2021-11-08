@@ -319,22 +319,32 @@ router.get("/student-view-schedule", (req, res, next) => {
   });
 });
 
-/*
-router.post('/student-cancels-signup',(req, res, next) =>{
-  let selectQuery ='DELETE FROM Session_Student ' +
-                   'WHERE student_id = ? AND session_id = ? AND attendance = ? ;';
-  let query = mysql.format(selectQuery, [req.params.student_id], [req.session_id], [req.params.attendance]);
+router.post("/student-cancels-signup", (req, res, next) => {
+  console.log("in router");
+  let selectQuery =
+    "DELETE FROM Session_Student " +
+    "WHERE student_id = ? AND session_id = ? AND attendance = 0 ;";
+  console.log("step 1: ");
+  let query = mysql.format(selectQuery, [
+    req.body.student_id,
+    req.body.session_id,
+  ]);
+  console.log(
+    "student id " + req.body.student_id + "session id " + req.body.session_id
+  );
+  console.log("query done ");
   pool.query(query, (err, result) => {
-    if (err){
+    if (err) {
       console.error(err);
       throw err;
       return res.status(400).send({
-        msg: err });
+        msg: err,
+      });
     }
     console.log(result);
     res.status(200).send(result);
-  })
-*/
+  });
+});
 
 /*
 router.post('/add-student-note', (req, res, next){

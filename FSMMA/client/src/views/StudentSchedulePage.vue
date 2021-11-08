@@ -162,39 +162,41 @@
 import StudentService from "@/services/StudentService.js";
 
 export default {
-  data: () => ({
-    //form data
-    sessionDate: null,
-    sessionTime: null,
-    instructorName: null,
-    sessionStatus: null,
-    studentName: null,
-    // end of form data
+  data() {
+    return {
+      //form data
+      sessionDate: null,
+      sessionTime: null,
+      instructorName: null,
+      sessionStatus: null,
+      studentName: null,
+      // end of form data
 
-    // double checking if customer is the right covers
-    msg: [],
-    //end
+      // double checking if customer is the right covers
+      msg: null,
+      //end
 
-    //data for the calender, from vuetify
-    focus: "",
-    type: "month",
-    typeToLabel: {
-      month: "Month",
-      week: "Week",
-      day: "Day",
-      "4day": "4 Days",
-    },
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
-    privateSessions: [],
-    colors: [
-      "#677fb5", //taken by you (blue)
-      "#8f1414", // cancelled (red)
-      "#659f6f", //available in general (green)
-      "#bcbcbc", //not available (grey)
-    ],
-  }),
+      //data for the calender, from vuetify
+      focus: "",
+      type: "month",
+      typeToLabel: {
+        month: "Month",
+        week: "Week",
+        day: "Day",
+        "4day": "4 Days",
+      },
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false,
+      privateSessions: [],
+      colors: [
+        "#677fb5", //taken by you (blue)
+        "#8f1414", // cancelled (red)
+        "#659f6f", //available in general (green)
+        "#bcbcbc", //not available (grey)
+      ],
+    };
+  },
   mounted() {
     this.$refs.calendar.checkChange();
   },
@@ -251,15 +253,21 @@ export default {
     },
     //method to cancel this
     async cancelSession() {
-      let Session_Student_Signup = 0;
-      console.log("the sign up id is: " + Session_Student_Signup);
       //payload to server to update
-      const credentials = {
-        session_id: this.selectedEvent.session_id,
-        student_id: this.$store.getters.getUser.student_id,
-        newSession_student_signup: (Session_Student_Signup = 1),
-      };
-      console.log(credentials);
+
+      console.log("credentials set up");
+      try {
+        const credentials = {
+          session_id: this.selectedEvent.session_id,
+          student_id: this.$store.getters.getUser.student_id,
+        };
+        console.log(credentials);
+        const response = await StudentService.studentCancelSignUp(credentials);
+        location.reload();
+      } catch (error) {
+        console.log(error);
+        // this.msg = error.response.data.msg;
+      }
 
       // Session Date (disabled)
       // Session Time

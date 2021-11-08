@@ -32,7 +32,7 @@ export default {
 
   SignupStudentSchedule() {
     return axios
-      .push(url + "set-schedule-signup/")
+      .post(url + "set-schedule-signup/")
       .then((response) => response.data);
   },
 
@@ -42,15 +42,15 @@ export default {
       .then((response) => response.data);
   },
 
-  studentCancelSignUp() {
+  studentCancelSignUp(credentials) {
     return axios
-      .push(url + "student-cancels-signup/")
+      .post(url + "student-cancels-signup/", credentials)
       .then((response) => response.data);
   },
 
   studentAddNotes() {
     return axios
-      .push(url + "add-student-note/")
+      .post(url + "add-student-note/", credentials)
       .then((response) => response.data);
   },
 };
