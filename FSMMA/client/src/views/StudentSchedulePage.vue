@@ -107,14 +107,13 @@
                     v-html="
                       'Start Time: ' +
                         this.selectedEvent.start +
-                        '<br>' +
-                        'End time:' +
+                        '<br> End time: ' +
                         this.selectedEvent.end +
-                        '<br>' +
+                        '<br> Student ID: ' +
                         this.selectedEvent.student_id +
-                        '<br>' +
+                        '<br> session_status_desc: ' +
                         this.selectedEvent.session_status_desc +
-                        '<br>' +
+                        '<br> session_id: ' +
                         this.selectedEvent.session_id
                     "
                   ></span>
