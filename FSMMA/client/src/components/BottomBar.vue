@@ -28,6 +28,7 @@ export default {
       { title: "View Student", link: "/adminviewstudentsearch" },
       { title: "View/Edit Instructor", link: "/viewinstructor" },
       { title: "Create Instructor", link: "/instructorcreate" },
+      { title: "Instructor's Schedule", link: "/InstructorSchedule" },
     ],
   }),
 };

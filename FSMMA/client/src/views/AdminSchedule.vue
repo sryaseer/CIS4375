@@ -112,7 +112,7 @@
     <!-- Middle - Form (when you click on an available slot, the form will auto populate info for session)  -->
     <div class="bottomBar">
       <v-row>
-          <!-- left side form -->
+        <!-- left side form -->
         <v-col cols="12" md="6">
           <v-form v-model="valid" @submit.prevent="submit">
             <v-row>
@@ -222,7 +222,7 @@
           </v-form>
         </v-col>
       </v-row>
-    <br /><br />
+      <br /><br />
     </div>
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
