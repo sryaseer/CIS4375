@@ -8,7 +8,7 @@
             <h2>Create New Session</h2>
             <v-row>
               <v-col cols="12" md="4">
-               <v-menu v-model="datemenu">
+               <v-menu v-model="datemenu" min-width="auto">
                 <template v-slot:activator="{on}">
                   <v-text-field
                     v-model="startAvailabilityDate"
@@ -17,12 +17,12 @@
                     outlined
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="startAvailabilityDate" @input></v-date-picker>
+                <v-date-picker v-model="startAvailabilityDate"  ></v-date-picker>
               </v-menu>
               </v-col>
 
               <v-col cols="12" md="4">
-                <v-menu v-model="datemenu1">
+                <v-menu v-model="datemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="endAvailabilityDate"
@@ -31,12 +31,12 @@
                       outlined
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="endAvailabilityDate" @input></v-date-picker>
+                  <v-date-picker v-model="endAvailabilityDate"  ></v-date-picker>
                 </v-menu>
               </v-col>
 
               <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1">
+                <v-menu v-model="timemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="reoccurringStartTime"
@@ -45,12 +45,12 @@
                       outlined
                     ></v-text-field>
                   </template>
-                  <v-time-picker v-model="reoccurringStartTime" @input></v-time-picker>
+                  <v-time-picker v-model="reoccurringStartTime"  ></v-time-picker>
                 </v-menu>
               </v-col>
 
               <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1">
+                <v-menu v-model="timemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="reoccurringEndTime"
@@ -59,7 +59,7 @@
                       outlined
                     ></v-text-field>
                   </template>
-                  <v-time-picker v-model="reoccurringEndTime" @input></v-time-picker>
+                  <v-time-picker v-model="reoccurringEndTime"  ></v-time-picker>
                 </v-menu>
               </v-col>
 
@@ -91,7 +91,7 @@
         </v-col>
 
     <!-- Top - This is the table of all the session upcoming for this stduent -->
-    <div>
+    <div style="margin-top: 50px">
       <v-row class="fill-height">
         <v-col>
           <v-sheet height="64">
@@ -161,7 +161,9 @@
               :close-on-content-click="false"
               :activator="selectedElement"
               offset-x
+              min-width="auto"
             >
+
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <v-btn icon>
@@ -201,7 +203,7 @@
             <h2>Edit Session</h2>
             <v-row>
               <v-col cols="12" md="4">
-                <v-menu v-model="datemenu1">
+                <v-menu v-model="datemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="sessionDate"
@@ -211,12 +213,12 @@
                       outlined
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="sessionDate" @input></v-date-picker>
+                  <v-date-picker v-model="sessionDate"  ></v-date-picker>
                 </v-menu>
               </v-col>
 
               <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1">
+                <v-menu v-model="timemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="sessionTime"
@@ -226,7 +228,7 @@
                       outlined
                     ></v-text-field>
                   </template>
-                  <v-time-picker v-model="sessionTime" @input></v-time-picker>
+                  <v-time-picker v-model="sessionTime"  ></v-time-picker>
                 </v-menu>
               </v-col>
 

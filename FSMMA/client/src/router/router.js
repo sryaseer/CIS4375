@@ -50,9 +50,14 @@ const routes = [
     component: () => import("../views/AdminViewStudentSearch.vue"),
   },
   {
-    path: "/viewinstructor",
+    path: "/viewinstructor/:id",
     name: "AdminViewInstructor",
     component: () => import("../views/AdminViewInstructor.vue"),
+  },
+  {
+    path: "/AdminViewInstructorSearch",
+    name: "AdminViewInstructorSearch",
+    component: () => import("../views/AdminViewInstructorSearch.vue"),
   },
   {
     path: "/StudentBuySession",

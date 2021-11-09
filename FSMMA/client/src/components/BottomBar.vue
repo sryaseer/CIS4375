@@ -26,7 +26,7 @@ export default {
       { title: "Admin Home", link: "/adminhome" },
       { title: "Admin Schedule", link: "/adminschedule" },
       { title: "View Student", link: "/adminviewstudentsearch" },
-      { title: "View/Edit Instructor", link: "/viewinstructor" },
+      { title: "View/Edit Instructor", link: "/AdminViewInstructorSearch" },
       { title: "Create Instructor", link: "/instructorcreate" },
       { title: "Instructor's Schedule", link: "/InstructorSchedule" },
     ],
