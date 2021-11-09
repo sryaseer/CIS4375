@@ -35,10 +35,10 @@
         </div>
         <!-- Middle - Show changes to bmi / weight / fat percentage per date -->
         <div>
-            <h3 class="p-2">new health change</h3>
+            <h3 class="p-2">Health History</h3>
 
             <v-data-table :headers="healthHeader" :items="healthEntries" :items-per-page="5" class="elevation-1"></v-data-table>
-            <h3 class="p-2">sessions they have attended</h3>
+            <h3 class="p-5">Sessions Attended</h3>
             <!-- Bottom - Show what sessions they have attended / missed -->
             <v-data-table :headers="sessionHeader" :items="sessionEntries" :items-per-page="5" class="elevation-1"></v-data-table>
         </div>
