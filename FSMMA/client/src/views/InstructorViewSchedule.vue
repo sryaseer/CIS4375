@@ -1,7 +1,14 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <p class="pageTitle">Instructor Schedule Page</p>
+    <div>
+      <h1 class="pageTitle">
+        <small>
+          Upcoming sessions for {{ this.$store.getters.getAdmin.first_name }}
+          {{ this.$store.getters.getAdmin.last_name }}</small
+        >
+      </h1>
+    </div>
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>
       <v-row class="fill-height">
@@ -130,14 +137,18 @@
           </v-sheet>
         </v-col>
       </v-row>
+
+      <p>
+        <small>
+          &#128308; Cancelled Sessions &#128309; Upcoming + No Students
+          &#128994; Upcoming + Student Registered &#11044; Completed or Old
+        </small>
+      </p>
     </div>
 
     <!-- Middle - Form (when you click on an available slot, the form will auto populate info for session)  -->
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
-    <div>
-      <h5 class="pageTitle">Upcoming sessions for $Instrutor_Name</h5>
-    </div>
   </v-container>
 </template>
 
@@ -295,9 +306,7 @@ export default {
         console.log("RIGHT-store info: " + this.$store.state.admin.admin_id);
         console.log("instructor: " + this.instructor_id);
         console.log("cred: " + credentials.instructor_id);
-        const response = await AdminService.viewInstructorSchedule(
-          credentials
-        );
+        const response = await AdminService.viewInstructorSchedule(credentials);
         for (const session_student of response) {
           var obj = {
             session_id: session_student.session_id,
@@ -334,18 +343,24 @@ export default {
           obj["end"] = date2;
 
           //if session is cancelled
-
           if (session_student.session_status_desc == "Cancelled") {
             obj["color"] = this.colors[1];
             //red
           }
-          //if the session has a student and is upcoming
+          //sessions where a student is not present but the class is upcoming
           else if (
-            session_student.student_id == this.$store.getters.getUser.student_id
+            session_student.student_id == null &&
+            session_student.session_status_desc == "Upcoming"
           ) {
             obj["color"] = this.colors[0];
-            obj["buttonCancel"] = true;
+            // obj["buttonRegister"] = true;
             //blue
+          }
+          //if the session has a student and is upcoming
+          else if (session_student.session_status_desc == "Upcoming") {
+            obj["color"] = this.colors[2];
+            // obj["buttonCancel"] = true;
+            //green
           }
           //if the session is Completed
           else if (session_student.session_status_desc == "Completed") {
@@ -353,24 +368,10 @@ export default {
             //grey
           }
           //avaliable session
-          else if (
-            session_student.student_id == null &&
-            session_student.session_status_desc == "Upcoming"
-          ) {
-            obj["color"] = this.colors[2];
-            obj["buttonRegister"] = true;
-            //green
-          } else if (
-            session_student.student_id != null &&
-            session_student.session_status_desc == "Upcoming"
-          ) {
-            obj["color"] = this.colors[3];
-            //grey
-          } else {
-            obj["colocr"] = this.colors[3];
+          else {
+            obj["colocr"] = this.colors[0];
             //grey
           }
-          obj["color"] = this.colors[2];
           obj["timed"] = 1;
 
           // finished object
@@ -391,7 +392,9 @@ export default {
         const credentials = {
           instructor_id: this.$store.getters.getAdmin.admin_id,
         };
-        console.log("LEFT-store info: " + this.$store.getters.getAdmin.admin_id);
+        console.log(
+          "LEFT-store info: " + this.$store.getters.getAdmin.admin_id
+        );
         console.log("instructor: " + this.instructor_id);
         //pulling all the session for the instructor where student's signed up
         const response = await AdminService.viewInstructorWithStudentSchedule(
@@ -433,43 +436,35 @@ export default {
           obj["end"] = date2;
 
           //if session is cancelled
-
-          //   if (session_student.session_status_desc == "Cancelled") {
-          //     obj["color"] = this.colors[1];
-          //     //red
-          //   }
-          //   //if the session has a student and is upcoming
-          //   else if (
-          //     session_student.student_id == this.$store.getters.getUser.student_id
-          //   ) {
-          //     obj["color"] = this.colors[0];
-          //     obj["buttonCancel"] = true;
-          //     //blue
-          //   }
-          //   //if the session is Completed
-          //   else if (session_student.session_status_desc == "Completed") {
-          //     obj["color"] = this.colors[3];
-          //     //grey
-          //   }
-          //   //avaliable session
-          //   else if (
-          //     session_student.student_id == null &&
-          //     session_student.session_status_desc == "Upcoming"
-          //   ) {
-          //     obj["color"] = this.colors[2];
-          //     obj["buttonRegister"] = true;
-          //     //green
-          //   } else if (
-          //     session_student.student_id != null &&
-          //     session_student.session_status_desc == "Upcoming"
-          //   ) {
-          //     obj["color"] = this.colors[3];
-          //     //grey
-          //   } else {
-          //     obj["colocr"] = this.colors[3];
-          //     //grey
-          //   }
-          obj["color"] = this.colors[2];
+          if (session_student.session_status_desc == "Cancelled") {
+            obj["color"] = this.colors[1];
+            //red
+          }
+          //sessions where a student is not present but the class is upcoming
+          else if (
+            session_student.student_id == null &&
+            session_student.session_status_desc == "Upcoming"
+          ) {
+            obj["color"] = this.colors[0];
+            // obj["buttonRegister"] = true;
+            //blue
+          }
+          //if the session has a student and is upcoming
+          else if (session_student.session_status_desc == "Upcoming") {
+            obj["color"] = this.colors[2];
+            // obj["buttonCancel"] = true;
+            //green
+          }
+          //if the session is Completed
+          else if (session_student.session_status_desc == "Completed") {
+            obj["color"] = this.colors[3];
+            //grey
+          }
+          //avaliable session
+          else {
+            obj["colocr"] = this.colors[0];
+            //grey
+          }
           obj["timed"] = 1;
 
           // finished object
@@ -483,9 +478,7 @@ export default {
     },
   },
 
-  async mounted() {
-    
-  },
+  async mounted() {},
 };
 </script>
 
