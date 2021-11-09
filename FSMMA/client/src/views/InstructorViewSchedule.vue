@@ -288,15 +288,15 @@ export default {
     async updateCalenderInfo() {
       this.events = [];
       try {
-        const credientials = {
+        const credentials = {
           instructor_id: this.$store.state.admin.admin_id,
         };
         //pulling all the session for the instructor (disregarding if signed up or not)
         console.log("RIGHT-store info: " + this.$store.state.admin.admin_id);
         console.log("instructor: " + this.instructor_id);
-        console.log("cred: " + credientials);
+        console.log("cred: " + credentials.instructor_id);
         const response = await AdminService.viewInstructorSchedule(
-          credientials
+          credentials
         );
         for (const session_student of response) {
           var obj = {
@@ -388,16 +388,15 @@ export default {
       //   console.log(this.loginInstructor_id);
       this.events = [];
       try {
-        const credientials = {
-          instructor_id: this.$store.state.admin.admin_id,
+        const credentials = {
+          instructor_id: this.$store.getters.getAdmin.admin_id,
         };
-        console.log("LEFT-store info: " + this.$store.state.admin.admin_id);
+        console.log("LEFT-store info: " + this.$store.getters.getAdmin.admin_id);
         console.log("instructor: " + this.instructor_id);
         //pulling all the session for the instructor where student's signed up
         const response = await AdminService.viewInstructorWithStudentSchedule(
-          credientials
+          credentials
         );
-        console.log(response.data);
         for (const session_student of response) {
           var obj = {
             session_id: session_student.session_id,
@@ -484,7 +483,9 @@ export default {
     },
   },
 
-  async mounted() {},
+  async mounted() {
+    
+  },
 };
 </script>
 

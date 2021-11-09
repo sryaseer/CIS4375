@@ -322,8 +322,8 @@ router.get("/student-view-schedule", (req, res, next) => {
 });
 
 //pulling all the session for the instructor (disregarding if signed up or not)
-router.get("/instructor-view-schedule", (req, res, next) => {
-  console.log(req.parms.instructor_id);
+router.post("/instructor-view-schedule", (req, res, next) => {
+  console.log("in IVS");
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
     "I.instructor_id, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
@@ -334,7 +334,7 @@ router.get("/instructor-view-schedule", (req, res, next) => {
     "LEFT JOIN Session_status SST ON SST.session_status_id = S.session_status_id " +
     "WHERE S.date BETWEEN (DATE_ADD(NOW(), INTERVAL -35 DAY)) AND (DATE_ADD(NOW(), INTERVAL 45 DAY)) AND " +
     "I.instructor_id = ?;";
-  let query = mysql.format(selectQuery, [req.parms.instructor_id]);
+  let query = mysql.format(selectQuery, [req.body.instructor_id]);
   pool.query(query, (err, result) => {
     if (err) {
       console.error(err);
@@ -349,19 +349,19 @@ router.get("/instructor-view-schedule", (req, res, next) => {
 });
 
 //pulling all the session for the instructor where student's signed up
-router.get("/instructor-signedup-schedule", (req, res, next) => {
-  console.log(req.parms.instructor_id);
+router.post("/instructor-signedup-schedule", (req, res, next) => {
+  console.log(req.body);
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
     "I.instructor_id, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
     "FROM Session S " +
-    "LEFT JOIN Instructor I ON S.instructor_id = I.instructor_id " +
-    "LEFT JOIN Session_Student SS ON S.session_id = SS.session_id " +
-    "LEFT JOIN Student_Account SA ON SA.student_id = SS.student_id " +
-    "LEFT JOIN Session_status SST ON SST.session_status_id = S.session_status_id " +
+    "JOIN Instructor I ON S.instructor_id = I.instructor_id " +
+    "JOIN Session_Student SS ON S.session_id = SS.session_id " +
+    "JOIN Student_Account SA ON SA.student_id = SS.student_id " +
+    "JOIN Session_status SST ON SST.session_status_id = S.session_status_id " +
     "WHERE S.date BETWEEN (DATE_ADD(NOW(), INTERVAL -35 DAY)) AND (DATE_ADD(NOW(), INTERVAL 45 DAY)) AND " +
     "I.instructor_id = ?;";
-  let query = mysql.format(selectQuery, [req.parms.instructor_id]);
+  let query = mysql.format(selectQuery, [req.body.instructor_id]);
   pool.query(query, (err, result) => {
     if (err) {
       console.error(err);

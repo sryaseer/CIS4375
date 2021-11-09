@@ -26,14 +26,15 @@ export default {
       .then((response) => response.data);
   },
   //instructor_id
-  viewInstructorSchedule(instructor_id) {
+  viewInstructorSchedule(credentials) {
     return axios
-      .get(url + "instructor-view-schedule/", instructor_id)
+      .post(url + "instructor-view-schedule/", credentials)
       .then((response) => response.data);
   },
-  viewInstructorWithStudentSchedule(instructor_id) {
+
+  viewInstructorWithStudentSchedule(credentials) {
     return axios
-      .get(url + "instructor-signedup-schedule/", instructor_id)
+      .post(url + "instructor-signedup-schedule/", credentials)
       .then((response) => response.data);
   },
 };
