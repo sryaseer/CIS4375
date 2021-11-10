@@ -92,6 +92,9 @@ export default {
         this.password = ''
       },
     },
+    beforeMount(){
+        this.$store.dispatch('logout');
+    }
 }
 
 </script>

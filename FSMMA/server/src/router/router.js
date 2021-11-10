@@ -439,6 +439,31 @@ router.post("/add-student-note", (req, res, next) => {
   });
 });
 
+router.post("/student-get-past-sessions", (req, res, next) => {
+  let selectQuery =
+  'SELECT S.date, S.time, I.first_name, I.last_name, SS.attendance, SST.session_status_desc '+
+  'FROM Session S '+
+  'JOIN Instructor I ON I.instructor_id = S.instructor_id '+
+  'JOIN Session_Student SS ON SS.session_id = S.session_id '+
+  'JOIN Session_status SST ON SST.session_status_id = S.session_status_id '+
+  'WHERE SS.student_id = ? AND S.date < CURDATE() '+
+  'ORDER BY S.date desc;';
+  let query = mysql.format(selectQuery, [req.body.student_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
+    res.status(200).send(result);
+  });
+});
+
+
+
 router.get("/student-secret-route", (req, res, next) => {
   res.send("This is the secret content. Only logged in students can see that!");
 });

@@ -36,11 +36,10 @@ export default {
       this.scrollToTime()
       this.updateTime()
     },
-    async created() {
+    created() {
       if (!this.$store.getters.isLoggedIn) {
         this.$router.push('/StudentLogin');
       }
-      this.secretMessage = await AuthService.getSecretContent();
     },
     methods: {
       getCurrentTime () {

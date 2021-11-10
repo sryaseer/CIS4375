@@ -159,6 +159,11 @@ export default {
       this.sessions = 0;
     }
   },
+  created() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push('/StudentLogin');
+    }
+  },
 
   components: {
     'paypalb': paypalb

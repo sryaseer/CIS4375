@@ -385,6 +385,11 @@ export default {
   async mounted() {
     this.updateCalenderInfo();
   },
+  created() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push('/StudentLogin');
+    }
+  },
 };
 </script>
 

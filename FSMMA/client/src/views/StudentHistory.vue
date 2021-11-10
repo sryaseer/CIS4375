@@ -7,7 +7,7 @@
 
         <!-- Top - Form to input a new health change -->
         <div>
-            <v-form v-model="valid" @submit.prevent="submit">
+            <v-form @submit.prevent="submit">
                 <v-row>
                     <v-col cols="12" md="4">
                         <v-text-field v-model="bmiInput" label="BMI"></v-text-field>
@@ -22,7 +22,7 @@
                     </v-col>
 
                     <v-col cols="15" md="9">
-                        <v-btn class="mr-4" type="submit" :disabled="invalid">
+                        <v-btn class="mr-4" type="submit">
                             submit
                         </v-btn>
 
@@ -46,14 +46,17 @@
 </template>
 
 <script>
+import StudentService from "@/services/StudentService.js";
+
 export default {
     name: 'StudentHistory',
     components: {},
     data: () => ({
-        bmiInput: '',
-        weightInput: '',
-        fatprcntInput: '',
-        healthHeader: [
+      student_id: '',
+      bmiInput: '',
+      weightInput: '',
+      fatprcntInput: '',
+      healthHeader: [
             {
                 text: 'Date',
                 align: 'start',
@@ -112,43 +115,7 @@ export default {
             { text: 'Attendance', value: 'attendance' },
             { text: 'Session Status', value: 'sessionStatus' }
         ],
-        sessionEntries: [
-            {
-                date: '08/11/2021',
-                time: '9:00 AM',
-                instructorName: 'Mike Tyson',
-                attendance: 'Yes',
-                sessionStatus: 'Completed'
-            },
-            {
-                date: '08/12/2021',
-                time: '9:00 AM',
-                instructorName: 'Mike Tyson',
-                attendance: 'No',
-                sessionStatus: 'Cancelled'
-            },
-            {
-                date: '08/13/2021',
-                time: '9:30 AM',
-                instructorName: 'Tien Nguyen',
-                attendance: 'Yes',
-                sessionStatus: 'Completed'
-            },
-            {
-                date: '08/14/2021',
-                time: '9:30 AM',
-                instructorName: 'Tien Nguyen',
-                attendance: 'Yes',
-                sessionStatus: 'Completed'
-            },
-            {
-                date: '08/15/2021',
-                time: '9:30 AM',
-                instructorName: 'Tien Nguyen',
-                attendance: 'Yes',
-                sessionStatus: 'Completed'
-            }
-        ]
+        sessionEntries: [],
     }),
     methods: {
         submit() {
@@ -160,11 +127,36 @@ export default {
             this.fatprcntInput = '';
         },
         insertNewInfo() {},
-        getPhysicalHistory() {}
+        getPhysicalHistory() {},
     },
-    mounted() {
+    async mounted() {
         document.title = 'My History Info';
-    }
+        this.student_id = this.$store.getters.getUser.student_id;
+        try {
+          const credentials = {
+            student_id: this.student_id,
+          }
+          const response = await StudentService.studentGetPastSessions(credentials);
+          for (const session of response) {
+            var obj = {
+              instructorName: session.first_name + " " + session.last_name,
+              date: new Date(session.date).toLocaleDateString("en-US"),
+              time: session.time,
+              sessionStatus: session.session_status_desc,
+              attendance: session.attendance,
+            };
+            this.sessionEntries.push(obj);
+          }
+
+        } catch(error){
+          console.log(error);
+        }
+    },
+    created() {
+      if (!this.$store.getters.isLoggedIn) {
+        this.$router.push('/StudentLogin');
+      }
+    },
 };
 </script>
 

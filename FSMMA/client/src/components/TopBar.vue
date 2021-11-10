@@ -28,11 +28,11 @@ export default {
   props: {},
   data: () => ({
     items: [
-      { title: "Student Login", link: "/studentlogin" },
-      { title: "Student Home", link: "/" },
-      { title: "Student History", link: "/StudentHistory" },
+      { title: "Home", link: "/" },
+      { title: "Health History", link: "/StudentHistory" },
       { title: "Schedule Session", link: "/StudentSchedulePage" },
       { title: "Purchase Sessions", link: "/StudentBuySession" },
+      { title: "Login/Logout", link: "/studentlogin" },
     ],
   }),
 };
