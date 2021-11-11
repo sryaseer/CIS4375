@@ -3,7 +3,7 @@
       <p class = "pageTitle">Instructor Information</p>
     <div id="instructorSearch">
       <v-autocomplete v-model="instructor" :items="instructors" :item-text="'name'" :loading="isLoading" :search-input.sync="search"
-        color="white" hide-no-data hide-selected item-value="name" label="Search Account"
+        color="white" hide-no-data hide-selected item-value="name" label="Search Instructor"
         placeholder="Start typing to Search" prepend-icon="mdi-account-search" return-object  >
 
         <template v-slot:item="{ item }">
@@ -30,16 +30,28 @@ import AuthService from '@/services/AuthService.js';
       search: null,
       instructor: null,
       msg: null,
-      instructors: [
-        {id: 1, name: 'Isaac Newton', dob: '1 Jan 1970'},
-        {id: 2, name: 'Albert Einstein', dob: '1 Jan 1970'},
-        {id: 3, name: 'Nikola Tesla', dob: '1 Jan 1970'},
-        {id: 4, name: 'Galileo ', dob: '1 Jan 1970'},
-      ]
+      instructors: [],
       }
     },
     async mounted() {
-      
+      this.isLoading = true;
+      try {
+        const res = await AdminService.listInstructors();
+        var response = res;
+        //this.msg = res;
+        for (const account of response){
+          var obj = {};
+          obj['id'] = account.instructor_id;
+          obj['name'] = account.first_name + " " + account.last_name;
+          obj['dob'] = new Date(account.dob).toLocaleDateString("en-US");
+          this.instructors.push(obj);
+        }
+        this.msg = this.accounts;
+      } catch (error) {
+        console.log(error);
+        this.msg = error.response.data.msg;
+      }
+      this.isLoading = false;
     },
     methods:{
       logout() {

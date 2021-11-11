@@ -65,7 +65,13 @@ export default {
             commit: true,
             client,
             payment,
-            onAuthorize
+            onAuthorize,
+            style:  {
+              height: 55,
+              color: 'blue',
+              shape: 'rect',
+              tagline: false
+            },
         }, '#paypal-button-container');
     }
 }

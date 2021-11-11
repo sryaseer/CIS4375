@@ -34,66 +34,6 @@
 
           <v-col>
             <v-card class="ma-5 pa-5 card">
-              <h3 class="ma-5 pa-5 text-center">Make a Payment</h3>
-              <div d-flex justify-center align-center pa-12 flex-column>
-                <div>
-                  <form
-                    novalidate="novalidate"
-                    class="v-form py-5 align-center text-center">
-                    <div
-                      class="
-                        v-input v-input--is-label-active v-input--is-dirty
-                        theme--light
-                        v-text-field
-                        v-text-field--filled
-                        v-text-field--is-booted
-                        v-text-field--enclosed
-                        v-text-field--rounded
-                      ">
-                      <div class="v-input__control">
-                        <div class="v-input__slot">
-                            <label
-                              class="theme--light"
-                              style="left: 20px; position: absolute">
-                              Payment Amount (USD)
-                            </label>
-                            <p style="left: 20px; top: 20px; position: absolute"> $ {{total}} </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="px-6">
-                      <button
-                        type="button"
-                        class="
-                          v-btn v-btn--block v-btn--contained
-                          theme--light
-                          v-size--x-large
-                          primary"
-                          v-on:click="BuySubmit">
-                        <span class="v-btn__content">
-                          Pay Now
-                          <i
-                            aria-hidden="true"
-                            class="
-                              v-icon
-                              notranslate
-                              ml-2
-                              fab
-                              fa-paypal
-                              theme--light
-                            "
-                          ></i
-                        ></span>
-                      </button>
-                    </div>
-                    <div class="textgraycenter">You will be charged: ${{total}}</div>
-                  </form>
-                </div>
-              </div>
-            </v-card>
-          </v-col>
-          <v-col>
-            <v-card class="ma-5 pa-5 card">
 
                 <h1>Hello, There</h1>
                 <p>Welcome to Paypal checkout Demo</p>

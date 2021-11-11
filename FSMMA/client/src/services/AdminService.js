@@ -8,9 +8,21 @@ export default {
       .then((response) => response.data);
   },
 
+  viewInstructor(id) {
+    return axios
+      .get(url + "admin-view-instructor/" + id)
+      .then((response) => response.data);
+  },
+
   listStudents() {
     return axios
       .get(url + "admin-view-student-search/")
+      .then((response) => response.data);
+  },
+
+  listInstructors() {
+    return axios
+      .get(url + "admin-view-instructor-search/")
       .then((response) => response.data);
   },
 

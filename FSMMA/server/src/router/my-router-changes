@@ -554,46 +554,4 @@ router.post("/mail-service-request", async (req, res) => {
   });
 });
 
-//admin side - grab months of membership (all students)
-router.get("/student-get-months-membership", (req, res, next) => {
-  let selectQuery =
-    "SELECT first_name, last_name, email, phone, dob, account_created_date, " +
-    'TIMESTAMPDIFF(MONTH,account_created_date, CURRENT_DATE()) as "Months Active" ' +
-    "FROM testdatabase1.Student_Account " +
-    "WHERE account_created_date IS NOT NULL; ";
-  let query = mysql.format(selectQuery);
-  pool.query(query, (err, result) => {
-    if (err) {
-      console.error(err);
-      throw err;
-      return res.status(400).send({
-        msg: err,
-      });
-    }
-    console.log(result);
-    res.status(200).send(result);
-  });
-});
-
-//student side - grab months of membership based on student id
-router.post("/studentid-get-months-membership", (req, res, next) => {
-  let selectQuery =
-    "SELECT first_name, last_name, " +
-    'TIMESTAMPDIFF(MONTH,account_created_date, CURRENT_DATE()) as "Months Active" ' +
-    "FROM testdatabase1.Student_Account " +
-    "where student_id = ? AND account_created_date IS NOT NULL; ";
-  let query = mysql.format(selectQuery, [req.body.student_id]);
-  pool.query(query, (err, result) => {
-    if (err) {
-      console.error(err);
-      throw err;
-      return res.status(400).send({
-        msg: err,
-      });
-    }
-    console.log(result);
-    res.status(200).send(result);
-  });
-});
-
 module.exports = router;
