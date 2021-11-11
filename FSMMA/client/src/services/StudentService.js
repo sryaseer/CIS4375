@@ -58,6 +58,10 @@ export default {
       .post(url + "student-get-past-sessions/", credentials)
       .then((response) => response.data);
   },
-
+studentGetMemberSince(student_id) {
+    return axios
+      .post(url, +"studentid-get-months-membership/", student_id)
+      .then((response) => response.data);
+  },
 
 };
