@@ -108,10 +108,10 @@ export default {
         this.phoneNumber= null;
         this.select= null;
       },
-      
+
     },
     async mounted() {
-      
+
     },
 }
 
@@ -122,7 +122,6 @@ export default {
     padding-top: 10px;
     padding-bottom: 60px;
     width: 100%;
-    border: solid 1px black;
   }
   #instructorForm {
     padding-bottom: 10px;

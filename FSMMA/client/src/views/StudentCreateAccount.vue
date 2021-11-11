@@ -235,7 +235,6 @@ export default {
     padding-top: 10px;
     padding-bottom: 60px;
     width: 100%;
-    border: solid 1px black;
   }
   #studentForm {
     padding-bottom: 10px;

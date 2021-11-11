@@ -98,7 +98,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         email: null,
         password: null,
         phone: null,
-        
+
         admin_id: null,
         location_id: null,
         instructor_status_id: null,
@@ -112,14 +112,13 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     },
     async mounted(){
         try {
-          const response = await AdminService.viewStudent(this.instructor_id);
+          const response = await AdminService.viewInstructor(this.instructor_id);
           this.firstName = response.first_name;
           this.lastName = response.last_name;
           this.email = response.email;
-          this.password = response.password;
           this.phone = response.phone;
+          this.title = response.title;
           this.account_created_date = new Date(response.account_created_date).toLocaleDateString("en-US");
-          this.session_credits = response.session_credits;
         } catch (error) {
           this.msg = error.response.data.msg;
       }
