@@ -29,14 +29,6 @@
               </v-col>
             <v-col cols="12" md="4">
                 <v-text-field
-                  v-model="password"
-                  label="Password"
-                  outlined
-                  :disabled="disable"
-                ></v-text-field>
-              </v-col>
-            <v-col cols="12" md="4">
-                <v-text-field
                   v-model="phone"
                   label="Phone"
                   outlined
@@ -51,10 +43,40 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
+
+            <v-col class="d-flex" cols="12" sm="6">
+              <v-select
+                :items="statuses"
+                v-model="status"
+                filled
+                label="Status"
+                :disabled="disable"
+              ></v-select>
+            </v-col>
+
+            <v-col class="d-flex" cols="12" sm="6">
+              <v-select
+                :items="locations"
+                v-model="location"
+                filled
+                label="Location"
+                :disabled="disable"
+              ></v-select>
+            </v-col>
+
             <v-col cols="12" md="4">
                 <v-text-field
                   v-model="ratePerSession"
                   label="Rate per session"
+                  outlined
+                  :disabled="disable"
+                ></v-text-field>
+              </v-col>
+
+            <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="account_created_date"
+                  label="Start Date"
                   outlined
                   :disabled="disable"
                 ></v-text-field>
@@ -98,12 +120,16 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         email: null,
         password: null,
         phone: null,
-
+        statuses: ['active', 'inactive'],
+        locations: ['Katy', 'Houston'],
         admin_id: null,
         location_id: null,
         instructor_status_id: null,
         account_created_date: null,
-        msg: null
+        msg: null,
+        status: null,
+        location: null,
+        ratePerSession: null,
       }
     },
     components: {
@@ -113,11 +139,13 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     async mounted(){
         try {
           const response = await AdminService.viewInstructor(this.instructor_id);
+          console.log(response)
           this.firstName = response.first_name;
           this.lastName = response.last_name;
           this.email = response.email;
           this.phone = response.phone;
           this.title = response.title;
+          this.ratePerSession = response.rate_per_session
           this.account_created_date = new Date(response.account_created_date).toLocaleDateString("en-US");
         } catch (error) {
           this.msg = error.response.data.msg;

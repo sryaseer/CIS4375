@@ -18,6 +18,24 @@
           </v-text-field>
         </validation-provider>
 
+        <validation-provider v-slot="{ errors }" name="title" rules="required|email">
+          <v-text-field v-model="title" :error-messages="errors" label="Title" required outlined>
+          </v-text-field>
+        </validation-provider>
+
+         <validation-provider v-slot="{ errors }" name="rate" rules="required|number">
+          <v-text-field type="number" v-model="rate" :error-messages="errors" label="Rate per session" required outlined>
+          </v-text-field>
+        </validation-provider>
+
+          <v-select
+            :items="locations"
+            v-model="location"
+            filled
+            label="Location"
+            :disabled="disable"
+          ></v-select>
+
         <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
           <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
                         :type="show1 ? 'text' : 'password'"
@@ -80,9 +98,12 @@ export default {
       email: null,
       password: null,
       phoneNumber: null,
+      title: null,
       show1: false,
       msg: '',
       msg2: '',
+      locations: ['Katy', 'Houston'],
+      location: null
     }
   },
 
