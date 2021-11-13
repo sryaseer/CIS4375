@@ -49,4 +49,17 @@ export default {
       .post(url + "instructor-signedup-schedule/", credentials)
       .then((response) => response.data);
   },
+  //Returns the amount of months a member has been registered since.
+  viewMembershipLengthAllStudents(){
+    return axios
+    .get(url, +"student-get-months-membership/")
+    .then((response))
+  },
+  //Returns the amount of months FOR ONE member that has been registered since.
+  viewMembershipLengthForOneStudents(student_id) {
+    return axios
+      .post(url + "studentid-get-months-membership/", student_id)
+      .then((response) => response.data);
+  },
+  
 };
