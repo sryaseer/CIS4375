@@ -7,7 +7,7 @@
         placeholder="Start typing to Search" prepend-icon="mdi-account-search" return-object  >
 
         <template v-slot:item="{ item }">
-          <v-list-item link :to="'AdminViewStudent/' + item.id">{{item.name}}</v-list-item>
+          <v-list-item link :to="'admin-view-student/' + item.id">{{item.name}}</v-list-item>
         </template>
     </v-autocomplete>
     </div>
@@ -56,12 +56,12 @@ import AuthService from '@/services/AuthService.js';
     methods:{
       logout() {
         this.$store.dispatch('logout');
-        this.$router.push('/adminlogin');
+        this.$router.push('/admin-login');
       },
     },
     async created() {
       if (!this.$store.getters.isAdminLoggedIn) {
-          this.$router.push('/adminlogin');
+          this.$router.push('/admin-login');
       }
     },
   }

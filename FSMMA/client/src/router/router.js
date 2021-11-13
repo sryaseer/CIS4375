@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "StudentLogin",
+    name: "studentlogin",
     component: StudentLogin,
   },
   {
@@ -20,68 +20,68 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: "/adminlogin",
+    path: "/admin-login",
     name: "AdminLogin",
     component: () => import("../views/AdminLogin.vue"),
   },
   {
-    path: "/studentlogin",
+    path: "/student-login",
     name: "StudentLogin",
     component: () => import("../views/StudentLogin.vue"),
   },
   {
-    path: "/StudentCreateAccount",
+    path: "/student-create-account",
     name: "StudentCreateAccount",
     component: () => import("../views/StudentCreateAccount.vue"),
   },
   {
-    path: "/InstructorCreateAccount",
+    path: "/instructor-create-account",
     name: "InstructorCreateAccount",
     component: () => import("../views/InstructorCreateAccount.vue"),
   },
   {
-    path: "/StudentHome",
+    path: "/student-home",
     name: "StudentHome",
     component: () => import("../views/StudentHome.vue"),
   },
   {
-    path: "/AdminViewStudent/:id",
+    path: "/admin-view-student/:id",
     name: "AdminViewStudent",
     component: () => import("../views/AdminViewStudent.vue"),
   },
   {
-    path: "/AdminViewStudentSearch",
+    path: "/admin-view-student-search",
     name: "AdminViewStudentSearch",
     component: () => import("../views/AdminViewStudentSearch.vue"),
   },
   {
-    path: "/viewinstructor/:id",
+    path: "/view-instructor/:id",
     name: "AdminViewInstructor",
     component: () => import("../views/AdminViewInstructor.vue"),
   },
   {
-    path: "/AdminViewInstructorSearch",
+    path: "/admin-view-instructor-search",
     name: "AdminViewInstructorSearch",
     component: () => import("../views/AdminViewInstructorSearch.vue"),
   },
   {
-    path: "/StudentBuySession",
+    path: "/student-buy-session",
     name: "StudentBuySession",
     component: () => import("../views/StudentBuySession.vue"),
   },
   {
-    path: "/StudentHistory",
+    path: "/student-history",
     name: "StudentHistory",
     component: () => import("../views/StudentHistory.vue"),
   },
   {
-    path: "/StudentSchedulePage",
+    path: "/student-schedule-page",
     name: "StudentSchedulePage",
     component: () => import("../views/StudentSchedulePage.vue"),
   },
   {
     //router for Admin View/Edit Instructor
-    path: "/InstructorCreate",
+    path: "/instructor-create",
     name: "InstructorCreate",
     //component: () => import('../views/InstructorCreate.vue')
   },
@@ -91,17 +91,17 @@ const routes = [
     component: () => import("../views/test.vue"),
   },
   {
-    path: "/AdminHome",
+    path: "/admin-home",
     name: "AdminHome",
     component: () => import("../views/AdminHome.vue"),
   },
   {
-    path: "/AdminSchedule",
+    path: "/admin-schedule",
     name: "AdminSchedule",
     component: () => import("../views/AdminSchedule.vue"),
   },
   {
-    path: "/InstructorSchedule",
+    path: "/instructor-schedule",
     name: "ViewOfInstructorSchedule",
     component: () => import("../views/InstructorViewSchedule.vue"),
   },

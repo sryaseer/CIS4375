@@ -1,16 +1,17 @@
 <template>
-  <div id="calendar">
-    <v-row>
-      <v-col>
-        <p> {{secretMessage}} </p>
-        <v-btn class="mr-4" @click="logout"> log out </v-btn>
-      </v-col>
-    </v-row>
+  <div id="page">
+    <div class="upcomingSessions"> <!-- Upcoming Sessions Table -->
+      <p class="subtitle">UPCOMING PRIVATE SESSIONS</p>
+      <v-data-table :headers="sessionHeader" :items="sessionEntries" :items-per-page="5" class="elevation-1"></v-data-table>
+    </div>
+    <v-btn class="mr-4" @click="logout"> log out </v-btn>
+
   </div>
 </template>
 
 <script>
 import AuthService from '@/services/AuthService.js';
+import StudentService from '@/services/StudentService.js';
 
 export default {
   name: 'StudentHome',
@@ -18,78 +19,71 @@ export default {
   },
   data() {
     return{
-      value: '',
-      ready: false,
-      secretMessage: '',
+      sessionHeader: [
+          {
+              text: 'Date',
+              align: 'start',
+              value: 'date'
+          },
+          { text: 'Time', value: 'time' },
+          { text: 'Instructor', value: 'instructorName' },
+          { text: 'Status', value: 'sessionStatus' }
+      ],
+      sessionEntries: [],
       }
     },
     computed: {
-      cal () {
-        return this.ready ? this.$refs.calendar : null
-      },
-      nowY () {
-        return this.cal ? this.cal.timeToY(this.cal.times.now) + 'px' : '-10px'
-      },
     },
-    mounted () {
-      this.ready = true
-      this.scrollToTime()
-      this.updateTime()
+    async mounted () {
+      document.title = 'FSMMA SESSIONS - HOME';
+      this.student_id = this.$store.getters.getUser.student_id;
+      try {
+        const credentials = {
+          student_id: this.student_id,
+        }
+        const response = await StudentService.studentGetFutureSessions(credentials);
+        for (const session of response) {
+          var obj = {
+            instructorName: session.first_name + " " + session.last_name,
+            date: new Date(session.date).toLocaleDateString("en-US"),
+            time: session.time,
+            sessionStatus: session.session_status_desc,
+          };
+          this.sessionEntries.push(obj);
+        }
+
+      } catch(error){
+        console.log(error);
+      }
     },
     created() {
       if (!this.$store.getters.isLoggedIn) {
-        this.$router.push('/StudentLogin');
+        this.$router.push('/student-login');
       }
     },
     methods: {
-      getCurrentTime () {
-        return this.cal ? this.cal.times.now.hour * 60 + this.cal.times.now.minute : 0
-      },
-      scrollToTime () {
-        const time = this.getCurrentTime()
-        const first = Math.max(0, time - (time % 30) - 30)
-
-        this.cal.scrollToTime(first)
-      },
-      updateTime () {
-        setInterval(() => this.cal.updateTimes(), 60 * 1000)
-      },
       logout() {
         this.$store.dispatch('logout');
-        this.$router.push('/StudentLogin');
+        this.$router.push('/student-login');
       },
     },
   }
 </script>
 
-<style scoped lang="scss">
-.v-current-time {
-  height: 2px;
-  background-color: #ea4335;
-  position: absolute;
-  left: -1px;
-  right: 0;
-  pointer-events: none;
+<style scoped>
 
-  &.first::before {
-    content: '';
-    position: absolute;
-    background-color: #ea4335;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-top: -5px;
-    margin-left: -6.5px;
-  }
-}
-  p {
-    text-align: center;
-    font-size: 29px;
-  }
-  #calendar {
-    width: 80%;
+  #page {
+    width: 90%;
     margin: auto;
     padding: 20px;
   }
+
+.subtitle{
+  text-align: center;
+  font-size: 14px;
+}
+.upcomingSessions{
+  margin: 20px;
+}
 
 </style>

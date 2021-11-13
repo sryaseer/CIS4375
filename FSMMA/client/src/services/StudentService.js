@@ -53,14 +53,22 @@ export default {
       .post(url + "add-student-note/", information)
       .then((response) => response.data);
   },
+
   studentGetPastSessions(credentials) {
     return axios
       .post(url + "student-get-past-sessions/", credentials)
       .then((response) => response.data);
   },
+
 studentGetMemberSince(student_id) {
     return axios
       .post(url, +"studentid-get-months-membership/", student_id)
+      .then((response) => response.data);
+  },
+
+  studentGetFutureSessions(credentials) {
+    return axios
+      .post(url + "student-get-future-sessions/", credentials)
       .then((response) => response.data);
   },
 

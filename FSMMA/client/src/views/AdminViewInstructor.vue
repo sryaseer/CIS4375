@@ -174,7 +174,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     methods:{
       logout() {
         this.$store.dispatch('logout');
-        this.$router.push('/adminlogin');
+        this.$router.push('/admin-login');
       },
       enableFields () {
         if (this.disable == true) {this.disable = false; }
@@ -202,7 +202,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     },
     async created() {
       if (!this.$store.getters.isAdminLoggedIn) {
-          this.$router.push('/adminlogin');
+          this.$router.push('/admin-login');
       }
     },
   }

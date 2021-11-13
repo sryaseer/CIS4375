@@ -185,6 +185,7 @@ export default {
           };
           const response = await AuthService.signUp(credentials);
           this.msg = response.msg;
+          this.$router.push('/student-login');
         } catch (error) {
           this.msg = error.response.data.msg;
         }

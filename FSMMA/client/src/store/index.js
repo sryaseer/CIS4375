@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 const getDefaultState = () => {
   return {
+    adminToken: '',
     token: '',
     user: {},
     admin: {},
@@ -29,7 +30,7 @@ export default new Vuex.Store({
     },
     isAdminLoggedIn: state => {
       if (state.admin.admin_id){
-        return state.token;
+        return state.adminToken;
       }
     },
   },
@@ -43,6 +44,9 @@ export default new Vuex.Store({
     SET_ADMIN: (state, admin) => {
       state.admin = admin;
     },
+    SET_ADMIN_TOKEN: (state, adminToken) => {
+      state.adminToken = adminToken;
+    },
     RESET: state => {
       Object.assign(state, getDefaultState());
     }
@@ -54,11 +58,11 @@ export default new Vuex.Store({
       // set auth header
       Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     },
-    adminLogin:({ commit, dispatch }, { token, admin }) => {
-      commit('SET_TOKEN', token);
+    adminLogin:({ commit, dispatch }, { adminToken, admin }) => {
+      commit('SET_ADMIN_TOKEN', adminToken);
       commit('SET_ADMIN', admin);
       // set auth header
-      Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      Axios.defaults.headers.common['Authorization'] = `Bearer ${adminToken}`;
     },
     logout: ({ commit }) => {
       commit('RESET', '');
