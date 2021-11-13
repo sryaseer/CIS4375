@@ -306,13 +306,7 @@ export default {
   data: () => ({
     statuses: ["Status 1", "Status 2"],
     instructors: [],
-    students: [
-      { id: 1, name: "Peter Parker" },
-      { id: 2, name: "Bruce Wayne" },
-      { id: 3, name: "Barry Allen" },
-      { id: 4, name: "Tony Stark" },
-      { id: 5, name: "Steve Rogers" },
-    ],
+    students: [],
     edit: true,
     //form data
     sessionDate: null,
@@ -357,6 +351,7 @@ export default {
   mounted() {
     this.$refs.calendar.checkChange();
     this.updateAdminCalenderInfo();
+    this.generateListInstructor();
   },
   methods: {
     clearBottomForm() {
@@ -408,7 +403,19 @@ export default {
       nativeEvent.stopPropagation();
     },
     async generateListInstructor() {
-      console.log("function works");
+      try {
+        const res = await AdminService.listInstructors();
+        var response = res;
+        for (const account of response) {
+          var obj = {};
+          obj["id"] = account.instructor_id;
+          obj["name"] = account.first_name + " " + account.last_name;
+          this.instructors.push(obj);
+        }
+      } catch (error) {
+        console.log(error);
+        this.msg = error.response.data.msg;
+      }
     },
     async updateAdminCalenderInfo() {
       this.events = [];
