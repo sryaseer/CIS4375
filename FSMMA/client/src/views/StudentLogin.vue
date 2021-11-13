@@ -33,7 +33,7 @@
           <br>
           <p> {{msg}} </p>
           <br>
-          <p style="text-align: center;"> New student? Make your account <a href="/StudentCreateAccount"> here! </a> </p>
+          <p style="text-align: center;"> New student? Make your account <a href="/student-create-account"> here! </a> </p>
         </div>
       </v-form>
     </v-container>
@@ -82,7 +82,7 @@ export default {
         const user = response.user;
 
         this.$store.dispatch('studentLogin', { token, user });
-        this.$router.push('/studenthome');
+        this.$router.push('/student-home');
     } catch (error) {
         this.msg = error.response.data.msg;
       }

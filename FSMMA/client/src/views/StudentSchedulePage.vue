@@ -387,7 +387,7 @@ export default {
   },
   created() {
     if (!this.$store.getters.isLoggedIn) {
-      this.$router.push('/StudentLogin');
+      this.$router.push('/student-login');
     }
   },
 };

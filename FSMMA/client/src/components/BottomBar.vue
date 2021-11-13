@@ -7,11 +7,6 @@
           FS MMA Private Sessions
         </v-btn>
       </template>
-      <v-list>
-        <v-list-item v-for="(item, index) in items" :key="index">
-          <a class="menu-links" v-bind:href="item.link"> {{ item.title }} </a>
-        </v-list-item>
-      </v-list>
     </v-menu>
   </v-app-bar>
 </template>
@@ -22,13 +17,6 @@ export default {
   props: {},
   data: () => ({
     items: [
-      { title: "Admin Login", link: "/adminlogin" },
-      { title: "Admin Home", link: "/adminhome" },
-      { title: "Admin Schedule", link: "/adminschedule" },
-      { title: "View Student", link: "/adminviewstudentsearch" },
-      { title: "View/Edit Instructor", link: "/AdminViewInstructorSearch" },
-      { title: "Create Instructor", link: "/InstructorCreateAccount" },
-      { title: "Instructor's Schedule", link: "/InstructorSchedule" },
     ],
   }),
 };

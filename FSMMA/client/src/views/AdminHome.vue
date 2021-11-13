@@ -23,7 +23,7 @@ export default {
     methods:{
       logout() {
         this.$store.dispatch('logout');
-        this.$router.push('/adminlogin');
+        this.$router.push('/admin-login');
       },
     },
     mounted(){
@@ -31,7 +31,7 @@ export default {
     },
     async created() {
       if (!this.$store.getters.isAdminLoggedIn) {
-          this.$router.push('/adminlogin');
+          this.$router.push('/admin-login');
       }
       this.secretMessage = await AuthService.getSecretAdminContent();
       this.admin_id = this.$store.getters.getAdmin.admin_id;

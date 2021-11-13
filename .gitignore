@@ -2,3 +2,7 @@
 FSMMA/client/node_modules
 FSMMA/server/node_modules
 token.txt
+.DS_Store
+FSMMA/.DS_Store
+FSMMA/client/.DS_Store
+FSMMA/client/dist
