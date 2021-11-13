@@ -78,16 +78,18 @@ router.post("/student-sign-up", (req, res, next) => {
   );
 });
 
-router.post('/change-password', (req, res, next) => {
+router.post("/change-password", (req, res, next) => {
   console.log("Changing password");
-  console.log(req.body)
+  console.log(req.body);
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
       return res.status(500).send({
         msg: err,
       });
     } else {
-      let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE student_id = ${db.escape(req.body.id)};`
+      let query = `UPDATE Student_Account SET password = ${db.escape(
+        hash
+      )} WHERE student_id = ${db.escape(req.body.id)};`;
       db.query(query, (err, result) => {
         if (err) {
           console.log(err);
@@ -98,13 +100,10 @@ router.post('/change-password', (req, res, next) => {
         return res.status(201).send({
           msg: "Password changed!!",
         });
-      })
-
+      });
     }
-  })
-
- 
-})
+  });
+});
 
 //Getting fitness goals from db
 router.get("/get-fitness-goals", (req, res, next) => {
@@ -279,6 +278,7 @@ router.get("/admin-view-student-search", (req, res, next) => {
   });
 });
 
+// ADMIN VIEW STUDENT - GET ALL INSTUCTORS
 router.get("/admin-view-instructor-search", (req, res, next) => {
   let selectQuery =
     "SELECT instructor_id, first_name, last_name FROM Instructor";
@@ -317,10 +317,10 @@ router.get("/admin-view-student/:id", (req, res, next) => {
 
 router.get("/admin-view-instructor/:id", (req, res, next) => {
   let selectQuery =
-    'SELECT first_name, last_name, email, phone, title, account_created_date, rate_per_session, location_name '+
-    'FROM Instructor I '+
-    'JOIN Location L ON L.location_id = I.location_id '+
-    'WHERE instructor_id = ?;';
+    "SELECT first_name, last_name, email, phone, title, account_created_date, rate_per_session, location_name " +
+    "FROM Instructor I " +
+    "JOIN Location L ON L.location_id = I.location_id " +
+    "WHERE instructor_id = ?;";
   let query = mysql.format(selectQuery, [req.params.id]);
 
   pool.query(query, (err, result) => {
@@ -335,7 +335,6 @@ router.get("/admin-view-instructor/:id", (req, res, next) => {
     res.status(200).send(result[0]);
   });
 });
-
 
 //ADMIN VIEW SCHEDULE
 router.get("/admin-view-schedule", (req, res, next) => {
@@ -363,7 +362,7 @@ router.get("/admin-view-schedule", (req, res, next) => {
   });
 });
 
-//student view of the calender
+//STUDENT VIEW OF THE CALENDER
 router.get("/student-view-schedule", (req, res, next) => {
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
@@ -388,7 +387,7 @@ router.get("/student-view-schedule", (req, res, next) => {
   });
 });
 
-//pulling all the session for the instructor (disregarding if signed up or not)
+//PULLING ALL THE SESSION FOR THE INSTRUCTOR (DISREGARDING IF SIGNED UP OR NOT)
 router.post("/instructor-view-schedule", (req, res, next) => {
   console.log("in IVS");
   let selectQuery =
@@ -442,7 +441,7 @@ router.post("/instructor-signedup-schedule", (req, res, next) => {
   });
 });
 
-//removing from session
+//REMOVING FROM SESSION
 router.post("/student-cancels-signup", (req, res, next) => {
   console.log("sent to server");
   let selectQuery =
@@ -465,7 +464,7 @@ router.post("/student-cancels-signup", (req, res, next) => {
   });
 });
 
-//registering for a session
+//REGISTERING FOR A SESSION
 router.post("/set-schedule-signup", (req, res, next) => {
   let selectQuery = "INSERT INTO Session_Student " + "VALUES (?,?,0);";
   let query = mysql.format(selectQuery, [
@@ -485,7 +484,7 @@ router.post("/set-schedule-signup", (req, res, next) => {
   });
 });
 
-//adding a note
+//ADDING A NOTE
 router.post("/add-student-note", (req, res, next) => {
   console.log("reqest went through");
   let selectQuery =
@@ -506,15 +505,16 @@ router.post("/add-student-note", (req, res, next) => {
   });
 });
 
+//RETURNS SESSIONS IN THE PAST FOR STUDENT
 router.post("/student-get-past-sessions", (req, res, next) => {
   let selectQuery =
-  'SELECT S.date, S.time, I.first_name, I.last_name, SS.attendance, SST.session_status_desc '+
-  'FROM Session S '+
-  'JOIN Instructor I ON I.instructor_id = S.instructor_id '+
-  'JOIN Session_Student SS ON SS.session_id = S.session_id '+
-  'JOIN Session_status SST ON SST.session_status_id = S.session_status_id '+
-  'WHERE SS.student_id = ? AND S.date < CURDATE() '+
-  'ORDER BY S.date desc;';
+    "SELECT S.date, S.time, I.first_name, I.last_name, SS.attendance, SST.session_status_desc " +
+    "FROM Session S " +
+    "JOIN Instructor I ON I.instructor_id = S.instructor_id " +
+    "JOIN Session_Student SS ON SS.session_id = S.session_id " +
+    "JOIN Session_status SST ON SST.session_status_id = S.session_status_id " +
+    "WHERE SS.student_id = ? AND S.date < CURDATE() " +
+    "ORDER BY S.date desc;";
   let query = mysql.format(selectQuery, [req.body.student_id]);
   pool.query(query, (err, result) => {
     if (err) {
@@ -529,15 +529,16 @@ router.post("/student-get-past-sessions", (req, res, next) => {
   });
 });
 
+// RETURNS FUTURE SESSIONS FOR STUDENTS
 router.post("/student-get-future-sessions", (req, res, next) => {
   let selectQuery =
-  'SELECT S.date, S.time, I.first_name, I.last_name, SST.session_status_desc '+
-'FROM Session S '+
-'JOIN Instructor I ON I.instructor_id = S.instructor_id '+
-'JOIN Session_Student SS ON SS.session_id = S.session_id '+
-'JOIN Session_status SST ON SST.session_status_id = S.session_status_id '+
-'WHERE SS.student_id = ? AND S.date > CURDATE() '+
-'ORDER BY S.date;'
+    "SELECT S.date, S.time, I.first_name, I.last_name, SST.session_status_desc " +
+    "FROM Session S " +
+    "JOIN Instructor I ON I.instructor_id = S.instructor_id " +
+    "JOIN Session_Student SS ON SS.session_id = S.session_id " +
+    "JOIN Session_status SST ON SST.session_status_id = S.session_status_id " +
+    "WHERE SS.student_id = ? AND S.date > CURDATE() " +
+    "ORDER BY S.date;";
   let query = mysql.format(selectQuery, [req.body.student_id]);
   pool.query(query, (err, result) => {
     if (err) {
@@ -550,8 +551,6 @@ router.post("/student-get-future-sessions", (req, res, next) => {
     res.status(200).send(result);
   });
 });
-
-
 
 router.get("/student-secret-route", (req, res, next) => {
   res.send("This is the secret content. Only logged in students can see that!");
@@ -571,13 +570,12 @@ router.get("/student", async (req, res) => {
   res.send("Now you are in student page.");
 });
 
-//very important to export router or express won't route!
-
+//SEVICE TO FORGET PASSWORD
 router.post("/forgot-password", (req, res) => {
-  console.log("Forgot password")
+  console.log("Forgot password");
   db.query(
     `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
-      async (err, result) => {
+    async (err, result) => {
       // user does not exists
       if (err) {
         throw err;
@@ -592,8 +590,8 @@ router.post("/forgot-password", (req, res) => {
         });
       }
 
-      let password = Math.random().toString(36).substr(2, 10)
-      console.log("New password: " +  password);
+      let password = Math.random().toString(36).substr(2, 10);
+      console.log("New password: " + password);
 
       bcrypt.hash(password, 10, (err, hash) => {
         if (err) {
@@ -602,7 +600,9 @@ router.post("/forgot-password", (req, res) => {
             msg: err,
           });
         } else {
-          let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE email = ${db.escape(req.body.email)};`
+          let query = `UPDATE Student_Account SET password = ${db.escape(
+            hash
+          )} WHERE email = ${db.escape(req.body.email)};`;
           db.query(query, (err, result) => {
             if (err) {
               console.log(err);
@@ -620,14 +620,14 @@ router.post("/forgot-password", (req, res) => {
                 rejectUnauthorized: false,
               },
             });
-          
+
             let mailOptions = {
               from: "mw1996white@gmail.com",
               to: req.body.email,
               subject: "Forgot Password",
               text: `Here is your new password: ${password}. Login and change it ASAP!`,
             };
-          
+
             transporter.sendMail(mailOptions, function (err, success) {
               if (err) {
                 console.log(err);
@@ -635,16 +635,14 @@ router.post("/forgot-password", (req, res) => {
                 console.log("Email sent succesfully ");
               }
             });
-      
-          })
-    
+          });
         }
-      })
+      });
     }
   );
-})
+});
 
-//mailservice
+//MAILSERVICE
 router.post("/mail-service-request", async (req, res) => {
   console.log("request works.");
 
@@ -675,7 +673,7 @@ router.post("/mail-service-request", async (req, res) => {
   });
 });
 
-//admin side - grab months of membership (all students)
+//ADMIN SIDE - GRAB MONTHS OF MEMBERSHIP (ALL STUDENTS)
 router.get("/student-get-months-membership", (req, res, next) => {
   let selectQuery =
     "SELECT first_name, last_name, email, phone, dob, account_created_date, " +
@@ -696,7 +694,7 @@ router.get("/student-get-months-membership", (req, res, next) => {
   });
 });
 
-//student side - grab months of membership based on student id
+//STUDENT SIDE - GRAB MONTHS OF MEMBERSHIP BASED ON STUDENT ID
 router.post("/studentid-get-months-membership", (req, res, next) => {
   let selectQuery =
     "SELECT first_name, last_name, " +
@@ -717,4 +715,5 @@ router.post("/studentid-get-months-membership", (req, res, next) => {
   });
 });
 
+//VERY IMPORTANT TO EXPORT ROUTER OR EXPRESS WON'T ROUTE!
 module.exports = router;
