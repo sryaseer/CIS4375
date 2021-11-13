@@ -4,91 +4,91 @@
     <p class="pageTitle">Admin Schedule a Session</p>
 
     <v-col>
-          <v-form v-model="valid" @submit.prevent="submit">
-            <h2>Create New Session</h2>
-            <v-row>
-              <v-col cols="12" md="4">
-               <v-menu v-model="datemenu" min-width="auto">
-                <template v-slot:activator="{on}">
-                  <v-text-field
-                    v-model="startAvailabilityDate"
-                    v-on="on"
-                    label="Start Availability Date"
-                    outlined
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="startAvailabilityDate"  ></v-date-picker>
-              </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-menu v-model="datemenu1" min-width="auto">
-                  <template v-slot:activator="{on}">
-                    <v-text-field
-                      v-model="endAvailabilityDate"
-                      v-on="on"
-                      label="End Availability Date"
-                      outlined
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="endAvailabilityDate"  ></v-date-picker>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1" min-width="auto">
-                  <template v-slot:activator="{on}">
-                    <v-text-field
-                      v-model="reoccurringStartTime"
-                      v-on="on"
-                      label="Reoccurring Start Time"
-                      outlined
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker v-model="reoccurringStartTime"  ></v-time-picker>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1" min-width="auto">
-                  <template v-slot:activator="{on}">
-                    <v-text-field
-                      v-model="reoccurringEndTime"
-                      v-on="on"
-                      label="Reoccurring End Time"
-                      outlined
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker v-model="reoccurringEndTime"  ></v-time-picker>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-select
-                  :items="instructors"
-                  label="Instructor"
+      <v-form v-model="valid" @submit.prevent="submit">
+        <h2>Create New Session</h2>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-menu v-model="datemenu" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="startAvailabilityDate"
+                  v-on="on"
+                  label="Start Availability Date"
                   outlined
-                ></v-select>
-              </v-col>
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="startAvailabilityDate"></v-date-picker>
+            </v-menu>
+          </v-col>
 
-              <v-col cols="12" md="4">
-                <v-select
-                  :items="statuses"
-                  label="Session Status"
+          <v-col cols="12" md="4">
+            <v-menu v-model="datemenu1" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="endAvailabilityDate"
+                  v-on="on"
+                  label="End Availability Date"
                   outlined
-                ></v-select>
-              </v-col>
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="endAvailabilityDate"></v-date-picker>
+            </v-menu>
+          </v-col>
 
-              <v-col cols="15" md="9">
-                <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()">
-                  Create Session
-                </v-btn>
+          <v-col cols="12" md="4">
+            <v-menu v-model="timemenu1" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="reoccurringStartTime"
+                  v-on="on"
+                  label="Reoccurring Start Time"
+                  outlined
+                ></v-text-field>
+              </template>
+              <v-time-picker v-model="reoccurringStartTime"></v-time-picker>
+            </v-menu>
+          </v-col>
 
-                <v-btn @click="clearTopForm"> clear </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-col>
+          <v-col cols="12" md="4">
+            <v-menu v-model="timemenu1" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="reoccurringEndTime"
+                  v-on="on"
+                  label="Reoccurring End Time"
+                  outlined
+                ></v-text-field>
+              </template>
+              <v-time-picker v-model="reoccurringEndTime"></v-time-picker>
+            </v-menu>
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-select
+              :items="instructors"
+              label="Instructor"
+              outlined
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-select
+              :items="statuses"
+              label="Session Status"
+              outlined
+            ></v-select>
+          </v-col>
+
+          <v-col cols="15" md="9">
+            <v-btn class="mr-4" type="submit" @click="generateListInstructor()">
+              Create Session
+            </v-btn>
+
+            <v-btn @click="clearTopForm"> clear </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-col>
 
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div style="margin-top: 50px">
@@ -163,7 +163,6 @@
               offset-x
               min-width="auto"
             >
-
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <v-btn icon>
@@ -199,90 +198,98 @@
     </div>
 
     <div class="bottomBar">
-          <v-form v-model="valid" @submit.prevent="submit">
-            <h2>Edit Session</h2>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-menu v-model="datemenu1" min-width="auto">
-                  <template v-slot:activator="{on}">
-                    <v-text-field
-                      v-model="sessionDate"
-                      v-on="on"
-                      label="Session Date"
-                      :disabled="edit"
-                      outlined
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="sessionDate"  ></v-date-picker>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-menu v-model="timemenu1" min-width="auto">
-                  <template v-slot:activator="{on}">
-                    <v-text-field
-                      v-model="sessionTime"
-                      v-on="on"
-                      :disabled="edit"
-                      label="Session Time"
-                      outlined
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker v-model="sessionTime"  ></v-time-picker>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                  <v-select
-                    :items="instructors"
-                    label="Instructor"
-                    :disabled="edit"
-                    outlined
-                  ></v-select>
-              </v-col>
-
-              <v-col cols="12" md="4">
-                <v-select
-                  :items="statuses"
-                  label="Session Status"
-                  v-model="sessionStatus"
+      <v-form v-model="valid" @submit.prevent="submit">
+        <h2>Edit Session</h2>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-menu v-model="datemenu1" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="sessionDate"
+                  v-on="on"
+                  label="Session Date"
                   :disabled="edit"
                   outlined
-                ></v-select>
-              </v-col>
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="sessionDate"></v-date-picker>
+            </v-menu>
+          </v-col>
 
-              <v-col cols="12" md="4">
-                <v-autocomplete
-                  v-model="studentName"
-                  :loading="loading"
-                  :items="students"
-                  :search-input.sync="search"
-                  cache-items
-                  class="mx-4"
-                  flat
-                  hide-no-data
-                  hide-details
-                  label="Student Name"
-                  item-text="name"
-                  outlined
+          <v-col cols="12" md="4">
+            <v-menu v-model="timemenu1" min-width="auto">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="sessionTime"
+                  v-on="on"
                   :disabled="edit"
-                ></v-autocomplete>
-              </v-col>
+                  label="Session Time"
+                  outlined
+                ></v-text-field>
+              </template>
+              <v-time-picker v-model="sessionTime"></v-time-picker>
+            </v-menu>
+          </v-col>
 
-              <v-col cols="15" md="9">
-                <v-btn class="mr-4" type="submit" @click="()=>{this.edit = false}">
-                  Edit
-                </v-btn>
+          <v-col cols="12" md="4">
+            <v-select
+              :items="instructors"
+              label="Instructor"
+              :disabled="edit"
+              outlined
+            ></v-select>
+          </v-col>
 
-                <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()">
-                  Submit Changes
-                </v-btn>
+          <v-col cols="12" md="4">
+            <v-select
+              :items="statuses"
+              label="Session Status"
+              v-model="sessionStatus"
+              :disabled="edit"
+              outlined
+            ></v-select>
+          </v-col>
 
-                <v-btn @click="clearBottomForm"> Clear </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-    <br /><br />
+          <v-col cols="12" md="4">
+            <v-autocomplete
+              v-model="studentName"
+              :loading="loading"
+              :items="students"
+              :search-input.sync="search"
+              cache-items
+              class="mx-4"
+              flat
+              hide-no-data
+              hide-details
+              label="Student Name"
+              item-text="name"
+              outlined
+              :disabled="edit"
+            ></v-autocomplete>
+          </v-col>
+
+          <v-col cols="15" md="9">
+            <v-btn
+              class="mr-4"
+              type="submit"
+              @click="
+                () => {
+                  this.edit = false;
+                }
+              "
+            >
+              Edit
+            </v-btn>
+
+            <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()">
+              Submit Changes
+            </v-btn>
+
+            <v-btn @click="clearBottomForm"> Clear </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
+      <br /><br />
     </div>
 
     <!-- Bottom - Buy Sessions (Image Link) -> Takes you to login/Create Student page  -->
@@ -297,14 +304,14 @@ import AdminService from "@/services/AdminService.js";
 
 export default {
   data: () => ({
-    statuses: ['Status 1', 'Status 2'],
-    instructors: ['Joe Rogan', 'The Rock', 'Mohammad Ali', 'Sylvester Stallone'],
+    statuses: ["Status 1", "Status 2"],
+    instructors: [],
     students: [
-      {id: 1, name: 'Peter Parker'},
-      {id: 2, name: 'Bruce Wayne'},
-      {id: 3, name: 'Barry Allen'},
-      {id: 4, name: 'Tony Stark'},
-      {id: 5, name: 'Steve Rogers'}
+      { id: 1, name: "Peter Parker" },
+      { id: 2, name: "Bruce Wayne" },
+      { id: 3, name: "Barry Allen" },
+      { id: 4, name: "Tony Stark" },
+      { id: 5, name: "Steve Rogers" },
     ],
     edit: true,
     //form data
@@ -349,6 +356,7 @@ export default {
   }),
   mounted() {
     this.$refs.calendar.checkChange();
+    this.updateAdminCalenderInfo();
   },
   methods: {
     clearBottomForm() {
@@ -399,60 +407,45 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange({ start, end }) {
-      var events = [];
-
-      for (const event in this.privateSessions) {
-        console.log(this.privateSessions[event]);
-        events.push({
-          name: this.privateSessions[event]["session_id"],
-          color: this.colors[2],
-          start: this.privateSessions[event]["startDateTime"],
-          end: this.privateSessions[event]["endDateTime"],
-          timed: 1,
-        });
-      }
-      this.events = events;
-      console.log("events: ");
-      console.log(events);
+    async generateListInstructor() {
+      console.log("function works");
     },
-  },
+    async updateAdminCalenderInfo() {
+      this.events = [];
+      try {
+        const response = await AdminService.viewAdminSchedule();
+        for (const session_student of response) {
+          var obj = {
+            session_id: session_student.session_id,
+          };
 
-  async mounted() {
-    this.events = [];
-    try {
-      const response = await AdminService.viewAdminSchedule();
-      for (const session_student of response) {
-        var obj = {
-          session_id: session_student.session_id,
-        };
+          var date = new Date(session_student.date);
+          var date2 = new Date(session_student.date);
 
-        var date = new Date(session_student.date);
-        var date2 = new Date(session_student.date);
+          //getting our STARTING TIME! DO NOT DELETE
+          var hourVar = "2021-11-15 " + session_student.time;
+          var mockDate = new Date(hourVar);
+          let hour = mockDate.getHours(hourVar);
+          let minutes = mockDate.getMinutes(hourVar);
+          //Setting our date to the right time.
+          date.setHours(hour);
+          date.setMinutes(minutes);
+          obj["start"] = date;
 
-        //getting our STARTING TIME! DO NOT DELETE
-        var hourVar = "2021-11-15 " + session_student.time;
-        var mockDate = new Date(hourVar);
-        let hour = mockDate.getHours(hourVar);
-        let minutes = mockDate.getMinutes(hourVar);
-        //Setting our date to the right time.
-        date.setHours(hour);
-        date.setMinutes(minutes);
-        obj["start"] = date;
+          date2.setHours(hour + 1);
+          date2.setMinutes(minutes);
+          obj["end"] = date2;
+          obj["color"] = this.colors[2];
+          obj["timed"] = 1;
 
-        date2.setHours(hour + 1);
-        date2.setMinutes(minutes);
-        obj["end"] = date2;
-        obj["color"] = this.colors[2];
-        obj["timed"] = 1;
-
-        this.privateSessions.push(obj);
+          this.privateSessions.push(obj);
+        }
+        //this.msg = this.privateSessions;
+      } catch (error) {
+        console.log(error);
+        this.msg = error.response.data.msg;
       }
-      //this.msg = this.privateSessions;
-    } catch (error) {
-      console.log(error);
-      this.msg = error.response.data.msg;
-    }
+    },
   },
 };
 </script>
