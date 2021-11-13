@@ -78,10 +78,10 @@ export default {
         const response = await AuthService.adminLogin(credentials);
         this.msg = response.msg;
 
-        const token = response.token;
+        const adminToken = response.token;
         const admin = response.admin;
 
-        this.$store.dispatch('adminLogin', { token, admin });
+        this.$store.dispatch('adminLogin', { adminToken, admin });
         this.$router.push('/admin-home');
     } catch (error) {
         this.msg = error.response.data.msg;

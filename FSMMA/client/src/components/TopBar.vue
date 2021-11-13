@@ -142,7 +142,7 @@ export default {
 
     defaultItems: [
       { title: "Home", icon: 'mdi-home', link: "/"},
-      { title: "Login/Logout", icon: 'mdi-logout', link: "/studentlogin" },
+      { title: "Login/Logout", icon: 'mdi-logout', link: "/student-login" },
     ],
 
     adminLoginItems: [
@@ -155,12 +155,12 @@ export default {
   computed: {
     student_name() {
       if (this.$store.getters.isLoggedIn && this.$store.getters.isLoggedIn != ""){
-        return this.$store.getters.getUser.first_name;}
+        return (this.$store.getters.getUser.first_name + " " + this.$store.getters.getUser.last_name);}
       else {return null;}
     },
     admin_name() {
       if (this.$store.getters.isAdminLoggedIn && this.$store.getters.isAdminLoggedIn != ""){
-        return this.$store.getters.getAdmin.first_name;}
+        return (this.$store.getters.getAdmin.first_name + " " + this.$store.getters.getAdmin.last_name);}
         else {return null;}
       }
   },
