@@ -78,6 +78,34 @@ router.post("/student-sign-up", (req, res, next) => {
   );
 });
 
+router.post('/change-password', (req, res, next) => {
+  console.log("Changing password");
+  console.log(req.body)
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
+    if (err) {
+      return res.status(500).send({
+        msg: err,
+      });
+    } else {
+      let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE student_id = ${db.escape(req.body.id)};`
+      db.query(query, (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send({
+            msg: err,
+          });
+        }
+        return res.status(201).send({
+          msg: "Password changed!!",
+        });
+      })
+
+    }
+  })
+
+ 
+})
+
 //Getting fitness goals from db
 router.get("/get-fitness-goals", (req, res, next) => {
   let selectQuery = "SELECT goal_id, goal_desc FROM Goal";
@@ -544,6 +572,77 @@ router.get("/student", async (req, res) => {
 });
 
 //very important to export router or express won't route!
+
+router.post("/forgot-password", (req, res) => {
+  console.log("Forgot password")
+  db.query(
+    `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
+      async (err, result) => {
+      // user does not exists
+      if (err) {
+        throw err;
+        return res.status(400).send({
+          msg: err,
+        });
+      }
+
+      if (!result.length) {
+        return res.status(401).send({
+          msg: "User with this email not found",
+        });
+      }
+
+      let password = Math.random().toString(36).substr(2, 10)
+      console.log("New password: " +  password);
+
+      bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({
+            msg: err,
+          });
+        } else {
+          let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE email = ${db.escape(req.body.email)};`
+          db.query(query, (err, result) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send({
+                msg: err,
+              });
+            }
+            let transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: "mw1996white@gmail.com",
+                pass: "*Morgan12345white`",
+              },
+              tls: {
+                rejectUnauthorized: false,
+              },
+            });
+          
+            let mailOptions = {
+              from: "mw1996white@gmail.com",
+              to: req.body.email,
+              subject: "Forgot Password",
+              text: `Here is your new password: ${password}. Login and change it ASAP!`,
+            };
+          
+            transporter.sendMail(mailOptions, function (err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Email sent succesfully ");
+              }
+            });
+      
+          })
+    
+        }
+      })
+    }
+  );
+})
 
 //mailservice
 router.post("/mail-service-request", async (req, res) => {

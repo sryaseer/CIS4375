@@ -105,6 +105,11 @@ const routes = [
     name: "ViewOfInstructorSchedule",
     component: () => import("../views/InstructorViewSchedule.vue"),
   },
+  {
+    path: "/StudentInformation",
+    name: "StudentInformation",
+    component: () => import("../views/StudentInformation.vue"),
+  },
 ];
 
 const router = new VueRouter({

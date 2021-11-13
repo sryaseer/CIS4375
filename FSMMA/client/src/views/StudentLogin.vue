@@ -1,8 +1,8 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
-    <v-container>
+    <v-container v-show="!forgot">
       <v-form @submit.prevent="submit">
-      <br></br>
+      <br />
       <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
       <div id="login-form">
 
@@ -28,6 +28,12 @@
         <v-btn @click="clear">
           clear
         </v-btn>
+
+         <v-btn
+            class="ml-4"
+            @click="showForgot">
+              Forgot password
+          </v-btn>
         </v-col>
 
           <br>
@@ -37,6 +43,23 @@
         </div>
       </v-form>
     </v-container>
+
+    <v-container style="max-width: 400px; margin: auto; margin-top: 100px" v-show="forgot">
+      <p style="text-align: center; font-size: 28px;"> Forgot Password </p>
+      <v-form>
+        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
+          </v-text-field>
+        </validation-provider>
+        <p style="text-align: center;"> Login <a href="/studentlogin"> here! </a> </p>
+         <v-btn
+          class="mr-4"
+          @click="resetPassword">
+            Send Email
+        </v-btn>
+        <router-link ></router-link>
+      </v-form>  
+    </v-container>
   </validation-observer >
 </template>
 
@@ -44,6 +67,7 @@
 import AuthService from '@/services/AuthService.js';
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+import axios from 'axios'
 
 setInteractionMode('eager')
 extend('digits', { ...digits, message: '{_field_} needs to be {length} digits. ({_value_})', })
@@ -62,12 +86,13 @@ export default {
   },
   data() {
     return {
-    email: '',
-    password: '',
-    show1: false,
-    msg: '',
-  }
-},
+        email: '',
+        password: '',
+        show1: false,
+        msg: '',
+        forgot: false
+      }
+  },
   methods: {
     async login() {
       try {
@@ -87,14 +112,31 @@ export default {
         this.msg = error.response.data.msg;
       }
     },
-      clear () {
+    clear () {
         this.email = ''
         this.password = ''
-      },
     },
-    beforeMount(){
-        this.$store.dispatch('logout');
+    showForgot(){
+      this.forgot = !this.forgot
+    },
+    async resetPassword() {
+      console.log("clicked")
+      try {
+        const credentials = {
+          email: this.email,
+        };
+
+        let response = axios.post('http://localhost:5562/forgot-password', credentials)
+        console.log(response.data)
+      } catch (error) {
+        this.msg = error.response.data.msg;
+      }
     }
+  },
+  beforeMount(){
+        this.$store.dispatch('logout');
+    },
+  
 }
 
 </script>
@@ -108,5 +150,4 @@ export default {
   margin: auto;
   width: 60%;
 }
-
 </style>
