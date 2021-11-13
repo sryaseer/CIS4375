@@ -49,20 +49,21 @@
           <v-text-field v-model="phoneNumber" :counter="10" :error-messages="errors" label="Phone Number" required outlined>
           </v-text-field>
         </validation-provider>
-
-
-        <v-btn @click="submit" :disabled="invalid">
-          submit
-        </v-btn>
-
-        <v-btn @click="clear">
-          clear
-        </v-btn>
+            
 
         <p>{{ msg }}</p>
+        <div>
+          <v-btn style="margin: 5px" class="btn" @click="submit" :disabled="invalid">
+            submit
+          </v-btn>
+          <v-btn style="margin: 5px" class="btn" @click="clear">
+            clear
+          </v-btn>
+        </div>
 
       </form>
     </div>
+    
 
   </validation-observer>
 </template>
@@ -157,5 +158,20 @@ export default {
   .dateFormItem{
     display: table-cell;
     padding-right: 10px;
+  }
+
+  .v-input {
+    transform: scale(0.875);
+    padding: 0px;
+    margin: 0px;
+}
+
+  .v-text-field__details {
+    display: none;
+  }
+
+  .col-sm-6 {
+    margin: 2px;
+    padding: 0px
   }
 </style>

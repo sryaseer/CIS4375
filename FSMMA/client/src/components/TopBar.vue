@@ -32,6 +32,7 @@ export default {
       { title: "Health History", link: "/StudentHistory" },
       { title: "Schedule Session", link: "/StudentSchedulePage" },
       { title: "Purchase Sessions", link: "/StudentBuySession" },
+      { title: "Student Information", link: "/StudentInformation" },
       { title: "Login/Logout", link: "/studentlogin" },
     ],
   }),

@@ -7,86 +7,83 @@
           <v-form v-model="valid" @submit.prevent="submit">
             <h2>Create New Session</h2>
             <v-row>
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                <v-menu v-model="datemenu" min-width="auto">
                 <template v-slot:activator="{on}">
                   <v-text-field
                     v-model="startAvailabilityDate"
                     v-on="on"
                     label="Start Availability Date"
-                    outlined
                   ></v-text-field>
                 </template>
                 <v-date-picker v-model="startAvailabilityDate"  ></v-date-picker>
               </v-menu>
               </v-col>
 
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                 <v-menu v-model="datemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="endAvailabilityDate"
                       v-on="on"
                       label="End Availability Date"
-                      outlined
                     ></v-text-field>
                   </template>
                   <v-date-picker v-model="endAvailabilityDate"  ></v-date-picker>
                 </v-menu>
               </v-col>
 
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                 <v-menu v-model="timemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="reoccurringStartTime"
                       v-on="on"
                       label="Reoccurring Start Time"
-                      outlined
                     ></v-text-field>
                   </template>
                   <v-time-picker v-model="reoccurringStartTime"  ></v-time-picker>
                 </v-menu>
               </v-col>
 
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                 <v-menu v-model="timemenu1" min-width="auto">
                   <template v-slot:activator="{on}">
                     <v-text-field
                       v-model="reoccurringEndTime"
                       v-on="on"
                       label="Reoccurring End Time"
-                      outlined
                     ></v-text-field>
                   </template>
                   <v-time-picker v-model="reoccurringEndTime"  ></v-time-picker>
                 </v-menu>
               </v-col>
 
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                 <v-select
                   :items="instructors"
                   label="Instructor"
-                  outlined
                 ></v-select>
               </v-col>
 
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="2">
                 <v-select
                   :items="statuses"
                   label="Session Status"
-                  outlined
                 ></v-select>
               </v-col>
-
-              <v-col cols="15" md="9">
+            </v-row>
+            <v-row style="margin: auto">
+              <v-col cols="2">
                 <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()">
                   Create Session
                 </v-btn>
-
+              </v-col>
+              <v-col cols="2">
                 <v-btn @click="clearTopForm"> clear </v-btn>
               </v-col>
             </v-row>
+            
           </v-form>
         </v-col>
 

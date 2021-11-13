@@ -1,9 +1,9 @@
 <template>
   <div class="ma-5 pa-5">
         <p class = "pageTitle">Admin View/Edit Instructor</p>
-        <v-container class="container1">
+        <v-container class="container" style="max-width: 800px">
           <v-row>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="firstName"
                   label="First Name"
@@ -11,7 +11,7 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="lastName"
                   label="Last Name"
@@ -19,7 +19,7 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="email"
                   label="Email"
@@ -27,7 +27,7 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="phone"
                   label="Phone"
@@ -35,7 +35,7 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="title"
                   label="Title"
@@ -44,7 +44,7 @@
                 ></v-text-field>
               </v-col>
 
-            <v-col class="d-flex" cols="12" sm="6">
+            <v-col class="d-flex" cols="12" md="6">
               <v-select
                 :items="statuses"
                 v-model="status"
@@ -54,7 +54,7 @@
               ></v-select>
             </v-col>
 
-            <v-col class="d-flex" cols="12" sm="6">
+            <v-col class="d-flex" cols="12" md="6">
               <v-select
                 :items="locations"
                 v-model="location"
@@ -64,7 +64,7 @@
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="ratePerSession"
                   label="Rate per session"
@@ -73,7 +73,7 @@
                 ></v-text-field>
               </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
                 <v-text-field
                   v-model="account_created_date"
                   label="Start Date"
@@ -81,13 +81,33 @@
                   :disabled="disable"
                 ></v-text-field>
               </v-col>
-          </v-row>
 
-          <div>
-            <v-btn class="btn" dark  @click="enableFields" > Edit </v-btn> &nbsp;
-            <v-btn class="btn" id="submitbtn" @click="submitChanges" dark> Submit Changes </v-btn>
-          </div>
+            <v-col cols="12" md="12">
+              <v-btn class="btn"  dark  @click="enableFields" > Edit </v-btn> &nbsp;
+              <v-btn class="btn"  id="submitbtn" @click="submitChanges" dark> Submit Changes </v-btn>
+            </v-col>
+          </v-row>
+          
         </v-container>
+
+         <!-- STUDENT SESSIONS CONTAINER -->
+        <v-container class="container" style="max-width: 800px; ">
+          <v-row>
+            <v-col cols="12" sm="12" md="12">
+              <p style="margin: 0px"> Sessions: </p>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+                <v-text-field v-model="account_created_date" label="Account Created Date" disabled></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+                <v-text-field v-model="sessions_attended" label="Sessions Completed" disabled></v-text-field>
+            </v-col>
+
+          </v-row>
+        </v-container>
+        <!-- END OF STUDENT SESSIONS CONTAINER -->
       </div>
 </template>
 
@@ -202,4 +222,28 @@ extend('between', {...between, message: '{_field_} is invalid.'})
   text-align: center;
   font-size: 25px;
 }
+
+.v-input__control {
+    transform: scale(0.875);
+    padding: 0px;
+    margin: 0px;
+}
+
+.v-text-field__details {
+  display: none;
+}
+
+.col-sm-6 {
+  margin: 2px;
+  padding: 0px
+}
+
+.col-sm-12 {
+  padding: 0px;
+}
+
+p {
+  margin: 0px;
+}
+
 </style>

@@ -23,4 +23,9 @@ export default {
       .post(url + 'admin-login/', credentials)
       .then(response => response.data);
   },
+  changePassword(credentials) {
+    return axios
+      .post(url + 'change-password/', credentials)
+      .then(response => response.data)
+  }
 };
