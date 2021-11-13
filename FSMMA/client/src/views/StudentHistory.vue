@@ -1,45 +1,38 @@
 <template>
     <v-container>
         <!-- Student will become <$Student> once connection to DB -->
-        <div>
-            <h3 class="p-2">Student History Page</h3>
+        <p class="titles"> Student History Page </p>
+
+        <!-- TOP - Show changes to bmi / weight / fat percentage per date -->
+        <div class="container1">
+          <p class="subtitle">Health History</P>
+          <v-data-table :headers="healthHeader" :items="healthEntries" :items-per-page="5" class="elevation-1"></v-data-table>
         </div>
 
-        <!-- Top - Form to input a new health change -->
-        <div>
+        <div class="container1">
+            <p class="subtitle">New Health Measure:</p>
+        <!-- MIDDLE - Form to input a new health change -->
             <v-form @submit.prevent="submit">
                 <v-row>
-                    <v-col cols="12" md="4">
+                    <v-col cols="4" md="4">
                         <v-text-field v-model="bmiInput" label="BMI"></v-text-field>
                     </v-col>
-
-                    <v-col cols="12" md="4">
+                    <v-col cols="4" md="4">
                         <v-text-field v-model="weightInput" label="Weight"></v-text-field>
                     </v-col>
-
-                    <v-col cols="12" md="4">
+                    <v-col cols="4" md="4">
                         <v-text-field v-model="fatprcntInput" label="Fat %"></v-text-field>
                     </v-col>
-
                     <v-col cols="15" md="9">
-                        <v-btn class="mr-4" type="submit">
-                            submit
-                        </v-btn>
-
-                        <v-btn @click="clear">
-                            clear
-                        </v-btn>
+                        <v-btn class="mr-4" type="submit"> submit </v-btn>
+                        <v-btn @click="clear"> clear </v-btn>
                     </v-col>
                 </v-row>
             </v-form>
         </div>
-        <!-- Middle - Show changes to bmi / weight / fat percentage per date -->
-        <div>
-            <h3 class="p-2">Health History</h3>
-
-            <v-data-table :headers="healthHeader" :items="healthEntries" :items-per-page="5" class="elevation-1"></v-data-table>
-            <h3 class="p-5">Sessions Attended</h3>
-            <!-- Bottom - Show what sessions they have attended / missed -->
+        <!-- Bottom - Show what sessions they have attended / missed -->
+        <div class="container1">
+            <p class="subtitle">Sessions Attended</p>
             <v-data-table :headers="sessionHeader" :items="sessionEntries" :items-per-page="5" class="elevation-1"></v-data-table>
         </div>
     </v-container>
@@ -161,7 +154,19 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-    text-align: center;
+
+.titles {
+  text-align: center;
+  font-size: 26px;
+}
+
+.subtitle{
+  text-align: left;
+  font-size: 16px;
+  font-weight: 300;
+}
+.container1{
+  margin: 20px;
+  padding-bottom: 30px;
 }
 </style>

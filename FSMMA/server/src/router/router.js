@@ -501,6 +501,28 @@ router.post("/student-get-past-sessions", (req, res, next) => {
   });
 });
 
+router.post("/student-get-future-sessions", (req, res, next) => {
+  let selectQuery =
+  'SELECT S.date, S.time, I.first_name, I.last_name, SST.session_status_desc '+
+'FROM Session S '+
+'JOIN Instructor I ON I.instructor_id = S.instructor_id '+
+'JOIN Session_Student SS ON SS.session_id = S.session_id '+
+'JOIN Session_status SST ON SST.session_status_id = S.session_status_id '+
+'WHERE SS.student_id = ? AND S.date > CURDATE() '+
+'ORDER BY S.date;'
+  let query = mysql.format(selectQuery, [req.body.student_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
 
 
 router.get("/student-secret-route", (req, res, next) => {

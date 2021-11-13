@@ -18,7 +18,6 @@
 
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-list-item>
-
         <v-list-item-content v-if="this.student_name != null">
           <v-list-item-title>{{this.student_name}}</v-list-item-title>
         </v-list-item-content>
@@ -30,7 +29,6 @@
         <v-list-item-content v-else>
           <v-list-item-title>LOGIN</v-list-item-title>
         </v-list-item-content>
-
       </v-list-item>
 
       <v-divider></v-divider>
@@ -95,8 +93,9 @@
           </v-list-item-content>
         </v-list-item>
 
+        <div class="adminloginsub"> </div>
 
-        <v-list-item class="adminloginsub" v-for="item in adminLoginItems" :key="item.title" :to="item.link" link>
+        <v-list-item v-for="item in adminLoginItems" :key="item.title" :to="item.link" link>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -118,7 +117,7 @@ export default {
   props: {},
   data: () => ({
     studentItems: [
-      { title: "Home", icon: 'mdi-home-outline', link: "/"},
+      { title: "Home", icon: 'mdi-home-outline', link: "/student-home"},
       { title: "Schedule Session", icon: 'mdi-calendar', link: "/student-schedule-page" },
       { title: "Purchase Sessions", icon: 'mdi-cart-heart', link: "/student-buy-session" },
       { title: "Health History", icon: 'mdi-clipboard-text-clock-outline', link: "/student-history" },
@@ -148,6 +147,7 @@ export default {
 
     adminLoginItems: [
       { title: "Admin", link: "/admin-login" },
+      { title: "Instructor", link: "/test" },
     ],
     drawer: null,
     menuIcon: 'mdi-menu',
@@ -196,7 +196,6 @@ export default {
 }
 
 .adminloginsub{
-  margin-top: 100%;
-  position: relative;
+  margin: 400px;
 }
 </style>
