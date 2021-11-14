@@ -60,7 +60,7 @@ export default {
       .then((response) => response.data);
   },
 
-studentGetMemberSince(student_id) {
+  studentGetMemberSince(student_id) {
     return axios
       .post(url, +"studentid-get-months-membership/", student_id)
       .then((response) => response.data);
@@ -77,5 +77,4 @@ studentGetMemberSince(student_id) {
       .post(url + "student-get-my-info/", credentials)
       .then((response) => response.data);
   },
-
 };

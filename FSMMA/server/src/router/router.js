@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 const userMiddleware = require("../middleware/users.js");
 const mysql = require("mysql");
 const nodemailer = require("nodemailer");
-var handlebars = require('handlebars');
-var fs = require ('fs');
+var handlebars = require("handlebars");
+var fs = require("fs");
 
 const pool = mysql.createPool({
   connectionLimit: 100, //important
@@ -708,7 +708,7 @@ router.post("/mail-service-request", async (req, res) => {
 */
 
 //MAILSERVICE REMINDER (this one is the current problem child)
-router.post("/mail-service-request", async (req, res)=>{
+router.post("/mail-service-request", async (req, res) => {
   var info = `SELECT Session_Student.session_id, Session_Student.student_id, date, time, email, first_name
   FROM Session_Student 
   JOIN Session 
@@ -716,152 +716,138 @@ router.post("/mail-service-request", async (req, res)=>{
   JOIN Student_Account 
   ON Session_Student.student_id = Student_Account.student_id
   WHERE Session.date = DATE(CURRENT_DATE()+1) AND
-  Session.session_status_id = 1;  `
-  var name = []
-  var to =[]
-  var aDate = []
-  var aTime = []
+  Session.session_status_id = 1;  `;
+  var name = [];
+  var to = [];
+  var aDate = [];
+  var aTime = [];
 
-  db.query(info, function(err, email, fields){
-    for (k in email){
-      to.push(email[k].email)
+  db.query(info, function (err, email, fields) {
+    for (k in email) {
+      to.push(email[k].email);
     }
   });
 
-  db.query(info, function(err, first_name, fields){
-    
-    for(k in first_name){
-    name.push(first_name[k].first_name)
+  db.query(info, function (err, first_name, fields) {
+    for (k in first_name) {
+      name.push(first_name[k].first_name);
     }
   });
 
-  db.query(info, function(err, date, time, fields){
-    for(k in date){
-    aDate.push(date[k].date)
+  db.query(info, function (err, date, time, fields) {
+    for (k in date) {
+      aDate.push(date[k].date);
     }
-    for(k in time){
-    aTime.push(time[k].time)
+    for (k in time) {
+      aTime.push(time[k].time);
     }
   });
-  
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "mw1996white@gmail.com",
-          pass: "*Morgan12345white`",
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    
-      let mailOptions = {
-        from: "mw1996white@gmail.com",
-        to: to,
-        subject: `${name}, a friendly reminder about your session`,
-    
-        html: `Hi  ${name},this is just a reminder that you have an upcoming session on ${aDate} at ${aTime}.`
-    
-      };
-    
-      transporter.sendMail(mailOptions, function (err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Email sent succesfully ");
-        }
-      });
 
-    
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mw1996white@gmail.com",
+      pass: "*Morgan12345white`",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: "mw1996white@gmail.com",
+    to: to,
+    subject: `${name}, a friendly reminder about your session`,
+
+    html: `Hi  ${name},this is just a reminder that you have an upcoming session on ${aDate} at ${aTime}.`,
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent succesfully ");
+    }
+  });
 });
-
 
 //MAILSERVICE PROMOTION (mail service not made yet)
-router.post("/promotion-email", async (req, res)=>{
-  var emails = `SELECT * FROM Student_Account;`
-  var to_list = []
+router.post("/promotion-email", async (req, res) => {
+  var emails = `SELECT * FROM Student_Account;`;
+  var to_list = [];
 
-  db.query(emails, function(err, email, fields){
-    for (k in email){
-      to_list.push(email[k].email)
+  db.query(emails, function (err, email, fields) {
+    for (k in email) {
+      to_list.push(email[k].email);
     }
   });
-  
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "mw1996white@gmail.com",
-          pass: "*Morgan12345white`",
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    
-      let mailOptions = {
-        from: "mw1996white@gmail.com",
-        to: to_list,
-        subject: "Check out this deal!",
-    
-        html: ({path: './src/emailTemplate/promotionHTML.html'}),
-    
-      };
-    
-      transporter.sendMail(mailOptions, function (err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Email sent succesfully ");
-        }
-      });
 
-    
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mw1996white@gmail.com",
+      pass: "*Morgan12345white`",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: "mw1996white@gmail.com",
+    to: to_list,
+    subject: "Check out this deal!",
+
+    html: { path: "./src/emailTemplate/promotionHTML.html" },
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent succesfully ");
+    }
+  });
 });
-
-
 
 //MAILSERVICE OUT OF SESSIONS
-router.post("/out-of-session", async (req, res)=>{
-  var emails = `SELECT first_name, last_name, email FROM Student_Account WHERE session_credits = 0;`
-  var to_list = []
+router.post("/out-of-session", async (req, res) => {
+  var emails = `SELECT first_name, last_name, email FROM Student_Account WHERE session_credits = 0;`;
+  var to_list = [];
 
-  db.query(emails, function(err, email, fields){
-    for (k in email){
-      to_list.push(email[k].email)
+  db.query(emails, function (err, email, fields) {
+    for (k in email) {
+      to_list.push(email[k].email);
     }
   });
-  
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "mw1996white@gmail.com",
-          pass: "*Morgan12345white`",
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    
-      let mailOptions = {
-        from: "mw1996white@gmail.com",
-        to: to_list,
-        subject: "You're out of sessions!",
-    
-        html: ({path: './src/emailTemplate/sessionsHTML.html'}),
-    
-      };
-    
-      transporter.sendMail(mailOptions, function (err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Email sent succesfully ");
-        }
-      });
 
-    
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mw1996white@gmail.com",
+      pass: "*Morgan12345white`",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: "mw1996white@gmail.com",
+    to: to_list,
+    subject: "You're out of sessions!",
+
+    html: { path: "./src/emailTemplate/sessionsHTML.html" },
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent succesfully ");
+    }
+  });
 });
-
 
 //MAILSERVICE GENERAL
 /*

@@ -8,9 +8,9 @@ export default {
       .then((response) => response.data);
   },
 
-  forgotPassword(credentials){
+  forgotPassword(credentials) {
     return axios
       .post(url + "forgot-password/", credentials)
       .then((response) => response.data);
-  }
+  },
 };
