@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const userMiddleware = require("../middleware/users.js");
 const mysql = require("mysql");
 const nodemailer = require("nodemailer");
+var handlebars = require('handlebars');
+var fs = require ('fs');
 
 const pool = mysql.createPool({
   connectionLimit: 100, //important
@@ -642,7 +644,8 @@ router.post("/forgot-password", (req, res) => {
   );
 });
 
-//MAILSERVICE
+//MAILSERVICE GENERAL
+
 router.post("/mail-service-request", async (req, res) => {
   console.log("request works.");
 
@@ -659,9 +662,11 @@ router.post("/mail-service-request", async (req, res) => {
 
   let mailOptions = {
     from: "mw1996white@gmail.com",
-    to: "murtuzaqasim@gmail.com",
+    to: "lippmanry@gmail.com",
     subject: "testing",
-    text: "It works congrats",
+
+    html: ({path: './src/emailTemplate.html'}),
+
   };
 
   transporter.sendMail(mailOptions, function (err, success) {
@@ -672,6 +677,7 @@ router.post("/mail-service-request", async (req, res) => {
     }
   });
 });
+
 
 //ADMIN SIDE - GRAB MONTHS OF MEMBERSHIP (ALL STUDENTS)
 router.get("/student-get-months-membership", (req, res, next) => {
