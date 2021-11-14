@@ -115,6 +115,7 @@
 <script>
 import AuthService from '@/services/AuthService.js';
 import StudentService from '@/services/StudentService.js';
+import MailService from '@/services/MailService.js'
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 
@@ -183,9 +184,17 @@ export default {
             sport_id: sport_id_v,
             student_location_id: 1 //katy
           };
+          
+      
+          
+
           const response = await AuthService.signUp(credentials);
           this.msg = response.msg;
           this.$router.push('/student-login');
+        
+          const reply = await MailService.newAcc(credentials);
+            console.log(reply)
+
         } catch (error) {
           this.msg = error.response.data.msg;
         }

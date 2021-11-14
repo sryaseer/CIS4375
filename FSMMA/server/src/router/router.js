@@ -681,48 +681,48 @@ router.post("/forgot-password", (req, res) => {
   );
 });
 
-//MAILSERVICE OUT OF SESSIONS
-/*
-router.post("/mail-service-request", async (req, res) => {
-  console.log("request works.");
+//MAILSERVICE NEW ACCOUNT
+router.post("/new-account", async (req, res)=>{
+  db.query(
+    `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
+    async (err, result) => {
+    
+      if (err) {
+        throw err;
+        return res.status(400).send({
+          msg: err,
+        });
+      }
 
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "mw1996white@gmail.com",
-      pass: "*Morgan12345white`",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+      
+      
+      let mailOptions = {
+        from: "mw1996white@gmail.com",
+        to: req.body.email,
+        subject: "New Account",
+        html: ({path: './src/emailTemplate/newAcc.html'}),
+      };
 
-  let mailOptions = {
-    from: "mw1996white@gmail.com",
-    to: "lippmanry@gmail.com",
-    subject: "testing",
+      transporter.sendMail(mailOptions, function (err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent succesfully ");
+        }
+      });
 
-    html: ({path: './src/emailTemplate/emailTemplate.html'}),
 
-  };
+    }) // end query
+})
 
-  transporter.sendMail(mailOptions, function (err, success) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Email sent succesfully ");
-    }
-  });
-});
-*/
+//MAILSERVICE REMINDER (Alex fixed :) )
+router.post("/appt-reminder", async (req, res) => {
 
-//MAILSERVICE REMINDER (this one is the current problem child)
-router.get("/mail-service-request", async (req, res) => {
-
-  var info = `SELECT S.session_id, SA.student_id, date, time, email, first_name
+  var info = `SELECT S.session_id, SA.student_id, date, time, email, first_name, location_name
   FROM Session_Student SS
   JOIN Session S ON SS.session_id = S.session_id
   JOIN Student_Account SA ON SS.student_id = SA.student_id
+  JOIN Location L ON L.location_id = S.location_id
   WHERE S.date = DATE(CURRENT_DATE()+1) AND S.session_status_id = 1;  `;
 
 
@@ -733,12 +733,20 @@ router.get("/mail-service-request", async (req, res) => {
     for(let i = 0; i < results.length; i++ ){
       rec = results[i]["email"];
       fname = results[i]["first_name"]
+      aDate = results[i]["date"]
+      aTime = results[i]["time"]
+      loc = results[i]["location_name"]
 
       let mailOptions = {
        from: "mw1996white@gmail.com",
        to: rec,
        subject: fname + ", a friendly reminder...",
-       html: "wip",
+       html: "Hi " + fname + ',<br> This is just a friendly reminder from FSMMA & Fitness of your private session at our ' + loc + ' location on ' + aDate + ' at ' + aTime + '.<br> Thanks!<br><br> <img src="cid:uniquefsmmamailer" width="80" />',
+       attachments:[{
+         filename: 'logo.png',
+         path: './src/emailTemplate/logo.png',
+         cid: 'uniquefsmmamailer' 
+       }]
       };
 
       transporter.sendMail(mailOptions, function (err, success) {
@@ -778,7 +786,7 @@ router.get("/mail-service-request", async (req, res) => {
 
 });
 
-//MAILSERVICE PROMOTION (mail service not made yet)
+//MAILSERVICE PROMOTION 
 router.post("/promotion-email", async (req, res) => {
   var emails = `SELECT * FROM Student_Account;`;
   var to_list = [];
