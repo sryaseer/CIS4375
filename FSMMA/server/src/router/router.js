@@ -342,7 +342,7 @@ router.get("/admin-view-instructor/:id", (req, res, next) => {
 router.get("/admin-view-schedule", (req, res, next) => {
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
-    "I.instructor_id, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
+    "I.instructor_id, SST.session_status_desc, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
     "FROM Session S " +
     "LEFT JOIN Instructor I ON S.instructor_id = I.instructor_id " +
     "LEFT JOIN Session_Student SS ON S.session_id = SS.session_id " +
@@ -486,13 +486,41 @@ router.post("/set-schedule-signup", (req, res, next) => {
   });
 });
 
-//ADDING A NOTE
+//POST - ADDING A NOTE
 router.post("/add-student-note", (req, res, next) => {
   console.log("reqest went through");
   let selectQuery =
     "INSERT INTO Notes (student_id, notes, date) " +
     "VALUES (?, ?, sysdate());";
   let query = mysql.format(selectQuery, [req.body.student_id, req.body.notes]);
+  console.log("Query went through");
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
+    res.status(200).send(result);
+  });
+});
+
+//POST - Create a Session from Admin Level
+router.post("/create-new-session", (req, res, next) => {
+  console.log("request went through");
+  let selectQuery = "INSERT INTO Session " + "VALUES (0, ? , ?, 1, ?, ?);";
+  console.log(req.body.startDate);
+  console.log(req.body.startTime);
+  console.log(req.body.instructor_id);
+  console.log(req.body.session_status_id);
+  let query = mysql.format(selectQuery, [
+    req.body.startDate,
+    req.body.startTime,
+    req.body.instructor_id,
+    req.body.session_status_id,
+  ]);
   console.log("Query went through");
   pool.query(query, (err, result) => {
     if (err) {
