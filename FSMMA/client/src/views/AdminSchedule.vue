@@ -4,12 +4,17 @@
     <p class="pageTitle">Admin Create Sessions</p>
 
     <v-col>
-      <v-expansion-panels>
+      <v-expansion-panels focusable>
         <v-expansion-panel>
           <v-expansion-panel-header
-            >Create New Sessions</v-expansion-panel-header
-          >
-          <v-expansion-panel-content>
+            >Create New Sessions
+            <template v-slot:actions>
+              <v-icon color="primary">
+                $expand
+              </v-icon>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content class="pa-1">
             <form @submit.prevent="submit">
               <v-row>
                 <!-- START DATE - DATE PICKER -->
@@ -167,7 +172,9 @@
                   <v-select
                     v-model="selectedStatus"
                     :items="statuses"
-                    :item-text="'desc'"
+                    item-text="abbr"
+                    item-value="value"
+                    return-object
                     label="Session Status"
                     prepend-icon="mdi-list-status"
                   >
@@ -283,7 +290,7 @@
                         '<br> End time: ' +
                         this.selectedEvent.end +
                         '<br> Student ID: ' +
-                        this.selectedEvent.student_id +
+                        this.selectedEvent.s_student_id +
                         '<br> session_status_desc: ' +
                         this.selectedEvent.session_status_desc +
                         '<br> session_id: ' +
@@ -306,15 +313,22 @@
 
     <!-- *** START OF BOTTOM FORM - EDITS A SESSION *** -->
     <div class="bottomBar">
-      <v-expansion-panels>
+      <v-expansion-panels focusable v-model="expansionPanel">
         <v-expansion-panel>
-          <v-expansion-panel-header>Edit Session</v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-header class="p-2"
+            >Edit Session
+            <template v-slot:actions>
+              <v-icon color="primary">
+                $expand
+              </v-icon>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content class="pa-4">
             <v-form @submit.prevent="submit">
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="sessionDate"
+                    v-model="editSessionDate"
                     prepend-icon="mdi-calendar-check-outline"
                     label="Session Date"
                     :disabled="edit"
@@ -325,17 +339,18 @@
 
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="sessionTime"
+                    v-model="editSessionTime"
                     prepend-icon="mdi-clock-time-four-outline"
                     disabled
                     label="Session Time"
+                    outlined
                   >
                   </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
                   <v-select
-                    v-model="selectedInstructor"
+                    v-model="editSelectedInstructor"
                     :items="instructors"
                     :item-text="'name'"
                     label="Instructor"
@@ -347,9 +362,12 @@
 
                 <v-col cols="12" md="4">
                   <v-select
+                    v-model="editSelectedStatus"
                     :items="statuses"
+                    item-text="abbr"
+                    item-value="value"
                     label="Session Status"
-                    v-model="sessionStatus"
+                    return-object
                     :disabled="edit"
                     prepend-icon="mdi-list-status"
                     outlined
@@ -358,7 +376,7 @@
 
                 <v-col cols="12" md="4">
                   <v-autocomplete
-                    v-model="studentName"
+                    v-model="editStudentName"
                     :items="students"
                     cache-items
                     class="mx-4"
@@ -406,26 +424,29 @@ import AdminService from "@/services/AdminService.js";
 
 export default {
   data: () => ({
-    statuses: ["Status 1", "Status 2"],
+    statuses: [
+      { abbr: "Upcoming", value: "1" },
+      { abbr: "Cancelled", value: "2" },
+    ],
     instructors: [],
     instructor: null,
     students: [],
     edit: true,
-    //form data
-    sessionDate: null,
-    sessionTime: null,
-    sessionStatus: null,
-    studentName: null,
-    // end of form data
 
-    // left form data
+    //EDIT form data
+    editSessionDate: null,
+    editSessionTime: null,
+    editSelectedStatus: null,
+    editStudentName: null,
+    editSelectedInstructor: null,
+
+    // CREATE form data
     startAvailabilityDate: null,
     endAvailabilityDate: null,
     reoccurringStartTime: null,
     reoccurringEndTime: null,
     selectedInstructor: null,
     selectedStatus: null,
-    // end left form data
 
     //variables for date picker
     menu: false,
@@ -446,6 +467,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    expansionPanel: false,
     privateSessions: [],
     colors: [
       "blue",
@@ -463,6 +485,7 @@ export default {
     this.$refs.calendar.checkChange();
     this.updateAdminCalenderInfo();
     this.generateListInstructor();
+    this.generateListStudents();
   },
   methods: {
     allowedMinutes: (v) => v % 30 === 0,
@@ -473,6 +496,21 @@ export default {
       this.reoccurringEndTime = null;
       this.selectedInstructor = null;
       this.selectedStatus = null;
+    },
+    sendInfoToForm() {
+      this.expansionPanel = true;
+      console.log(this.selectedEvent.start.toLocaleDateString("en-us"));
+      console.log(this.selectedEvent.start.toLocaleTimeString("it-IT"));
+      console.log(this.selectedEvent);
+      this.editSessionDate = this.selectedEvent.start.toLocaleDateString(
+        "en-us"
+      );
+      this.editSessionTime = this.selectedEvent.start.toLocaleTimeString(
+        "it-IT"
+      );
+      this.editSelectedStatus = this.selectedEvent.session_status_id;
+      this.editStudentName = this.s_first_name + " " + this.s_last_name;
+      this.editSelectedInstructor = this.i_first_name + " " + this.i_last_name;
     },
     viewDay({ date }) {
       this.focus = date;
@@ -523,6 +561,20 @@ export default {
         this.msg = error.response.data.msg;
       }
     },
+    async generateListStudents() {
+      try {
+        const res = await AdminService.listStudents();
+        var response = res;
+        for (const account of response) {
+          var obj = {};
+          obj["id"] = account.studen_id;
+          obj["name"] = account.first_name + " " + account.last_name;
+          this.students.push(obj);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async updateAdminCalenderInfo() {
       this.events = [];
       try {
@@ -530,6 +582,14 @@ export default {
         for (const session_student of response) {
           var obj = {
             session_id: session_student.session_id,
+            session_status_id: session_student.session_status_id,
+            session_status_desc: session_student.session_status_desc,
+            i_first_name: session_student.i_first_name,
+            i_last_name: session_student.i_last_name,
+            instructor_id: session_student.instructor_id,
+            s_first_name: session_student.first_name,
+            s_last_name: session_student.last_name,
+            s_student_id: session_student.student_id,
           };
 
           var date = new Date(session_student.date);
@@ -559,14 +619,31 @@ export default {
         this.msg = error.response.data.msg;
       }
     },
-    createSession() {
+    async createSession() {
+      // TESTED AND ALL THIS WORKS
       console.log(this.startAvailabilityDate);
       console.log(this.endAvailabilityDate);
       console.log(this.reoccurringStartTime);
       console.log(this.reoccurringEndTime);
       console.log(this.selectedInstructor);
       console.log(this.selectedStatus);
+      try {
+        const information = {
+          startDate: "2021-11-25",
+          startTime: "12-30-00",
+          instructor_id: 1,
+          session_status_id: 1,
+        };
+        console.log(information);
+        //not ready yet
+        // const res = await AdminService.createNewSession(information);
+        this.updateAdminCalenderInfo();
+      } catch (error) {
+        console.log(error);
+      }
     },
+    //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
+    //tied to a submit button so will throw errors if form is not finished
     editFormDateToDB() {
       console.log("edit button works");
     },
