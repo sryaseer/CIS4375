@@ -61,5 +61,10 @@ export default {
       .post(url + "studentid-get-months-membership/", student_id)
       .then((response) => response.data);
   },
-  
+  //Admin Level - create a new session
+  createNewSession(information) {
+    return axios
+      .post(url + "create-new-session/", information)
+      .then((response) => response.data);
+  },
 };
