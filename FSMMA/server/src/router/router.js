@@ -717,6 +717,7 @@ router.post("/mail-service-request", async (req, res) => {
 
 //MAILSERVICE REMINDER (this one is the current problem child)
 router.post("/mail-service-request", async (req, res) => {
+  
   var info = `SELECT Session_Student.session_id, Session_Student.student_id, date, time, email, first_name
   FROM Session_Student
   JOIN Session
@@ -725,32 +726,57 @@ router.post("/mail-service-request", async (req, res) => {
   ON Session_Student.student_id = Student_Account.student_id
   WHERE Session.date = DATE(CURRENT_DATE()+1) AND
   Session.session_status_id = 1;  `;
+  var response = [];
+
   var name = [];
   var to = [];
   var aDate = [];
   var aTime = [];
+  var fName;
 
-  db.query(info, function (err, email, fields) {
-    for (k in email) {
-      to.push(email[k].email);
+  pool.query(info, (err, results) =>{
+    if(err){
+      console.log(err)
     }
+    let rec = results[0]["email"]
+    to.push(rec)
+
+    let firstName = results[0]["first_name"]
+    name.push(firstName)
+    fName = name.toString();
+    console.log(fName)
+
+
   });
 
-  db.query(info, function (err, first_name, fields) {
-    for (k in first_name) {
-      name.push(first_name[k].first_name);
-    }
-  });
 
-  db.query(info, function (err, date, time, fields) {
-    for (k in date) {
-      aDate.push(date[k].date);
-    }
-    for (k in time) {
-      aTime.push(time[k].time);
-    }
-  });
 
+// pool.query(info, function (err, fname, fields) {
+//   for (k in fname) {
+//     name.push(fname[k].first_name);
+//     fName = name.toString();
+//     console.log(fName)
+//   }})
+
+
+
+  // db.query(info, function (err, dateA, fields) {
+  //   for (k in dateA) {
+  //     aDate.push(dateA[k].date);
+  //     console.log(aDate)
+    
+  //   }
+  // });
+
+  // db.query(info, function(err, timeA, fields){
+  //   for (k in timeA) {
+  //     aTime.push(timeA[k].time);
+  //     console.log(aTime)
+  //   }
+  // })
+
+  
+  
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -765,9 +791,9 @@ router.post("/mail-service-request", async (req, res) => {
   let mailOptions = {
     from: "mw1996white@gmail.com",
     to: to,
-    subject: `${name}, a friendly reminder about your session`,
+    subject: fName + ", a friendly reminder...",
 
-    html: `Hi  ${name},this is just a reminder that you have an upcoming session on ${aDate} at ${aTime}.`,
+    html: "wip",
   };
 
   transporter.sendMail(mailOptions, function (err, success) {
