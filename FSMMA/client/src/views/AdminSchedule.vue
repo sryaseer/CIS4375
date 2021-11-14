@@ -6,22 +6,37 @@
     <v-col>
       <v-expansion-panels>
         <v-expansion-panel>
-          <v-expansion-panel-header>Create New Sessions</v-expansion-panel-header>
+          <v-expansion-panel-header
+            >Create New Sessions</v-expansion-panel-header
+          >
           <v-expansion-panel-content>
             <form @submit.prevent="submit">
               <v-row>
-
                 <!-- START DATE - DATE PICKER -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu v-model="menu" :close-on-content-click="false"
-                    :nudge-right="10" transition="scale-transition" offset-y
-                    min-width="auto" >
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-right="10"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="startAvailabilityDate" label="Start date"
-                        prepend-icon="mdi-calendar-check-outline" v-bind="attrs" v-on="on">
+                      <v-text-field
+                        v-model="startAvailabilityDate"
+                        label="Start date"
+                        prepend-icon="mdi-calendar-check-outline"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                       </v-text-field>
                     </template>
-                    <v-date-picker v-model="startAvailabilityDate" @input="menu = false" no-title>
+                    <v-date-picker
+                      v-model="startAvailabilityDate"
+                      @input="menu = false"
+                      no-title
+                    >
                     </v-date-picker>
                   </v-menu>
                 </v-col>
@@ -29,15 +44,30 @@
 
                 <!-- START OF "END DATE - DATE PICKER" -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu v-model="menu2" :close-on-content-click="false"
-                    :nudge-right="-80" transition="scale-transition" offset-y
-                    min-width="auto" >
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="-80"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="endAvailabilityDate" label="End date"
-                        prepend-icon="mdi-calendar-check" readonly v-bind="attrs" v-on="on">
+                      <v-text-field
+                        v-model="endAvailabilityDate"
+                        label="End date"
+                        prepend-icon="mdi-calendar-check"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                       </v-text-field>
                     </template>
-                    <v-date-picker v-model="endAvailabilityDate" @input="menu2 = false" no-title>
+                    <v-date-picker
+                      v-model="endAvailabilityDate"
+                      @input="menu2 = false"
+                      no-title
+                    >
                     </v-date-picker>
                   </v-menu>
                 </v-col>
@@ -49,40 +79,70 @@
               <v-row>
                 <!-- START "START TIME PICKER" -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu ref="timemenu1"
-                    v-model="timemenu1" :close-on-content-click="false"
-                    :nudge-right="40" :return-value.sync="reoccurringStartTime"
-                    transition="scale-transition" offset-y max-width="290px"
-                    min-width="290px">
+                  <v-menu
+                    ref="timemenu1"
+                    v-model="timemenu1"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="reoccurringStartTime"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="290px"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="reoccurringStartTime"
-                        label="Start Time" prepend-icon="mdi-clock-time-four-outline"
-                        readonly v-bind="attrs" v-on="on">
+                      <v-text-field
+                        v-model="reoccurringStartTime"
+                        label="Start Time"
+                        prepend-icon="mdi-clock-time-four-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                       </v-text-field>
                     </template>
-                    <v-time-picker v-if="timemenu1" v-model="reoccurringStartTime"
-                      full-width @click:minute="$refs.timemenu1.save(reoccurringStartTime)"
-                      :allowedMinutes="allowedMinutes">
+                    <v-time-picker
+                      v-if="timemenu1"
+                      v-model="reoccurringStartTime"
+                      full-width
+                      @click:minute="$refs.timemenu1.save(reoccurringStartTime)"
+                      :allowedMinutes="allowedMinutes"
+                    >
                     </v-time-picker>
                   </v-menu>
                 </v-col>
                 <!-- END "START TIME PICKER" -->
                 <!-- START "END TIME PICKER" -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu ref="timemenu2"
-                    v-model="timemenu2" :close-on-content-click="false"
-                    :nudge-right="40" :return-value.sync="reoccurringEndTime"
-                    transition="scale-transition" offset-y max-width="290px"
-                    min-width="290px">
+                  <v-menu
+                    ref="timemenu2"
+                    v-model="timemenu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="reoccurringEndTime"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="290px"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="reoccurringEndTime"
-                        label="End Time" prepend-icon="mdi-clock-time-ten"
-                        readonly v-bind="attrs" v-on="on">
+                      <v-text-field
+                        v-model="reoccurringEndTime"
+                        label="End Time"
+                        prepend-icon="mdi-clock-time-ten"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                       </v-text-field>
                     </template>
-                    <v-time-picker v-if="timemenu2" v-model="reoccurringEndTime"
-                      full-width @click:minute="$refs.timemenu2.save(reoccurringEndTime)"
-                      :allowedMinutes="allowedMinutes">
+                    <v-time-picker
+                      v-if="timemenu2"
+                      v-model="reoccurringEndTime"
+                      full-width
+                      @click:minute="$refs.timemenu2.save(reoccurringEndTime)"
+                      :allowedMinutes="allowedMinutes"
+                    >
                     </v-time-picker>
                   </v-menu>
                 </v-col>
@@ -93,12 +153,24 @@
               <!-- START INSTRUCTOR AND STATUS SECTION -->
               <v-row>
                 <v-col cols="6" md="6">
-                  <v-select v-model="selectedInstructor" :items="instructors" :item-text="'name'" label="Instructor" prepend-icon="mdi-shield-account-outline">
+                  <v-select
+                    v-model="selectedInstructor"
+                    :items="instructors"
+                    :item-text="'name'"
+                    label="Instructor"
+                    prepend-icon="mdi-shield-account-outline"
+                  >
                   </v-select>
                 </v-col>
 
                 <v-col cols="6" md="6">
-                  <v-select v-model="selectedStatus" :items="statuses" :item-text="'desc'" label="Session Status" prepend-icon="mdi-list-status" >
+                  <v-select
+                    v-model="selectedStatus"
+                    :items="statuses"
+                    :item-text="'desc'"
+                    label="Session Status"
+                    prepend-icon="mdi-list-status"
+                  >
                   </v-select>
                 </v-col>
 
@@ -117,8 +189,6 @@
       </v-expansion-panels>
     </v-col>
     <!-- *** END OF TOP FORM TO CREATE SESSIONS *** -->
-
-
 
     <!-- *** START OF CALENDAR VIEW *** -->
     <div style="margin-top: 50px">
@@ -146,7 +216,12 @@
               <v-spacer></v-spacer>
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
+                  <v-btn
+                    outlined
+                    color="grey darken-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
                     <span>{{ typeToLabel[type] }}</span>
                     <v-icon right> mdi-menu-down </v-icon>
                   </v-btn>
@@ -191,28 +266,34 @@
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <v-btn icon>
-                    <v-icon>mdi-pencil</v-icon>
+                    <v-icon @click="selectedOpen = false"
+                      >mdi-arrow-left</v-icon
+                    >
                   </v-btn>
                   <v-toolbar-title
-                    v-html="selectedEvent.name"
+                    v-html="'placeholder name'"
                   ></v-toolbar-title>
                   <v-spacer></v-spacer>
-                  <v-btn icon>
-                    <v-icon>mdi-heart</v-icon>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
                 </v-toolbar>
                 <v-card-text>
-                  <span v-html="selectedEvent.details"></span>
+                  <span
+                    v-html="
+                      'Start Time: ' +
+                        this.selectedEvent.start +
+                        '<br> End time: ' +
+                        this.selectedEvent.end +
+                        '<br> Student ID: ' +
+                        this.selectedEvent.student_id +
+                        '<br> session_status_desc: ' +
+                        this.selectedEvent.session_status_desc +
+                        '<br> session_id: ' +
+                        this.selectedEvent.session_id
+                    "
+                  ></span>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text color="secondary" @click="selectedOpen = false">
-                    Cancel
-                  </v-btn>
                   <v-btn text color="secondary" @click="sendInfoToForm()">
-                    Register
+                    Edit this
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -232,20 +313,33 @@
             <v-form @submit.prevent="submit">
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-text-field v-model="sessionDate" label="Session Date"
-                    :disabled="edit" outlined>
+                  <v-text-field
+                    v-model="sessionDate"
+                    prepend-icon="mdi-calendar-check-outline"
+                    label="Session Date"
+                    :disabled="edit"
+                    outlined
+                  >
                   </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
-                  <v-text-field v-model="sessionTime" disabled label="Session Time" >
+                  <v-text-field
+                    v-model="sessionTime"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    disabled
+                    label="Session Time"
+                  >
                   </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
                   <v-select
+                    v-model="selectedInstructor"
                     :items="instructors"
+                    :item-text="'name'"
                     label="Instructor"
+                    prepend-icon="mdi-shield-account-outline"
                     :disabled="edit"
                     outlined
                   ></v-select>
@@ -257,6 +351,7 @@
                     label="Session Status"
                     v-model="sessionStatus"
                     :disabled="edit"
+                    prepend-icon="mdi-list-status"
                     outlined
                   ></v-select>
                 </v-col>
@@ -273,13 +368,26 @@
                     label="Student Name"
                     item-text="name"
                     outlined
+                    prepend-icon="mdi-account-plus-outline"
                     :disabled="edit"
                   ></v-autocomplete>
                 </v-col>
 
                 <v-col cols="15" md="9">
-                  <v-btn class="mr-4" type="submit" @click=" () => { this.edit = false;}" > Edit  </v-btn>
-                  <v-btn class="mr-4" type="submit" @click="submitFormDateToDB()"> Submit Changes </v-btn>
+                  <v-btn
+                    class="mr-4"
+                    type="submit"
+                    @click="
+                      () => {
+                        this.edit = false;
+                      }
+                    "
+                  >
+                    Edit
+                  </v-btn>
+                  <v-btn class="mr-4" type="submit" @click="editFormDateToDB()">
+                    Submit Changes
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-form>
@@ -289,7 +397,7 @@
     </div>
     <!-- *** END OF BOTTOM FORM - EDITS A SESSION *** -->
 
-    <div class="footerBlank">    </div>
+    <div class="footerBlank"></div>
   </v-container>
 </template>
 
@@ -306,7 +414,6 @@ export default {
     //form data
     sessionDate: null,
     sessionTime: null,
-    instructorName: null,
     sessionStatus: null,
     studentName: null,
     // end of form data
@@ -358,7 +465,7 @@ export default {
     this.generateListInstructor();
   },
   methods: {
-    allowedMinutes: v => v % 30 === 0,
+    allowedMinutes: (v) => v % 30 === 0,
     clearTopForm() {
       this.startAvailabilityDate = null;
       this.endAvailabilityDate = null;
@@ -452,13 +559,16 @@ export default {
         this.msg = error.response.data.msg;
       }
     },
-    createSession(){
+    createSession() {
       console.log(this.startAvailabilityDate);
       console.log(this.endAvailabilityDate);
       console.log(this.reoccurringStartTime);
       console.log(this.reoccurringEndTime);
       console.log(this.selectedInstructor);
       console.log(this.selectedStatus);
+    },
+    editFormDateToDB() {
+      console.log("edit button works");
     },
   },
 };
@@ -477,7 +587,7 @@ export default {
   border-left: 1px solid grey;
 }
 
-.footerBlank{
+.footerBlank {
   height: 80px;
 }
 </style>
