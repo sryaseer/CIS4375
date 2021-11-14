@@ -644,8 +644,199 @@ router.post("/forgot-password", (req, res) => {
   );
 });
 
-//MAILSERVICE GENERAL
+//MAILSERVICE OUT OF SESSIONS
+/*
+router.post("/mail-service-request", async (req, res) => {
+  console.log("request works.");
 
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mw1996white@gmail.com",
+      pass: "*Morgan12345white`",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: "mw1996white@gmail.com",
+    to: "lippmanry@gmail.com",
+    subject: "testing",
+
+    html: ({path: './src/emailTemplate/emailTemplate.html'}),
+
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent succesfully ");
+    }
+  });
+});
+*/
+
+//MAILSERVICE REMINDER (this one is the current problem child)
+router.post("/mail-service-request", async (req, res)=>{
+  var info = `SELECT Session_Student.session_id, Session_Student.student_id, date, time, email, first_name
+  FROM Session_Student 
+  JOIN Session 
+  ON Session_Student.session_id = Session.session_id
+  JOIN Student_Account 
+  ON Session_Student.student_id = Student_Account.student_id
+  WHERE Session.date = DATE(CURRENT_DATE()+1) AND
+  Session.session_status_id = 1;  `
+  var name = []
+  var to =[]
+  var aDate = []
+  var aTime = []
+
+  db.query(info, function(err, email, fields){
+    for (k in email){
+      to.push(email[k].email)
+    }
+  });
+
+  db.query(info, function(err, first_name, fields){
+    
+    for(k in first_name){
+    name.push(first_name[k].first_name)
+    }
+  });
+
+  db.query(info, function(err, date, time, fields){
+    for(k in date){
+    aDate.push(date[k].date)
+    }
+    for(k in time){
+    aTime.push(time[k].time)
+    }
+  });
+  
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "mw1996white@gmail.com",
+          pass: "*Morgan12345white`",
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    
+      let mailOptions = {
+        from: "mw1996white@gmail.com",
+        to: to,
+        subject: `${name}, a friendly reminder about your session`,
+    
+        html: `Hi  ${name},this is just a reminder that you have an upcoming session on ${aDate} at ${aTime}.`
+    
+      };
+    
+      transporter.sendMail(mailOptions, function (err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent succesfully ");
+        }
+      });
+
+    
+});
+
+
+//MAILSERVICE PROMOTION (mail service not made yet)
+router.post("/promotion-email", async (req, res)=>{
+  var emails = `SELECT * FROM Student_Account;`
+  var to_list = []
+
+  db.query(emails, function(err, email, fields){
+    for (k in email){
+      to_list.push(email[k].email)
+    }
+  });
+  
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "mw1996white@gmail.com",
+          pass: "*Morgan12345white`",
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    
+      let mailOptions = {
+        from: "mw1996white@gmail.com",
+        to: to_list,
+        subject: "Check out this deal!",
+    
+        html: ({path: './src/emailTemplate/promotionHTML.html'}),
+    
+      };
+    
+      transporter.sendMail(mailOptions, function (err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent succesfully ");
+        }
+      });
+
+    
+});
+
+
+
+//MAILSERVICE OUT OF SESSIONS
+router.post("/out-of-session", async (req, res)=>{
+  var emails = `SELECT first_name, last_name, email FROM Student_Account WHERE session_credits = 0;`
+  var to_list = []
+
+  db.query(emails, function(err, email, fields){
+    for (k in email){
+      to_list.push(email[k].email)
+    }
+  });
+  
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "mw1996white@gmail.com",
+          pass: "*Morgan12345white`",
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    
+      let mailOptions = {
+        from: "mw1996white@gmail.com",
+        to: to_list,
+        subject: "You're out of sessions!",
+    
+        html: ({path: './src/emailTemplate/sessionsHTML.html'}),
+    
+      };
+    
+      transporter.sendMail(mailOptions, function (err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent succesfully ");
+        }
+      });
+
+    
+});
+
+
+//MAILSERVICE GENERAL
+/*
 router.post("/mail-service-request", async (req, res) => {
   console.log("request works.");
 
@@ -677,8 +868,7 @@ router.post("/mail-service-request", async (req, res) => {
     }
   });
 });
-
-
+*/
 //ADMIN SIDE - GRAB MONTHS OF MEMBERSHIP (ALL STUDENTS)
 router.get("/student-get-months-membership", (req, res, next) => {
   let selectQuery =
