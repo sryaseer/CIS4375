@@ -30,12 +30,7 @@
           </v-col>
         </div>
         <div>
-          <div v-if="!paidFor">
-            <h3>Buy this Lamp - ${{ product.price }} OBO</h3>
-
-            <p>{{ product.description }}</p>
-
-          </div>
+            <p v-if="!paidFor && sessions > 0">Pay for {{this.sessions}} session credits - ${{ product.price }} </p>
 
           <div v-if="paidFor">
             <h3>Transaction was successful!</h3>
