@@ -72,4 +72,10 @@ studentGetMemberSince(student_id) {
       .then((response) => response.data);
   },
 
+  studentGetInfo(credentials) {
+    return axios
+      .post(url + "student-get-my-info/", credentials)
+      .then((response) => response.data);
+  },
+
 };

@@ -4,7 +4,6 @@
       <p class="subtitle">UPCOMING PRIVATE SESSIONS</p>
       <v-data-table :headers="sessionHeader" :items="sessionEntries" :items-per-page="5" class="elevation-1"></v-data-table>
     </div>
-    <v-btn class="mr-4" @click="logout"> log out </v-btn>
 
   </div>
 </template>

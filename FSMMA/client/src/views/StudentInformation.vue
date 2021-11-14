@@ -12,13 +12,13 @@
               <p class="rowSubTitle"> Personal Info: </p>
             </v-col>
 
-            <v-col cols="4" lg="4" sm="4" md="4">
+            <v-col cols="6" lg="4" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="First Name" rules="required|max:20" >
                 <v-text-field v-model="firstName" :error-messages="errors" label="First Name" outlined required :disabled="disable"></v-text-field>
               </validation-provider>
             </v-col>
 
-            <v-col cols="4" sm="4" md="4">
+            <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="Last Name" rules="required|max:20" >
                 <v-text-field v-model="lastName" :error-messages="errors" label="Last Name" outlined required :disabled="disable"></v-text-field>
               </validation-provider>
@@ -105,48 +105,6 @@
         </v-container>
         <!-- END OF STUDENT CONTACT CONTAINER -->
 
-        <!-- START STUDENT HEALTH CONTAINER-->
-        <v-container class="container1">
-          <v-row>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="date" >
-                <v-text-field v-model="date" label="Date" outlined required disabled></v-text-field>
-              </validation-provider>
-            </v-col>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="bmi" >
-                <v-text-field v-model="bmi" label="BMI" outlined required disabled></v-text-field>
-              </validation-provider>
-            </v-col>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="weight" >
-                <v-text-field v-model="weight" label="Weight (lbs)" outlined required disabled></v-text-field>
-              </validation-provider>
-            </v-col>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="fat" >
-                <v-text-field v-model="fat" label="Fat percentage (00) %" outlined required disabled></v-text-field>
-              </validation-provider>
-            </v-col>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="height" >
-                <v-text-field v-model="height" label="Height" outlined required disabled></v-text-field>
-              </validation-provider>
-            </v-col>
-
-          </v-row>
-          <div>
-            <v-btn class="btn" dark @click="enableHealthFields" > New Entry </v-btn>
-            <v-btn class="btn" @click="submitHealthEntry" dark> Submit </v-btn>
-          </div>
-        </v-container>
-        <!-- END OF STUDENT HEALTH CONTAINER -->
-
         <!-- STUDENT SESSIONS CONTAINER -->
         <v-container class="container1">
           <v-row>
@@ -167,24 +125,7 @@
             </v-col>
           </v-row>
           <div>
-            <v-btn class="btn" dark @click="signUpForSession" > Sign Up For Session </v-btn>
-            <v-btn class="btn" dark @click="addCredits" > Add Credits </v-btn>
-          </div>
-        </v-container>
-        <!-- END OF STUDENT SESSIONS CONTAINER -->
-
-        <!-- STUDENT SESSIONS CONTAINER -->
-        <v-container class="container1">
-          <v-row>
-            <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Notes: </p>
-            </v-col>
-
-            <v-col cols="12" sm="6" md="4">
-            </v-col>
-          </v-row>
-          <div>
-            <v-btn class="btn" dark @click="addNotes" > Add Notes </v-btn>
+            <v-btn class="btn" dark href="student-buy-session" > Add Credits </v-btn>
           </div>
         </v-container>
         <!-- END OF STUDENT SESSIONS CONTAINER -->
@@ -192,11 +133,15 @@
         <!-- Change Password -->
         <v-container class="container1">
           <v-row>
-            <v-col cols="6" sm="4" md="4">
-                <v-text-field type="password" v-model="form.password" label="New Password" outlined required></v-text-field>
+            <v-col cols="12" >
+              <p class="rowSubTitle"> Change Password: </p>
             </v-col>
-            <v-col cols="6" sm="4" md="4">
-                <v-text-field type="password" v-model="form.confirmPassword" label="Confirm Password" outlined required></v-text-field>
+            <v-col cols="12" sm="6" md="5">
+                <v-text-field class="changePassField" type="password" v-model="form.password" label="New Password" outlined required></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="5">
+                <v-text-field class="changePassField" type="password" v-model="form.confirmPassword" label="Confirm Password" outlined required></v-text-field>
             </v-col>
           </v-row>
           <p> {{form.error}} </p>
@@ -205,9 +150,11 @@
           </div>
         </v-container>
 
+          <p> {{student_id}} </p>
           <p> {{error}} </p>
           <p> {{msg3}} </p>
           <p> {{databaseResponse}} </p>
+
 
       </div>
 
@@ -241,7 +188,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
             password: '',
             confirmPassword: ''
         },
-        student_id: this.$route.params.id,
         disable: true,
         disableHealth: true,
         firstName: null,
@@ -276,6 +222,14 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     components: {
       ValidationProvider,
       ValidationObserver,
+    },
+    created() {
+      if (!this.$store.getters.isLoggedIn) {
+        this.$router.push('/student-login');
+      }
+      else {
+        this.student_id = this.$store.getters.getUser.student_id;
+      }
     },
     async mounted(){
         try {
@@ -336,8 +290,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           if(result){
             alert('Password changed')
           }
-      }
-
+      },
     },
   }
 </script>
@@ -346,7 +299,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
 
 <style>
-
 .pageTitle {
   text-align: center;
   font-size: 25px;
@@ -365,5 +317,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
   background-color: #f7f8f8;
   margin-bottom: 50px;
 }
+
 
 </style>

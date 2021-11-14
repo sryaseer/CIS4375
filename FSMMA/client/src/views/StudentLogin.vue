@@ -3,36 +3,25 @@
     <v-container>
       <v-form @submit.prevent="submit">
       <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
+
       <div id="login-form">
-        <v-row>
-          <v-col>
-            <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-              <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
-              </v-text-field>
-            </validation-provider>
-          </v-col>
-          <v-col>
-            <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-              <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                            :type="show1 ? 'text' : 'password'"
-                            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="show1 = !show1"></v-text-field>
-            </validation-provider>
-          </v-col>
-        </v-row>
 
+        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
+          </v-text-field>
+        </validation-provider>
 
-        <v-row>
-          <v-col>
-            <v-btn class="mr-4" @click="login" :disabled="invalid"> log in </v-btn>
-          </v-col>
-          <v-col>
-            <v-btn @click="clear"> clear </v-btn>
-          </v-col>
-          <v-col>
-            <v-btn href="/student-forgot-password"> Forgot password </v-btn>
-          </v-col>
-       </v-row>
+        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+              :type="show1 ? 'text' : 'password'"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="show1 = !show1">
+          </v-text-field>
+        </validation-provider>
+
+            <v-btn class="loginButtons" @click="login" :disabled="invalid"> log in </v-btn>
+            <v-btn class="loginButtons" @click="clear"> clear </v-btn>
+            <v-btn class="loginButtons" href="/student-forgot-password"> Forgot password </v-btn>
 
           <br>
           <p> {{msg}} </p>
@@ -113,5 +102,9 @@ export default {
   padding-top: 10px;
   margin: auto;
   width: 60%;
+}
+.loginButtons{
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
 </style>

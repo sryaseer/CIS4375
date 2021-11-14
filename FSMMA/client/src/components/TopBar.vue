@@ -121,6 +121,7 @@ export default {
       { title: "Schedule Session", icon: 'mdi-calendar', link: "/student-schedule-page" },
       { title: "Purchase Sessions", icon: 'mdi-cart-heart', link: "/student-buy-session" },
       { title: "Health History", icon: 'mdi-clipboard-text-clock-outline', link: "/student-history" },
+      { title: "Account Info", icon: 'mdi-badge-account-horizontal-outline', link: "/student-information" },
       { title: "Login/Logout", icon: 'mdi-logout', link: "/student-login" },
     ],
 

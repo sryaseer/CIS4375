@@ -106,7 +106,7 @@ const routes = [
     component: () => import("../views/InstructorViewSchedule.vue"),
   },
   {
-    path: "/StudentInformation",
+    path: "/student-information",
     name: "StudentInformation",
     component: () => import("../views/StudentInformation.vue"),
   },
