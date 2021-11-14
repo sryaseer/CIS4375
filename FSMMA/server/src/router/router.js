@@ -19,6 +19,17 @@ const pool = mysql.createPool({
   port: 3306,
 });
 
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "mw1996white@gmail.com",
+    pass: "*Morgan12345white`",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
 //CONNECTON TO DATABASE!
 const db = require("../dbseed.js");
 //post /account        create
@@ -648,16 +659,6 @@ router.post("/forgot-password", (req, res) => {
                 msg: err,
               });
             }
-            let transporter = nodemailer.createTransport({
-              service: "gmail",
-              auth: {
-                user: "mw1996white@gmail.com",
-                pass: "*Morgan12345white`",
-              },
-              tls: {
-                rejectUnauthorized: false,
-              },
-            });
 
             let mailOptions = {
               from: "mw1996white@gmail.com",
@@ -716,39 +717,39 @@ router.post("/mail-service-request", async (req, res) => {
 */
 
 //MAILSERVICE REMINDER (this one is the current problem child)
-router.post("/mail-service-request", async (req, res) => {
-  
-  var info = `SELECT Session_Student.session_id, Session_Student.student_id, date, time, email, first_name
-  FROM Session_Student
-  JOIN Session
-  ON Session_Student.session_id = Session.session_id
-  JOIN Student_Account
-  ON Session_Student.student_id = Student_Account.student_id
-  WHERE Session.date = DATE(CURRENT_DATE()+1) AND
-  Session.session_status_id = 1;  `;
-  var response = [];
+router.get("/mail-service-request", async (req, res) => {
 
-  var name = [];
-  var to = [];
-  var aDate = [];
-  var aTime = [];
-  var fName;
+  var info = `SELECT S.session_id, SA.student_id, date, time, email, first_name
+  FROM Session_Student SS
+  JOIN Session S ON SS.session_id = S.session_id
+  JOIN Student_Account SA ON SS.student_id = SA.student_id
+  WHERE S.date = DATE(CURRENT_DATE()+1) AND S.session_status_id = 1;  `;
+
 
   pool.query(info, (err, results) =>{
     if(err){
       console.log(err)
     }
-    let rec = results[0]["email"]
-    to.push(rec)
+    for(let i = 0; i < results.length; i++ ){
+      rec = results[i]["email"];
+      fname = results[i]["first_name"]
 
-    let firstName = results[0]["first_name"]
-    name.push(firstName)
-    fName = name.toString();
-    console.log(fName)
+      let mailOptions = {
+       from: "mw1996white@gmail.com",
+       to: rec,
+       subject: fname + ", a friendly reminder...",
+       html: "wip",
+      };
 
-
+      transporter.sendMail(mailOptions, function (err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent succesfully.");
+        }
+      });
+    }
   });
-
 
 
 // pool.query(info, function (err, fname, fields) {
@@ -759,12 +760,11 @@ router.post("/mail-service-request", async (req, res) => {
 //   }})
 
 
-
   // db.query(info, function (err, dateA, fields) {
   //   for (k in dateA) {
   //     aDate.push(dateA[k].date);
   //     console.log(aDate)
-    
+
   //   }
   // });
 
@@ -775,34 +775,7 @@ router.post("/mail-service-request", async (req, res) => {
   //   }
   // })
 
-  
-  
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "mw1996white@gmail.com",
-      pass: "*Morgan12345white`",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
 
-  let mailOptions = {
-    from: "mw1996white@gmail.com",
-    to: to,
-    subject: fName + ", a friendly reminder...",
-
-    html: "wip",
-  };
-
-  transporter.sendMail(mailOptions, function (err, success) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Email sent succesfully ");
-    }
-  });
 });
 
 //MAILSERVICE PROMOTION (mail service not made yet)
@@ -814,17 +787,6 @@ router.post("/promotion-email", async (req, res) => {
     for (k in email) {
       to_list.push(email[k].email);
     }
-  });
-
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "mw1996white@gmail.com",
-      pass: "*Morgan12345white`",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
   });
 
   let mailOptions = {

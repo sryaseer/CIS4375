@@ -30,7 +30,7 @@
           </v-col>
         </div>
         <div>
-            <p v-if="!paidFor && sessions > 0">Pay for {{this.sessions}} session credits - ${{ product.price }} </p>
+          <p v-if="!paidFor && sessions > 0">Pay for {{this.sessions}} session credits - ${{ product.price }} </p>
 
           <div v-if="paidFor">
             <h3>Transaction was successful!</h3>
@@ -102,7 +102,7 @@ export default {
       let price = this.total
       let description = "Total for private session credits."
 
-      return {'price': price, 'description': description}
+      return {'price': 2, 'description': description}
     }
   },
 
@@ -141,7 +141,7 @@ export default {
   async mounted() {
     const script = document.createElement("script");
     script.src =
-      "https://www.paypal.com/sdk/js?client-id=Aa0bm92nNDGNVIE_NE2cph_AyyEHMqP5XgJYF94W0GGj2OakhlmTuf6s_3-Dy3MaWO6eBoXg4vt-9KBh";
+      "https://www.paypal.com/sdk/js?client-id=ATT-6346OKxfljYaxQ9eBkwuTOLfu-CcMpAbFsC_EVcAuXmG5735wRtcsRJc58Q0Rz16rFH35LwfsAo5";
     script.addEventListener("load", this.setLoaded);
     document.body.appendChild(script);
 
