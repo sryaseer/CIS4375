@@ -7,4 +7,10 @@ export default {
       .post(url + "mail-service-request/")
       .then((response) => response.data);
   },
+
+  forgotPassword(credentials){
+    return axios
+      .post(url + "forgot-password/", credentials)
+      .then((response) => response.data);
+  }
 };

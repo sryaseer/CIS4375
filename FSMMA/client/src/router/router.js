@@ -110,6 +110,11 @@ const routes = [
     name: "StudentInformation",
     component: () => import("../views/StudentInformation.vue"),
   },
+  {
+    path: "/student-forgot-password",
+    name: "StudentForgotPassword",
+    component: () => import("../views/studentForgotPassword.vue"),
+  },
 ];
 
 const router = new VueRouter({

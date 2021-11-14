@@ -1,40 +1,38 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
-    <v-container v-show="!forgot">
+    <v-container>
       <v-form @submit.prevent="submit">
-      <br />
       <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
       <div id="login-form">
+        <v-row>
+          <v-col>
+            <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+              <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
+              </v-text-field>
+            </validation-provider>
+          </v-col>
+          <v-col>
+            <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+              <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+                            :type="show1 ? 'text' : 'password'"
+                            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="show1 = !show1"></v-text-field>
+            </validation-provider>
+          </v-col>
+        </v-row>
 
-        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
-          </v-text-field>
-        </validation-provider>
 
-        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                        :type="show1 ? 'text' : 'password'"
-                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                        @click:append="show1 = !show1"></v-text-field>
-        </validation-provider>
-
-        <v-col cols="15" md="9">
-          <v-btn
-          class="mr-4"
-          @click="login" :disabled="invalid">
-            log in
-          </v-btn>
-
-        <v-btn @click="clear">
-          clear
-        </v-btn>
-
-         <v-btn
-            class="ml-4"
-            @click="showForgot">
-              Forgot password
-          </v-btn>
-        </v-col>
+        <v-row>
+          <v-col>
+            <v-btn class="mr-4" @click="login" :disabled="invalid"> log in </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn @click="clear"> clear </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn href="/student-forgot-password"> Forgot password </v-btn>
+          </v-col>
+       </v-row>
 
           <br>
           <p> {{msg}} </p>
@@ -42,23 +40,6 @@
           <p style="text-align: center;"> New student? Make your account <a href="/student-create-account"> here! </a> </p>
         </div>
       </v-form>
-    </v-container>
-
-    <v-container style="max-width: 400px; margin: auto; margin-top: 100px" v-show="forgot">
-      <p style="text-align: center; font-size: 28px;"> Forgot Password </p>
-      <v-form>
-        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
-          </v-text-field>
-        </validation-provider>
-        <p style="text-align: center;"> Login <a href="/studentlogin"> here! </a> </p>
-         <v-btn
-          class="mr-4"
-          @click="resetPassword">
-            Send Email
-        </v-btn>
-        <router-link ></router-link>
-      </v-form>  
     </v-container>
   </validation-observer >
 </template>
@@ -90,7 +71,6 @@ export default {
         password: '',
         show1: false,
         msg: '',
-        forgot: false
       }
   },
   methods: {
@@ -116,27 +96,11 @@ export default {
         this.email = ''
         this.password = ''
     },
-    showForgot(){
-      this.forgot = !this.forgot
-    },
-    async resetPassword() {
-      console.log("clicked")
-      try {
-        const credentials = {
-          email: this.email,
-        };
-
-        let response = axios.post('http://localhost:5562/forgot-password', credentials)
-        console.log(response.data)
-      } catch (error) {
-        this.msg = error.response.data.msg;
-      }
-    }
   },
   beforeMount(){
         this.$store.dispatch('logout');
     },
-  
+
 }
 
 </script>
