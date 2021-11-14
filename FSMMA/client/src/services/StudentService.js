@@ -77,4 +77,10 @@ export default {
       .post(url + "student-get-my-info/", credentials)
       .then((response) => response.data);
   },
+  viewStudentCredits(credentials) {
+    return axios
+      .post(url + "student-view-credits/", credentials)
+      .then((response) => response.data);
+  },
+
 };

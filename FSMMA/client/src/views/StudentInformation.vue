@@ -246,7 +246,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           this.account_created_date = new Date(response.account_created_date).toLocaleDateString("en-US");
           this.session_credits = response.session_credits;
           this.phone = response.phone;
-          this.msg = "retrieved data";
 
         } catch (error) {
           this.msg = error.response.data.msg;

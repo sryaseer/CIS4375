@@ -119,7 +119,6 @@ router.get("/get-fitness-goals", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -136,7 +135,6 @@ router.get("/get-sports", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -275,7 +273,6 @@ router.get("/admin-view-student-search", (req, res, next) => {
       });
     } else {
       res.status(200).send(result);
-      console.log(result);
     }
   });
 });
@@ -293,7 +290,6 @@ router.get("/admin-view-instructor-search", (req, res, next) => {
       });
     } else {
       res.status(200).send(result);
-      console.log(result);
     }
   });
 });
@@ -333,7 +329,6 @@ router.get("/admin-view-instructor/:id", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result[0]);
   });
 });
@@ -359,7 +354,6 @@ router.get("/admin-view-schedule", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -384,7 +378,6 @@ router.get("/student-view-schedule", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -411,7 +404,6 @@ router.post("/instructor-view-schedule", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -438,7 +430,6 @@ router.post("/instructor-signedup-schedule", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -554,7 +545,6 @@ router.post("/student-get-past-sessions", (req, res, next) => {
         msg: err,
       });
     }
-    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -578,6 +568,24 @@ router.post("/student-get-future-sessions", (req, res, next) => {
         msg: err,
       });
     }
+    res.status(200).send(result);
+  });
+});
+
+// RETURNS TOTAL CREDITS FOR STUDENT
+router.post("/student-view-credits", (req, res, next) => {
+  let selectQuery =
+    "SELECT student_id, session_credits FROM Student_Account WHERE student_id = ?;";
+  let query = mysql.format(selectQuery, [req.body.student_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
     res.status(200).send(result);
   });
 });
@@ -710,10 +718,10 @@ router.post("/mail-service-request", async (req, res) => {
 //MAILSERVICE REMINDER (this one is the current problem child)
 router.post("/mail-service-request", async (req, res) => {
   var info = `SELECT Session_Student.session_id, Session_Student.student_id, date, time, email, first_name
-  FROM Session_Student 
-  JOIN Session 
+  FROM Session_Student
+  JOIN Session
   ON Session_Student.session_id = Session.session_id
-  JOIN Student_Account 
+  JOIN Student_Account
   ON Session_Student.student_id = Student_Account.student_id
   WHERE Session.date = DATE(CURRENT_DATE()+1) AND
   Session.session_status_id = 1;  `;
@@ -888,7 +896,7 @@ router.get("/student-get-months-membership", (req, res, next) => {
   let selectQuery =
     "SELECT first_name, last_name, email, phone, dob, account_created_date, " +
     'TIMESTAMPDIFF(MONTH,account_created_date, CURRENT_DATE()) as "Months Active" ' +
-    "FROM testdatabase1.Student_Account " +
+    "FROM Student_Account " +
     "WHERE account_created_date IS NOT NULL; ";
   let query = mysql.format(selectQuery);
   pool.query(query, (err, result) => {
@@ -909,7 +917,7 @@ router.post("/studentid-get-months-membership", (req, res, next) => {
   let selectQuery =
     "SELECT first_name, last_name, " +
     'TIMESTAMPDIFF(MONTH,account_created_date, CURRENT_DATE()) as "Months Active" ' +
-    "FROM testdatabase1.Student_Account " +
+    "FROM Student_Account " +
     "where student_id = ? AND account_created_date IS NOT NULL; ";
   let query = mysql.format(selectQuery, [req.body.student_id]);
   pool.query(query, (err, result) => {

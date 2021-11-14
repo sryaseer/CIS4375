@@ -1,73 +1,56 @@
 <template>
-  <div class="ma-5 pa-5">
-    <div>
-      <p style="text-align: center; font-size: 25px;">Buy Sessions Below</p>
-    </div>
-    <v-app>
-      <div>
-        <v-row>
-          <v-col>
-            <v-card class="ma-5 pa-5 card">
-              <p style="font-size: 18px;" class="text-right">Available balance: <b>{{currentCredits}} sessions </b></p>
-              <v-flex xs="12" sm="6" md="3" class="pa-10">
-                <p>Single session is $60.</p>
-                <p>5+ sessions = $55 per session.</p>
-                <p>10+ sessions = $50 per session.</p>
-
-                <v-text-field type="number" min="0" max="100" :rules="[rules.required]" v-model.number="sessions"/>
-                <br>
-                <v-row>
-                Total Cost: &nbsp
-                <p v-if="sessions > 4" style="color:#7e0f0f; text-decoration: line-through;">
-                  <b> ${{total + savings}} </b>
-                </p> &nbsp
-                <p> <b>${{ total }}</b> </p>
-
-              </v-row>
-              <v-row>
-                <p v-if="sessions > 4">
-                  Savings: <b>${{savings}} </b> </p>
-              </v-row>
-              </v-flex>
-            </v-card>
-          </v-col>
-
-          <v-col>
-            <v-card class="ma-5 pa-5 card">
-
-                <h1>Hello, There</h1>
-                <p>Welcome to Paypal checkout Demo</p>
-                <div class="input-group">
-                  <span class="input-group-addon">$</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    v-model="total"
-                    aria-label="Amount (to the nearest dollar)"
-                  />
-                  <span class="input-group-addon">.00</span>
-                </div>
-                <br /><br /><br />
-                <paypalb :amount="total"></paypalb>
-
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-    </v-app>
+<div id="mainDiv">
+  <div>
+    <p style="text-align: center; font-size: 25px;">Buy Session Credits</p>
   </div>
+  <v-row>
+    <v-col cols="12" align="center">
+      <v-card class="ma-5 pa-5 card">
+        <div class="insideCard">
+
+          <div id="sessionText">
+            <p>Single session is $60.</p>
+            <p>5+ sessions = $55 per session.</p>
+            <p>10+ sessions = $50 per session.</p>
+          </div>
+
+          <v-col cols="6" sm="6" md="6" align="center">
+            <v-text-field id="input" type="number" min="0" max="100" :rules="[rules.required]" v-model.number="sessions">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" align="center">
+            <p> Total Cost: <b>${{ total }}</b> </p>
+             <p v-if="sessions > 4">
+               <b style="color:#7e0f0f; text-decoration: line-through;"> ${{total + savings}} </b>
+               Savings: <b>${{savings}} </b>
+             </p>
+          </v-col>
+        </div>
+        <paypalb :amount="total"></paypalb>
+      </v-card>
+    </v-col>
+    <v-col cols="12" align="center">
+      <v-card class="ma-5 pa-5 card">
+        <p style="font-size: 18px;" class="text-center">Available balance: <b>{{this.currentCredits}} Sessions </b></p>
+      </v-card>
+    </v-col>
+  </v-row>
+</div>
 </template>
 
 <script>
 import paypalb from './paypalb'
+import StudentService from '@/services/StudentService.js';
+
 
 export default {
   name: "StudentBuySession",
   data() {
     return {
+      student_id: null,
       sessions: 0,
-      message:null,
-      currentCredits: 4,
+      message: null,
+      currentCredits: null,
       rules: {
         required: (value) => value <= 100 || "Value must be between 0 and 100",
       },
@@ -88,7 +71,7 @@ export default {
         this.total = 0;
       }
     },
-    savings(){
+    savings() {
       return ((this.sessions * 60) - this.total);
     }
   },
@@ -99,9 +82,23 @@ export default {
       this.sessions = 0;
     }
   },
+  async mounted() {
+    try {
+      let credentials = {
+        student_id: this.student_id,
+      }
+      const response = await StudentService.viewStudentCredits(credentials);
+      console.log(response[0].session_credits);
+      this.currentCredits = response[0].session_credits;
+    } catch (error) {
+      this.msg = error.response.data.msg;
+    }
+  },
   created() {
     if (!this.$store.getters.isLoggedIn) {
       this.$router.push('/student-login');
+    } else {
+      this.student_id = this.$store.getters.getUser.student_id;
     }
   },
 
@@ -113,15 +110,28 @@ export default {
 
 
 <style scoped>
-
-.card{
-  height: 100%;
-  min-width: 400px;
+.card {
+  min-width: 350px;
+  max-width: 700px;
 }
 
-.textgraycenter{
+.textgraycenter {
   color: gray;
   padding-top: 20px;
 }
 
+.insideCard {
+  margin: 5%;
+}
+
+#mainDiv {
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+#sessionText {}
+
+#input {
+  width: 35px !important;
+}
 </style>

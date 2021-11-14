@@ -17,7 +17,7 @@ export default {
     props:['amount'],
     data (){
         return {
-            error:false ,
+            error:false,
             success:false
         }
     },
