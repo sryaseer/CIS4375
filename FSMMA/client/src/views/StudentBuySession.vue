@@ -13,20 +13,37 @@
             <p>5+ sessions = $55 per session.</p>
             <p>10+ sessions = $50 per session.</p>
           </div>
-
           <v-col cols="6" sm="6" md="6" align="center">
-            <v-text-field id="input" type="number" min="0" max="100" :rules="[rules.required]" v-model.number="sessions">
-            </v-text-field>
+            <validation-observer ref="observer" v-slot="{ invalid }" >
+              <validation-provider v-slot="{ errors }" name="total sessions" rules="digits:1|between:1,100">
+                <v-text-field v-model="sessions" :error-messages="errors" label="total sessions" required>
+                </v-text-field>
+              </validation-provider>
+            </validation-observer >
           </v-col>
           <v-col cols="12" sm="6" md="6" align="center">
             <p> Total Cost: <b>${{ total }}</b> </p>
-             <p v-if="sessions > 4">
-               <b style="color:#7e0f0f; text-decoration: line-through;"> ${{total + savings}} </b>
-               Savings: <b>${{savings}} </b>
-             </p>
+            <p v-if="sessions > 4">
+              <b style="color:#7e0f0f; text-decoration: line-through;"> ${{total + savings}} </b>
+              Savings: <b>${{savings}} </b>
+            </p>
           </v-col>
         </div>
-        <paypalb :amount="total"></paypalb>
+        <div>
+          <div v-if="!paidFor">
+            <h3>Buy this Lamp - ${{ product.price }} OBO</h3>
+
+            <p>{{ product.description }}</p>
+
+          </div>
+
+          <div v-if="paidFor">
+            <h3>Transaction was successful!</h3>
+          </div>
+
+          <div ref="paypal"></div>
+        </div>
+
       </v-card>
     </v-col>
     <v-col cols="12" align="center">
@@ -39,8 +56,18 @@
 </template>
 
 <script>
-import paypalb from './paypalb'
 import StudentService from '@/services/StudentService.js';
+import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
+import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+
+setInteractionMode('eager')
+extend('digits', { ...digits, message: '{_field_} needs to be {length} digits. ({_value_})', })
+extend('required', {  ...required,  message: '{_field_} can not be empty', })
+extend('max', { ...max, message: '{_field_} may not be greater than {length} characters', })
+extend('min', { ...min, message: '{_field_} may not be less than {length} characters', })
+extend('regex', {  ...regex,  message: '{_field_} {_value_} does not match {regex}', })
+extend('email', {...email, message: 'Email must be valid', })
+extend('between', {...between, message: '{_field_} is invalid.'})
 
 
 export default {
@@ -51,6 +78,8 @@ export default {
       sessions: 0,
       message: null,
       currentCredits: null,
+      loaded: false,
+      paidFor: false,
       rules: {
         required: (value) => value <= 100 || "Value must be between 0 and 100",
       },
@@ -58,7 +87,7 @@ export default {
   },
   computed: {
     total() {
-      if (this.sessions < 5) {
+      if (this.sessions >= 0 && this.sessions < 5) {
         return this.sessions * 60;
       } else {
         if (this.sessions > 4 && this.sessions < 10) {
@@ -73,16 +102,54 @@ export default {
     },
     savings() {
       return ((this.sessions * 60) - this.total);
+    },
+    product(){
+      let price = this.total
+      let description = "Total for private session credits."
+
+      return {'price': price, 'description': description}
     }
   },
 
   methods: {
+    setLoaded: function() {
+      this.loaded = true;
+      window.paypal
+        .Buttons({
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [{
+                description: this.product.description,
+                amount: {
+                  currency_code: "USD",
+                  value: this.product.price
+                }
+              }]
+            });
+          },
+          onApprove: async (data, actions) => {
+            const order = await actions.order.capture();
+            this.paidFor = true;
+            console.log(order);
+          },
+          onError: err => {
+            console.log(err);
+          }
+        })
+        .render(this.$refs.paypal);
+    },
     BuySubmit() {
       this.currentCredits += this.sessions;
       this.sessions = 0;
     }
   },
   async mounted() {
+    const script = document.createElement("script");
+    script.src =
+      "https://www.paypal.com/sdk/js?client-id=Aa0bm92nNDGNVIE_NE2cph_AyyEHMqP5XgJYF94W0GGj2OakhlmTuf6s_3-Dy3MaWO6eBoXg4vt-9KBh";
+    script.addEventListener("load", this.setLoaded);
+    document.body.appendChild(script);
+
     try {
       let credentials = {
         student_id: this.student_id,
@@ -103,7 +170,8 @@ export default {
   },
 
   components: {
-    'paypalb': paypalb
+    ValidationProvider,
+    ValidationObserver,
   },
 };
 </script>
