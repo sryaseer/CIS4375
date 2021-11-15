@@ -147,6 +147,19 @@
           </v-sheet>
         </v-col>
       </v-row>
+
+      <p>
+        <small>
+          &#128994; Available session
+        </small>
+        <small>
+          &#128309; Your Upcoming Session
+        </small>
+        <small>
+          &#128308; Cancelled Sessions
+        </small>
+      </p>
+
     </div>
 
     <!-- Middle - Form (when you click on an available slot, the form will auto populate info for session)  -->
@@ -334,9 +347,14 @@ export default {
           obj["end"] = date2;
 
           //if session is cancelled
-
-          if (session_student.session_status_desc == "Cancelled") {
+          if (session_student.session_status_desc == "Cancelled" &&
+          session_student.student_id == this.$store.getters.getUser.student_id) {
             obj["color"] = this.colors[1];
+            //red
+          }
+          else if (session_student.session_status_desc == "Cancelled") {
+            obj["color"] = this.colors[1];
+            continue; //don't add it to the array
             //red
           }
           //if the session has a student and is upcoming
@@ -350,6 +368,7 @@ export default {
           //if the session is Completed
           else if (session_student.session_status_desc == "Completed") {
             obj["color"] = this.colors[3];
+            continue; //don't add it to the array
             //grey
           }
           //avaliable session
@@ -365,6 +384,7 @@ export default {
             session_student.session_status_desc == "Upcoming"
           ) {
             obj["color"] = this.colors[3];
+            continue; //don't add it to the array
             //grey
           } else {
             obj["colocr"] = this.colors[3];
