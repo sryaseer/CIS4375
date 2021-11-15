@@ -349,7 +349,7 @@ router.get("/admin-view-instructor/:id", (req, res, next) => {
 router.get("/admin-view-schedule", (req, res, next) => {
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
-    "I.instructor_id, SST.session_status_desc, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
+    "I.instructor_id, SST.session_status_desc, SST.session_status_desc, SS.attendance, SA.first_name, SA.last_name, SA.student_id " +
     "FROM Session S " +
     "LEFT JOIN Instructor I ON S.instructor_id = I.instructor_id " +
     "LEFT JOIN Session_Student SS ON S.session_id = SS.session_id " +
