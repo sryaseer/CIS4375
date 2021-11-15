@@ -291,8 +291,8 @@ export default {
             "Session (" +
             this.selectedEvent.start.toLocaleDateString("en-us") +
             " " +
-            this.selectedEvent.start.toLocaleTimeString("it-IT") +
-            ") was Cancelled by Student",
+            this.setDateToDBFormat(this.selectedEvent.start) +
+            ") was cancelled by student.",
         };
         const response2 = await StudentService.studentAddNotes(information);
         this.selectedOpen = false;
@@ -400,6 +400,10 @@ export default {
         console.log(error);
         this.msg = error.response.data.msg;
       }
+    },
+    setDateToDBFormat(theDate){
+      let formated = theDate.getFullYear() + "-" + (theDate.getMonth()+1) + "-" + theDate.getDate();
+      return formated;
     },
   },
   async mounted() {

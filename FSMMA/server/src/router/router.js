@@ -961,5 +961,77 @@ router.post("/update-session-from-admin-schedule", (req, res, next) => {
   });
 });
 
+//ADMIN SIDE - GET LATEST HEALTH ENTRY by Student ID
+router.post("/get-student-latest-health-entry", (req, res, next) => {
+  let selectQuery = `SELECT * FROM Physical_History WHERE student_id = ? ORDER BY physical_hist_id desc;`;
+  let query = mysql.format(selectQuery, [
+    req.body.student_id,
+  ]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result[0]);
+  });
+});
+
+//ADMIN SIDE - INSERT NEW HEALTH ENTRY FOR STUDENT
+router.post("/insert-student-new-health-entry", (req, res, next) => {
+  let selectQuery = `INSERT INTO Physical_History (physical_hist_id, student_id, date, bmi, fat_percent, weight)
+VALUES (0, ?, ?, ?, ?, ?);`;
+  let query = mysql.format(selectQuery, [
+    req.body.student_id, req.body.date, req.body.bmi, req.body.fat_percent, req.body.weight
+  ]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200);
+  });
+});
+
+router.post("/get-student-notes", (req, res, next) => {
+  console.log("in get notes");
+  let selectQuery = `SELECT * FROM Notes WHERE student_id = ? ORDER BY notes_id desc;;`;
+  let query = mysql.format(selectQuery, [
+    req.body.student_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
+router.post("/admin-add-notes", (req, res, next) => {
+  console.log("reqest went through");
+  let selectQuery = "INSERT INTO Notes (student_id, notes, date) " + "VALUES (?, ?, sysdate());";
+  let query = mysql.format(selectQuery, [req.body.student_id, req.body.notes]);
+  console.log("Query went through");
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
+
 //VERY IMPORTANT TO EXPORT ROUTER OR EXPRESS WON'T ROUTE!
 module.exports = router;

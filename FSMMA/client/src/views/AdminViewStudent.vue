@@ -127,7 +127,7 @@
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="date" >
-                <v-text-field v-model="date" label="Date" outlined required :disabled="disableHealth"></v-text-field>
+                <v-text-field v-model="date" label="Date" outlined required disabled></v-text-field>
               </validation-provider>
             </v-col>
 
@@ -135,6 +135,9 @@
               <validation-provider v-slot="{ errors }" name="bmi" >
                 <v-text-field v-model="bmi" label="BMI" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
+            </v-col>
+
+            <v-col cols="6" sm="4" md="4">
             </v-col>
 
             <v-col cols="6" sm="4" md="4">
@@ -146,12 +149,6 @@
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="fat" >
                 <v-text-field v-model="fat" label="Fat percentage (00) %" outlined required :disabled="disableHealth"></v-text-field>
-              </validation-provider>
-            </v-col>
-
-            <v-col cols="6" sm="4" md="4">
-              <validation-provider v-slot="{ errors }" name="height" >
-                <v-text-field v-model="height" label="Height" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
@@ -194,9 +191,18 @@
           <v-row>
             <v-col cols="12" sm="12" md="12">
               <p class="rowSubTitle"> Notes: </p>
+              <v-data-table :headers="notesHeader" :items="notes" :items-per-page="5" class="elevation-1"></v-data-table>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="4" sm="4" md="3">
+              <v-text-field v-model="date" label="Date" outlined disabled></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="8" md="9">
+              <v-text-field v-model="newNote" label="New Note" outlined></v-text-field>
             </v-col>
           </v-row>
           <div>
@@ -272,6 +278,11 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         goals: [],
         sports: [],
         student_types: [],
+        notes: [],
+        notesHeader: [
+            {text: 'Date', align: 'date',value: 'date'},
+            { text: 'Notes', value: 'note' },],
+        newNote: null,
       }
     },
     components: {
@@ -282,6 +293,9 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       this.listGoals();
       this.listSports();
       this.listStudentTypes();
+      this.setTodaysDate();
+      this.getLatestStudentHealth();
+      this.getStudentNotes()
         try {
           const response = await AdminService.viewStudent(this.student_id);
           this.firstName = response.first_name;
@@ -299,8 +313,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           this.goal = this.getGoalById(response.goal_id);
           this.sport = this.getSportById(response.sport_id);
           this.student_type = this.getTypeById(response.student_type_id);
-
-          console.log(response);
         } catch (error) {
           this.msg = error.response.data.msg;
       }
@@ -321,8 +333,21 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       submitContactChanges(){
 
       },
-      submitHealthEntry(){
+      async submitHealthEntry(){
+        try{
+          let credentials = {
+            student_id: this.student_id,
+            date: this.date,
+            bmi: this.bmi,
+            fat_percent: this.fat,
+            weight: this.weight,
+          }
+          const response = await AdminService.InsertStudentHealth(credentials);
 
+        } catch(error){
+          console.log(error.response.data.msg);
+        }
+        this.enableHealthFields = true;
       },
       addCredits(){
 
@@ -330,7 +355,20 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       signUpForSession(){
 
       },
-      addNotes(){
+      async addNotes(){
+        if (this.newNote && this.newNote != ''){
+          try{
+            let credentials = {
+              student_id: this.student_id,
+              notes: this.newNote,
+            }
+            const response = await AdminService.addNotes(credentials);
+            this.newNote = null;
+            this.getStudentNotes();
+          } catch(error){
+            console.log(error.response.data.msg);
+          }
+        }
 
       },
       async listGoals(){
@@ -343,7 +381,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
             this.goals.push(obj);
           }
         } catch(error){
-          console.log(error);
+          console.log(error.response.data.msg);
         }
       },
       async listSports(){
@@ -356,7 +394,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
             this.sports.push(obj);
           }
         } catch(error){
-          console.log(error);
+          console.log(error.response.data.msg);
         }
       },
       async listStudentTypes(){
@@ -367,6 +405,38 @@ extend('between', {...between, message: '{_field_} is invalid.'})
             obj['student_type_id'] = response[resp]['student_type_id'];
             obj['student_type_desc'] = response[resp]['student_type_desc'];
             this.student_types.push(obj);
+          }
+        } catch(error){
+          console.log(error);
+        }
+      },
+      async getLatestStudentHealth(){
+        try{
+          let credentials = {
+            student_id: this.student_id,
+          }
+          const response = await AdminService.getLatestStudentHealth(credentials);
+          this.bmi = response.bmi;
+          this.fat = response.fat_percent;
+          this.weight = response.weight;
+
+        } catch(error){
+          console.log(error.response.data.msg);
+        }
+      },
+      async getStudentNotes(){
+        this.notes = [];
+        try{
+          let credentials = {
+            student_id: this.student_id,
+          }
+          const response = await AdminService.getStudentNotes(credentials);
+          for (const res in response){
+            let obj = {};
+            obj['date'] = this.setDateToDBFormat(new Date(response[res].date));
+            obj['note'] = response[res].notes;
+            obj['notes_id'] = response[res].notes_id;
+            this.notes.push(obj);
           }
         } catch(error){
           console.log(error);
@@ -386,6 +456,14 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         let ans = this.student_types.find(obj => obj.student_type_id == id);
         if (ans){return ans;}
         else return null;
+      },
+      setTodaysDate(){
+        let today = new Date();
+        this.date = today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
+      },
+      setDateToDBFormat(theDate){
+        let formated = theDate.getFullYear() + "-" + (theDate.getMonth()+1) + "-" + theDate.getDate();
+        return formated;
       }
     },
     async created() {
@@ -420,5 +498,6 @@ extend('between', {...between, message: '{_field_} is invalid.'})
   background-color: #f7f8f8;
   margin-bottom: 50px;
 }
+
 
 </style>
