@@ -1,11 +1,16 @@
 <template>
 <div id="mainDiv">
   <div>
-    <p style="text-align: center; font-size: 25px;">Buy Session Credits</p>
+    <p style="text-align: center; font-size: 16px;">BUY SESSION CREDITS</p>
   </div>
-  <v-row>
-    <v-col cols="12" align="center">
-      <v-card class="ma-5 pa-5 card">
+  <v-row dense>
+    <v-col cols="12" align="center" dense>
+      <v-card class="ma-5 pa-5 card1">
+        <p style="font-size: 18px;" class="text-center">Available balance: <b>{{this.currentCredits}} Sessions </b></p>
+      </v-card>
+    </v-col>
+    <v-col cols="12" align="center" dense>
+      <v-card class="ma-5 pa-5 card2">
         <div class="insideCard">
 
           <div id="sessionText">
@@ -13,13 +18,10 @@
             <p>5+ sessions = $55 per session.</p>
             <p>10+ sessions = $50 per session.</p>
           </div>
-          <v-col cols="6" sm="6" md="6" align="center">
-            <validation-observer ref="observer" v-slot="{ invalid }" >
-              <validation-provider v-slot="{ errors }" name="total sessions" rules="digits:1|between:1,100">
-                <v-text-field v-model="sessions" :error-messages="errors" label="total sessions" required>
+          <v-col cols="4" sm="4" md="4" align="center">
+                <v-text-field id="sessionsInput" v-model="sessions" label="total sessions" append-outer-icon="mdi-plus-box" min="0" max="100"
+                @click:append-outer="increment" prepend-icon="mdi-minus-box" @click:prepend="decrement" :rules="[numberRules.required]" :readonly="true" required>
                 </v-text-field>
-              </validation-provider>
-            </validation-observer >
           </v-col>
           <v-col cols="12" sm="6" md="6" align="center">
             <p> Total Cost: <b>${{ total }}</b> </p>
@@ -39,11 +41,6 @@
           <div ref="paypal"></div>
         </div>
 
-      </v-card>
-    </v-col>
-    <v-col cols="12" align="center">
-      <v-card class="ma-5 pa-5 card">
-        <p style="font-size: 18px;" class="text-center">Available balance: <b>{{this.currentCredits}} Sessions </b></p>
       </v-card>
     </v-col>
   </v-row>
@@ -72,16 +69,19 @@ export default {
       student_id: null,
       sessions: 0,
       message: null,
-      currentCredits: null,
+      currentCredits: 0,
       loaded: false,
       paidFor: false,
-      rules: {
+      numberRules: {
         required: (value) => value <= 100 || "Value must be between 0 and 100",
       },
     };
   },
   computed: {
     total() {
+      if (this.sessions < 0){
+        this.sessions = 0;
+      }
       if (this.sessions >= 0 && this.sessions < 5) {
         return this.sessions * 60;
       } else {
@@ -89,9 +89,12 @@ export default {
           return this.sessions * 55;
         }
       }
+
       if (this.sessions > 9) {
         return this.sessions * 50;
-      } else {
+      }
+
+      else {
         this.total = 0;
       }
     },
@@ -100,9 +103,9 @@ export default {
     },
     product(){
       let price = this.total
-      let description = "Total for private session credits."
+      let description = "Total for private session credits (" + this.sessions + ") count."
 
-      return {'price': 2, 'description': description}
+      return {'price': price, 'description': description}
     }
   },
 
@@ -125,6 +128,7 @@ export default {
           onApprove: async (data, actions) => {
             const order = await actions.order.capture();
             this.paidFor = true;
+            this.addCredits();
             console.log(order);
           },
           onError: err => {
@@ -133,28 +137,46 @@ export default {
         })
         .render(this.$refs.paypal);
     },
-    BuySubmit() {
-      this.currentCredits += this.sessions;
-      this.sessions = 0;
+    async addCredits(){
+      try {
+        let credentials = {
+          student_id: this.student_id,
+          session_credits: parseInt(this.sessions) + parseInt(this.currentCredits),
+        }
+        const response = await StudentService.studentAddCredits(credentials);
+        this.sessions = 0;
+      } catch (error) {
+        console.log(error);
+      }
+      this.getCurrentSessions();
+    },
+    async getCurrentSessions(){
+      try {
+        let credentials = {
+          student_id: this.student_id,
+        }
+        const response = await StudentService.viewStudentCredits(credentials);
+        console.log(response[0].session_credits);
+        this.currentCredits = response[0].session_credits;
+      } catch (error) {
+        this.msg = error.response.data.msg;
+      }
+    },
+    increment(){
+      this.sessions += 1;
+    },
+    decrement(){
+      this.sessions -= 1;
     }
   },
   async mounted() {
     const script = document.createElement("script");
     script.src =
-      "https://www.paypal.com/sdk/js?client-id=ATT-6346OKxfljYaxQ9eBkwuTOLfu-CcMpAbFsC_EVcAuXmG5735wRtcsRJc58Q0Rz16rFH35LwfsAo5";
+      "https://www.paypal.com/sdk/js?client-id=Aa0bm92nNDGNVIE_NE2cph_AyyEHMqP5XgJYF94W0GGj2OakhlmTuf6s_3-Dy3MaWO6eBoXg4vt-9KBh";
     script.addEventListener("load", this.setLoaded);
     document.body.appendChild(script);
 
-    try {
-      let credentials = {
-        student_id: this.student_id,
-      }
-      const response = await StudentService.viewStudentCredits(credentials);
-      console.log(response[0].session_credits);
-      this.currentCredits = response[0].session_credits;
-    } catch (error) {
-      this.msg = error.response.data.msg;
-    }
+    this.getCurrentSessions();
   },
   created() {
     if (!this.$store.getters.isLoggedIn) {
@@ -173,7 +195,12 @@ export default {
 
 
 <style scoped>
-.card {
+.card1 {
+  min-width: 350px;
+  max-width: 700px;
+}
+
+.card2 {
   min-width: 350px;
   max-width: 700px;
 }
@@ -194,7 +221,7 @@ export default {
 
 #sessionText {}
 
-#input {
-  width: 35px !important;
+#sessionsInput{
+  text-align: center;
 }
 </style>

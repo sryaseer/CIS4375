@@ -76,7 +76,7 @@
           </div>
           <div class="addressFormItem" style="min-width: 100px; width: 280px;">
             <validation-provider v-slot="{ errors }" name="Zip Code" rules="max:10">
-              <v-text-field v-model="zip" :error-messages="errors" label="Zip Code" required outlined>
+              <v-text-field v-model="zip_code" :error-messages="errors" label="Zip Code" required outlined>
               </v-text-field>
             </validation-provider>
           </div>
@@ -184,14 +184,14 @@ export default {
             sport_id: sport_id_v,
             student_location_id: 1 //katy
           };
-          
-      
-          
+
+
+
 
           const response = await AuthService.signUp(credentials);
           this.msg = response.msg;
           this.$router.push('/student-login');
-        
+
           const reply = await MailService.newAcc(credentials);
             console.log(reply)
 
@@ -218,11 +218,13 @@ export default {
       },
       getGoalKey(){
         let oneG = this.goals.filter(obj => { return obj.goal_desc === this.goal});
-        return oneG[0].goal_id;
+        if (!oneG[0]) {return null;}
+        else {return oneG[0].goal_id}
       },
       getSportKey(){
         let oneG = this.sports.filter(obj => { return obj.sport_desc === this.sport});
-        return oneG[0].sport_id;
+        if (!oneG[0]) {return null}
+        else {return oneG[0].sport_id}
       },
     },
     async mounted() {

@@ -929,5 +929,23 @@ router.post("/studentid-get-months-membership", (req, res, next) => {
   });
 });
 
+
+router.post("/student-add-credits", (req, res, next) => {
+  let selectQuery = `UPDATE Student_Account SA SET SA.session_credits = ?
+ WHERE SA.student_id = ?;`;
+  let query = mysql.format(selectQuery, [req.body.session_credits, req.body.student_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
+    res.status(200).send(result);
+  });
+});
+
 //VERY IMPORTANT TO EXPORT ROUTER OR EXPRESS WON'T ROUTE!
 module.exports = router;
