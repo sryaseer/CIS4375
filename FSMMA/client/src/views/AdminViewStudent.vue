@@ -263,6 +263,8 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         databaseResponse: null,
         //keep on adding your variables
         admin_id: null,
+        goals: [],
+        sports: [],
       }
     },
     components: {
@@ -270,6 +272,8 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       ValidationObserver,
     },
     async mounted(){
+      this.listGoals();
+      this.listSports();
         try {
           const response = await AdminService.viewStudent(this.student_id);
           this.firstName = response.first_name;
@@ -284,6 +288,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           this.account_created_date = new Date(response.account_created_date).toLocaleDateString("en-US");
           this.session_credits = response.session_credits;
           this.phone = response.phone;
+          console.log(response);
 
         } catch (error) {
           this.msg = error.response.data.msg;
@@ -303,7 +308,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         else if (this.disableHealth == false) {this.disableHealth = true; }
       },
       submitContactChanges(){
-
+        console.log(this.getSportById(1));
       },
       submitHealthEntry(){
 
@@ -317,7 +322,42 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       addNotes(){
 
       },
-
+      async listGoals(){
+        try{
+          const response = await AdminService.listGoals();
+          for (var resp in response){
+            var obj = {}
+            obj['goal_id'] = response[resp]['goal_id'];
+            obj['goal_desc'] = response[resp]['goal_desc'];
+            this.goals.push(obj);
+          }
+        } catch(error){
+          console.log(error);
+        }
+      },
+      async listSports(){
+        try{
+          const response = await AdminService.listSports();
+          for (var resp in response){
+            var obj = {}
+            obj['sport_id'] = response[resp]['sport_id'];
+            obj['sport_desc'] = response[resp]['sport_desc'];
+            this.sports.push(obj);
+          }
+        } catch(error){
+          console.log(error);
+        }
+      },
+      getSportById(id){
+        let ans = this.sports.find(obj => obj.sport_id == id);
+        if (ans){return ans;}
+        else return null;
+      },
+      getGoalById(id){
+        let ans = this.goals.find(obj => obj.goal_id == id);
+        if (ans){return ans;}
+        else return null;
+      }
     },
     async created() {
       if (!this.$store.getters.isAdminLoggedIn) {
