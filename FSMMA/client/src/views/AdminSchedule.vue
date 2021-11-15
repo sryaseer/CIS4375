@@ -455,18 +455,19 @@ export default {
       this.editSessionTime = null;
       this.editSelectedStatus = null;
       this.editStudentName = null;
-      this.selectedInstructor = null;
+      this.editSelectedInstructor = null;
     },
     sendInfoToForm() {
+      this.clearBottomForm();
       this.selectedOpen = false;
       this.edit = false;
       console.log(this.selectedEvent);
 
       this.editSessionDate = this.selectedEvent.start.toLocaleDateString("en-us");
       this.editSessionTime = this.selectedEvent.start.toLocaleTimeString("it-IT");
-      this.editSelectedStatus = this.selectedEvent.session_status_id;
-      this.editStudentName = this.s_first_name + " " + this.s_last_name;
-      this.editSelectedInstructor = this.selectedInstructor;
+      this.editSelectedStatus = this.getBackSessionStatusKey(this.selectedEvent.session_status_id);
+      this.editStudentName = this.getBackStudentKey(this.selectedEvent.s_student_id);
+      this.editSelectedInstructor = this.getBackInstructorKey(this.selectedEvent.instructor_id);
     },
     viewDay({ date }) {
       this.focus = date;
@@ -510,33 +511,44 @@ export default {
         return oneG[0].id;
       }
     },
-    getBackInstructorKey() {
-      let oneG = this.instructors.filter((obj) => {
-        return obj.id === this.selectedInstructor;
-      });
-      if (!oneG[0]) {
-        return null;
-      } else {
-        return oneG[0].id;
-      }
+    getBackInstructorKey(instructorID) {
+      let ans = this.instructors.find((obj) => obj.id == instructorID);
+      if (ans) {
+        return ans;
+      } else return null;
+    },
+    getBackStudentKey(studentID) {
+      let ans = this.students.find((obj) => obj.id == studentID);
+      if (ans) {
+        return ans;
+      } else return null;
+    },
+    getBackSessionStatusKey(session_status_id) {
+      let ans = this.statuses.find((obj) => obj.id == session_status_id);
+      if (ans) {
+        return ans;
+      } else return null;
     },
     //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
     //will throw errors if form is not finished, also need to be async
     async submitFormDateToDB() {
-      // console.log("date:" + this.editSessionDate);
-      // console.log("time:" + this.editSessionTime);
-      // console.log("status:" + this.editSelectedStatus);
-      // console.log("student name:" + this.editStudentName);
-      // console.log("Instructor:" + this.editSelectedInstructor);
+      // console.log("date: " + this.editSessionDate);
+      // console.log("time: " + this.editSessionTime);
+      // console.log("status: " + this.editSelectedStatus.value);
+      // console.log("Instructor: " + this.editSelectedInstructor.id);
+      // console.log("Session ID: " + this.selectedEvent.session_id);
+      // console.log("student-name: " + this.editStudentName.id);
 
+      var startDate2 = new Date(this.editSessionDate);
       try {
         const information = {
-          startDate: "2021-11-01",
-          startTime: "13:30:00",
-          instructor_id: 4,
-          session_status_id: 2,
-          session_id: 56,
+          startDate: startDate2.getFullYear() + "-" + (startDate2.getMonth() + 1) + "-" + startDate2.getDate(),
+          startTime: this.editSessionTime,
+          instructor_id: this.editSelectedInstructor.id,
+          session_status_id: this.editSelectedStatus.value,
+          session_id: this.selectedEvent.session_id,
         };
+        // tested and works, bring back after values are working fine
         const res = await AdminService.updateSessionInfo(information);
         console.log(information);
       } catch (error) {
@@ -581,7 +593,7 @@ export default {
         var response = res;
         for (const account of response) {
           var obj = {};
-          obj["id"] = account.studen_id;
+          obj["id"] = account.student_id;
           obj["name"] = account.first_name + " " + account.last_name;
           this.students.push(obj);
         }
