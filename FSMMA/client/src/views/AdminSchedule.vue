@@ -19,14 +19,7 @@
               <v-row>
                 <!-- START DATE - DATE PICKER -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu
-                    v-model="menu"
-                    :close-on-content-click="false"
-                    :nudge-right="10"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto"
-                  >
+                  <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="10" transition="scale-transition" offset-y min-width="auto">
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="startAvailabilityDate"
@@ -37,26 +30,14 @@
                       >
                       </v-text-field>
                     </template>
-                    <v-date-picker
-                      v-model="startAvailabilityDate"
-                      @input="menu = false"
-                      no-title
-                    >
-                    </v-date-picker>
+                    <v-date-picker v-model="startAvailabilityDate" @input="menu = false" no-title> </v-date-picker>
                   </v-menu>
                 </v-col>
                 <!-- END OF "START DATE - DATE PICKER" -->
 
                 <!-- START OF "END DATE - DATE PICKER" -->
                 <v-col cols="6" sm="6" md="6">
-                  <v-menu
-                    v-model="menu2"
-                    :close-on-content-click="false"
-                    :nudge-right="-80"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto"
-                  >
+                  <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="-80" transition="scale-transition" offset-y min-width="auto">
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="endAvailabilityDate"
@@ -68,12 +49,7 @@
                       >
                       </v-text-field>
                     </template>
-                    <v-date-picker
-                      v-model="endAvailabilityDate"
-                      @input="menu2 = false"
-                      no-title
-                    >
-                    </v-date-picker>
+                    <v-date-picker v-model="endAvailabilityDate" @input="menu2 = false" no-title> </v-date-picker>
                   </v-menu>
                 </v-col>
                 <!-- END OF "END DATE - DATE PICKER" -->
@@ -131,14 +107,7 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="reoccurringEndTime"
-                        label="End Time"
-                        prepend-icon="mdi-clock-time-ten"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      >
+                      <v-text-field v-model="reoccurringEndTime" label="End Time" prepend-icon="mdi-clock-time-ten" readonly v-bind="attrs" v-on="on">
                       </v-text-field>
                     </template>
                     <v-time-picker
@@ -162,6 +131,7 @@
                     v-model="selectedInstructor"
                     :items="instructors"
                     :item-text="'name'"
+                    :item-value="'id'"
                     label="Instructor"
                     prepend-icon="mdi-shield-account-outline"
                   >
@@ -203,12 +173,7 @@
         <v-col>
           <v-sheet height="64">
             <v-toolbar flat>
-              <v-btn
-                outlined
-                class="mr-4"
-                color="grey darken-2"
-                @click="setToday"
-              >
+              <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
                 Today
               </v-btn>
               <v-btn fab text small color="grey darken-2" @click="prev">
@@ -223,12 +188,7 @@
               <v-spacer></v-spacer>
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    outlined
-                    color="grey darken-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
+                  <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
                     <span>{{ typeToLabel[type] }}</span>
                     <v-icon right> mdi-menu-down </v-icon>
                   </v-btn>
@@ -263,23 +223,13 @@
               @click:date="viewDay"
             ></v-calendar>
             <!-- @change="updateRange" -->
-            <v-menu
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
-              min-width="auto"
-            >
+            <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x :nudge-left="140" min-width="auto">
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <v-btn icon>
-                    <v-icon @click="selectedOpen = false"
-                      >mdi-arrow-left</v-icon
-                    >
+                    <v-icon @click="selectedOpen = false">mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-toolbar-title
-                    v-html="'placeholder name'"
-                  ></v-toolbar-title>
+                  <v-toolbar-title v-html="'placeholder name'"></v-toolbar-title>
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
@@ -299,8 +249,18 @@
                   ></span>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text color="secondary" @click="sendInfoToForm()">
-                    Edit this
+                  <v-btn color="success" @click="sendInfoToForm()">
+                    Edit
+                    <v-icon dark right>
+                      mdi-calendar-edit
+                    </v-icon>
+                  </v-btn>
+
+                  <v-btn color="error" @click="deleteSessionFromDB()">
+                    Delete
+                    <v-icon dark right>
+                      mdi-delete-alert-outline
+                    </v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -313,7 +273,7 @@
 
     <!-- *** START OF BOTTOM FORM - EDITS A SESSION *** -->
     <div class="bottomBar">
-      <v-expansion-panels focusable v-model="expansionPanel">
+      <v-expansion-panels focusable>
         <v-expansion-panel>
           <v-expansion-panel-header class="p-2"
             >Edit Session
@@ -327,24 +287,12 @@
             <v-form @submit.prevent="submit">
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="editSessionDate"
-                    prepend-icon="mdi-calendar-check-outline"
-                    label="Session Date"
-                    :disabled="edit"
-                    outlined
-                  >
+                  <v-text-field v-model="editSessionDate" prepend-icon="mdi-calendar-check-outline" label="Session Date" :disabled="edit" outlined>
                   </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="editSessionTime"
-                    prepend-icon="mdi-clock-time-four-outline"
-                    disabled
-                    label="Session Time"
-                    outlined
-                  >
+                  <v-text-field v-model="editSessionTime" prepend-icon="mdi-clock-time-four-outline" :disabled="edit" label="Session Time" outlined>
                   </v-text-field>
                 </v-col>
 
@@ -353,6 +301,7 @@
                     v-model="editSelectedInstructor"
                     :items="instructors"
                     :item-text="'name'"
+                    :item-value="'id'"
                     label="Instructor"
                     prepend-icon="mdi-shield-account-outline"
                     :disabled="edit"
@@ -392,20 +341,10 @@
                 </v-col>
 
                 <v-col cols="15" md="9">
-                  <v-btn
-                    class="mr-4"
-                    type="submit"
-                    @click="
-                      () => {
-                        this.edit = false;
-                      }
-                    "
-                  >
-                    Edit
-                  </v-btn>
-                  <v-btn class="mr-4" type="submit" @click="editFormDateToDB()">
+                  <v-btn class="mr-4" @click="submitFormDateToDB()" dark>
                     Submit Changes
                   </v-btn>
+                  <v-btn @click="clearBottomForm()" dark> clear </v-btn>
                 </v-col>
               </v-row>
             </v-form>
@@ -425,8 +364,8 @@ import AdminService from "@/services/AdminService.js";
 export default {
   data: () => ({
     statuses: [
-      { abbr: "Upcoming", value: "1" },
-      { abbr: "Cancelled", value: "2" },
+      { abbr: "Upcoming", value: 1 },
+      { abbr: "Cancelled", value: 2 },
     ],
     instructors: [],
     instructor: null,
@@ -467,25 +406,18 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    expansionPanel: false,
+
     privateSessions: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
-    ],
+    colors: ["blue", "indigo", "deep-purple", "cyan", "green", "orange", "grey darken-1"],
     msg: null,
-    msg2: null,
   }),
   mounted() {
     this.$refs.calendar.checkChange();
     this.updateAdminCalenderInfo();
     this.generateListInstructor();
     this.generateListStudents();
+    this.getInstructorKey();
+    this.getBackInstructorKey();
   },
   methods: {
     allowedMinutes: (v) => v % 30 === 0,
@@ -497,20 +429,32 @@ export default {
       this.selectedInstructor = null;
       this.selectedStatus = null;
     },
+    clearBottomForm() {
+      this.editSessionDate = null;
+      this.editSessionTime = null;
+      this.editSelectedStatus = null;
+      this.editStudentName = null;
+      this.selectedInstructor = null;
+    },
     sendInfoToForm() {
-      this.expansionPanel = true;
-      console.log(this.selectedEvent.start.toLocaleDateString("en-us"));
-      console.log(this.selectedEvent.start.toLocaleTimeString("it-IT"));
+      this.selectedOpen = false;
+      this.edit = false;
       console.log(this.selectedEvent);
-      this.editSessionDate = this.selectedEvent.start.toLocaleDateString(
-        "en-us"
-      );
-      this.editSessionTime = this.selectedEvent.start.toLocaleTimeString(
-        "it-IT"
-      );
+
+      this.editSessionDate = this.selectedEvent.start.toLocaleDateString("en-us");
+      this.editSessionTime = this.selectedEvent.start.toLocaleTimeString("it-IT");
       this.editSelectedStatus = this.selectedEvent.session_status_id;
       this.editStudentName = this.s_first_name + " " + this.s_last_name;
-      this.editSelectedInstructor = this.i_first_name + " " + this.i_last_name;
+      this.editSelectedInstructor = this.selectedInstructor;
+    },
+    submitFormDateToDB() {
+      console.log("date:" + this.editSessionDate);
+      console.log("time:" + this.editSessionTime);
+      console.log("status:" + this.editSelectedStatus);
+      console.log("student name:" + this.editStudentName);
+      console.log("Instructor:" + this.editSelectedInstructor);
+
+      this.editSelectedInstructor.value === this.selectedInstructor["id"];
     },
     viewDay({ date }) {
       this.focus = date;
@@ -532,9 +476,7 @@ export default {
       const open = () => {
         this.selectedEvent = event;
         this.selectedElement = nativeEvent.target;
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => (this.selectedOpen = true))
-        );
+        requestAnimationFrame(() => requestAnimationFrame(() => (this.selectedOpen = true)));
       };
 
       if (this.selectedOpen) {
@@ -545,6 +487,41 @@ export default {
       }
 
       nativeEvent.stopPropagation();
+    },
+    //very buggy, might crash server side
+    async deleteSessionFromDB() {
+      try {
+        console.log("hello");
+        const pass_session_id = {
+          session_id: this.selectedEvent.session_id,
+        };
+        console.log(pass_session_id);
+        const response = await AdminService.deleteSessionFromDB(pass_session_id);
+        this.selectedOpen = false;
+        this.updateAdminCalenderInfo();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getInstructorKey() {
+      let oneG = this.instructors.filter((obj) => {
+        return obj.name === this.selectedInstructor;
+      });
+      if (!oneG[0]) {
+        return null;
+      } else {
+        return oneG[0].id;
+      }
+    },
+    getBackInstructorKey() {
+      let oneG = this.instructors.filter((obj) => {
+        return obj.id === this.selectedInstructor;
+      });
+      if (!oneG[0]) {
+        return null;
+      } else {
+        return oneG[0].id;
+      }
     },
     async generateListInstructor() {
       try {
@@ -577,6 +554,7 @@ export default {
     },
     async updateAdminCalenderInfo() {
       this.events = [];
+      this.privateSessions = [];
       try {
         const response = await AdminService.viewAdminSchedule();
         for (const session_student of response) {
@@ -620,33 +598,45 @@ export default {
       }
     },
     async createSession() {
-      // TESTED AND ALL THIS WORKS
-      console.log(this.startAvailabilityDate);
-      console.log(this.endAvailabilityDate);
-      console.log(this.reoccurringStartTime);
-      console.log(this.reoccurringEndTime);
-      console.log(this.selectedInstructor);
-      console.log(this.selectedStatus);
-      try {
-        const information = {
-          startDate: "2021-11-25",
-          startTime: "12-30-00",
-          instructor_id: 1,
-          session_status_id: 1,
-        };
-        console.log(information);
-        //not ready yet
-        // const res = await AdminService.createNewSession(information);
-        this.updateAdminCalenderInfo();
-      } catch (error) {
-        console.log(error);
+      const startDate = new Date(this.startAvailabilityDate + ":00:00");
+      const endDate = new Date(this.endAvailabilityDate + ":00:00");
+      var startTime = new Date("1990-11-15 " + this.reoccurringStartTime + ":00"); //from 5AM
+      var endTime = new Date("1990-11-15 " + this.reoccurringEndTime + ":00"); //to 1PM
+      const indexDate = startDate;
+
+      var minuteChecker = startTime.getMinutes();
+      if (minuteChecker == 0) {
+        minuteChecker = "00";
       }
+
+      // use this variable to insert start time and date into DB
+      // var insertStartTime = startTime.getHours() + ":" + minuteChecker + ":00";
+
+      while (indexDate <= endDate) {
+        var indexTime = startTime.getHours();
+        while (indexTime < endTime.getHours()) {
+          var insertIndexTime = indexTime + ":" + minuteChecker + ":00";
+          try {
+            const information = {
+              startDate: indexDate.getFullYear() + "-" + (indexDate.getMonth() + 1) + "-" + indexDate.getDate(),
+              startTime: insertIndexTime,
+              instructor_id: this.selectedInstructor,
+              session_status_id: this.selectedStatus.value,
+            };
+            console.log(information);
+            const res = await AdminService.createNewSession(information);
+          } catch (error) {
+            console.log(error);
+          }
+          indexTime += 1;
+        }
+        indexDate.setDate(indexDate.getDate() + 1);
+      }
+      this.privateSessions = [];
+      this.updateAdminCalenderInfo();
     },
     //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
     //tied to a submit button so will throw errors if form is not finished
-    editFormDateToDB() {
-      console.log("edit button works");
-    },
   },
 };
 </script>
