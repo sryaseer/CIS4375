@@ -522,14 +522,28 @@ export default {
     },
     //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
     //will throw errors if form is not finished, also need to be async
-    submitFormDateToDB() {
-      console.log("date:" + this.editSessionDate);
-      console.log("time:" + this.editSessionTime);
-      console.log("status:" + this.editSelectedStatus);
-      console.log("student name:" + this.editStudentName);
-      console.log("Instructor:" + this.editSelectedInstructor);
+    async submitFormDateToDB() {
+      // console.log("date:" + this.editSessionDate);
+      // console.log("time:" + this.editSessionTime);
+      // console.log("status:" + this.editSelectedStatus);
+      // console.log("student name:" + this.editStudentName);
+      // console.log("Instructor:" + this.editSelectedInstructor);
 
-      this.editSelectedInstructor.value === this.selectedInstructor["id"];
+      try {
+        const information = {
+          startDate: "2021-11-01",
+          startTime: "13:30:00",
+          instructor_id: 4,
+          session_status_id: 2,
+          session_id: 56,
+        };
+        const res = await AdminService.updateSessionInfo(information);
+        console.log(information);
+      } catch (error) {
+        console.log(error);
+      }
+      this.privateSessions = [];
+      this.updateAdminCalenderInfo();
     },
     //very buggy, might crash server side
     async deleteSessionFromDB() {

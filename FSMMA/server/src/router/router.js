@@ -276,8 +276,7 @@ router.get("/admin-view-instructor-search", (req, res, next) => {
 
 // ADMIN VIEW STUDENT - GET SELECTED STUDENT BY ID
 router.get("/admin-view-student/:id", (req, res, next) => {
-  let selectQuery =
-    `SELECT first_name, last_name, email, phone, dob, address, city, state, postal_code, account_created_date,
+  let selectQuery = `SELECT first_name, last_name, email, phone, dob, address, city, state, postal_code, account_created_date,
      waiver_signed_date, session_credits, student_type_id, goal_id, sport_id FROM Student_Account WHERE student_id = ?`;
   let query = mysql.format(selectQuery, [req.params.id]);
 
@@ -910,6 +909,29 @@ router.post("/delete-session-from-db-admin-schedule", (req, res, next) => {
     res.status(200).send(result);
   });
   pool.query(query2, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    console.log(result);
+    res.status(200).send(result);
+  });
+});
+
+//ADMIN SIDE - UPDATE A EXISTING RECORD
+router.post("/update-session-from-admin-schedule", (req, res, next) => {
+  let selectQuery = "UPDATE Session " + "SET date=?, time=?, instructor_id=?, session_status_id=? " + "WHERE session_id =?;";
+  let query = mysql.format(selectQuery, [
+    req.body.startDate,
+    req.body.startTime,
+    req.body.instructor_id,
+    req.body.session_status_id,
+    req.body.session_id,
+  ]);
+  pool.query(query, (err, result) => {
     if (err) {
       console.error(err);
       throw err;
