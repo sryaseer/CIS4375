@@ -40,55 +40,42 @@ const db = require("../dbseed.js");
 
 //STUDENT SIGN UP
 router.post("/student-sign-up", (req, res, next) => {
-  db.query(
-    `SELECT * FROM Student_Account WHERE email = LOWER(${db.escape(
-      req.body.email
-    )});`,
-    (err, result) => {
-      if (result.length) {
-        return res.status(409).send({
-          msg: "This email username is already in use.",
-        });
-      } else {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-            return res.status(500).send({
-              msg: err,
-            });
-          } else {
-            db.query(
-              `INSERT INTO Student_Account (first_name, last_name, email, password, phone, dob,
+  db.query(`SELECT * FROM Student_Account WHERE email = LOWER(${db.escape(req.body.email)});`, (err, result) => {
+    if (result.length) {
+      return res.status(409).send({
+        msg: "This email username is already in use.",
+      });
+    } else {
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+          return res.status(500).send({
+            msg: err,
+          });
+        } else {
+          db.query(
+            `INSERT INTO Student_Account (first_name, last_name, email, password, phone, dob,
             address, city, state, postal_code, student_type_id, goal_id, sport_id, location_id, session_credits,
             waiver_signed_date, account_created_date) VALUES
-            (${db.escape(req.body.first_name)}, ${db.escape(
-                req.body.last_name
-              )}, ${db.escape(req.body.email)},
-            ${db.escape(hash)}, ${db.escape(req.body.phone)}, ${db.escape(
-                req.body.dob
-              )}, ${db.escape(req.body.address)},
-            ${db.escape(req.body.city)}, ${db.escape(
-                req.body.state
-              )}, ${db.escape(req.body.postal_code)}, 1,
-            ${db.escape(req.body.goal_id)}, ${db.escape(
-                req.body.sport_id
-              )}, 1, 0, current_date(), current_date())`,
-              (err, result) => {
-                if (err) {
-                  throw err;
-                  return res.status(400).send({
-                    msg: err,
-                  });
-                }
-                return res.status(201).send({
-                  msg: "Registered!",
+            (${db.escape(req.body.first_name)}, ${db.escape(req.body.last_name)}, ${db.escape(req.body.email)},
+            ${db.escape(hash)}, ${db.escape(req.body.phone)}, ${db.escape(req.body.dob)}, ${db.escape(req.body.address)},
+            ${db.escape(req.body.city)}, ${db.escape(req.body.state)}, ${db.escape(req.body.postal_code)}, 1,
+            ${db.escape(req.body.goal_id)}, ${db.escape(req.body.sport_id)}, 1, 0, current_date(), current_date())`,
+            (err, result) => {
+              if (err) {
+                throw err;
+                return res.status(400).send({
+                  msg: err,
                 });
               }
-            );
-          }
-        });
-      }
+              return res.status(201).send({
+                msg: "Registered!",
+              });
+            }
+          );
+        }
+      });
     }
-  );
+  });
 });
 
 router.post("/change-password", (req, res, next) => {
@@ -100,9 +87,7 @@ router.post("/change-password", (req, res, next) => {
         msg: err,
       });
     } else {
-      let query = `UPDATE Student_Account SET password = ${db.escape(
-        hash
-      )} WHERE student_id = ${db.escape(req.body.id)};`;
+      let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE student_id = ${db.escape(req.body.id)};`;
       db.query(query, (err, result) => {
         if (err) {
           console.log(err);
@@ -152,129 +137,114 @@ router.get("/get-sports", (req, res, next) => {
 
 //STUDENT LOG IN
 router.post("/student-login", (req, res, next) => {
-  db.query(
-    `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
-    (err, result) => {
-      // user does not exists
-      if (err) {
-        throw err;
-        return res.status(400).send({
-          msg: err,
-        });
-      }
+  db.query(`SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`, (err, result) => {
+    // user does not exists
+    if (err) {
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
 
-      if (!result.length) {
+    if (!result.length) {
+      return res.status(401).send({
+        msg: "Username or password is incorrect!",
+      });
+    }
+
+    // check password
+    bcrypt.compare(req.body.password, result[0]["password"], (bErr, bResult) => {
+      // wrong password
+      if (bErr) {
+        throw bErr;
         return res.status(401).send({
           msg: "Username or password is incorrect!",
         });
       }
 
-      // check password
-      bcrypt.compare(
-        req.body.password,
-        result[0]["password"],
-        (bErr, bResult) => {
-          // wrong password
-          if (bErr) {
-            throw bErr;
-            return res.status(401).send({
-              msg: "Username or password is incorrect!",
-            });
+      if (bResult) {
+        const token = jwt.sign(
+          {
+            email: result[0].email,
+            userId: result[0].id,
+          },
+          "SECRETSTUDENTKEY",
+          {
+            expiresIn: "2000",
           }
-
-          if (bResult) {
-            const token = jwt.sign(
-              {
-                email: result[0].email,
-                userId: result[0].id,
-              },
-              "SECRETSTUDENTKEY",
-              {
-                expiresIn: "2000",
-              }
-            );
-            //db.query(
-            //`UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
-            //  );
-            return res.status(200).send({
-              msg: "Logged in!",
-              token,
-              user: result[0],
-            });
-          }
-          return res.status(401).send({
-            msg: "Username or password is incorrect!",
-          });
-        }
-      );
-    }
-  );
+        );
+        //db.query(
+        //`UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
+        //  );
+        return res.status(200).send({
+          msg: "Logged in!",
+          token,
+          user: result[0],
+        });
+      }
+      return res.status(401).send({
+        msg: "Username or password is incorrect!",
+      });
+    });
+  });
 });
 
 //ADMIN LOGIN
 router.post("/admin-login", (req, res, next) => {
-  db.query(
-    `SELECT * FROM Admin WHERE email = ${db.escape(req.body.email)};`,
-    (err, result) => {
-      // user does not exists
-      if (err) {
-        throw err;
-        return res.status(400).send({
-          msg: err,
-        });
-      }
+  db.query(`SELECT * FROM Admin WHERE email = ${db.escape(req.body.email)};`, (err, result) => {
+    // user does not exists
+    if (err) {
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
 
-      if (!result.length) {
+    if (!result.length) {
+      return res.status(401).send({
+        msg: "Username or password is incorrect!",
+      });
+    }
+
+    // check password
+    bcrypt.compare(req.body.password, result[0]["password"], (bErr, bResult) => {
+      // wrong password
+      if (bErr) {
+        throw bErr;
         return res.status(401).send({
           msg: "Username or password is incorrect!",
         });
       }
 
-      // check password
-      bcrypt.compare(
-        req.body.password,
-        result[0]["password"],
-        (bErr, bResult) => {
-          // wrong password
-          if (bErr) {
-            throw bErr;
-            return res.status(401).send({
-              msg: "Username or password is incorrect!",
-            });
+      if (bResult) {
+        const token = jwt.sign(
+          {
+            email: result[0].email,
+          },
+          "ADMINSTUDENTKEY",
+          {
+            expiresIn: "2000",
           }
-
-          if (bResult) {
-            const token = jwt.sign(
-              {
-                email: result[0].email,
-              },
-              "ADMINSTUDENTKEY",
-              {
-                expiresIn: "2000",
-              }
-            );
-            //db.query(
-            //`UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
-            //  );
-            return res.status(200).send({
-              msg: "Logged in!",
-              token,
-              admin: result[0],
-            });
-          }
-          return res.status(401).send({
-            msg: "Username or password is incorrect!",
-          });
-        }
-      );
-    }
-  );
+        );
+        //db.query(
+        //`UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
+        //  );
+        return res.status(200).send({
+          msg: "Logged in!",
+          token,
+          admin: result[0],
+        });
+      }
+      return res.status(401).send({
+        msg: "Username or password is incorrect!",
+      });
+    });
+  });
 });
 
 // ADMIN VIEW STUDENT - GET ALL STUDENTS
 router.get("/admin-view-student-search", (req, res, next) => {
-  let selectQuery =
-    "SELECT student_id, first_name, last_name, dob FROM Student_Account";
+  let selectQuery = "SELECT student_id, first_name, last_name, dob FROM Student_Account";
   let query = mysql.format(selectQuery);
   pool.query(query, (err, result) => {
     if (err) {
@@ -290,8 +260,7 @@ router.get("/admin-view-student-search", (req, res, next) => {
 
 // ADMIN VIEW STUDENT - GET ALL INSTUCTORS
 router.get("/admin-view-instructor-search", (req, res, next) => {
-  let selectQuery =
-    "SELECT instructor_id, first_name, last_name FROM Instructor";
+  let selectQuery = "SELECT instructor_id, first_name, last_name FROM Instructor";
   let query = mysql.format(selectQuery);
   pool.query(query, (err, result) => {
     if (err) {
@@ -348,7 +317,7 @@ router.get("/admin-view-instructor/:id", (req, res, next) => {
 router.get("/admin-view-schedule", (req, res, next) => {
   let selectQuery =
     "SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name," +
-    "I.instructor_id, SST.session_status_desc, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id " +
+    "I.instructor_id, SST.session_status_desc, SST.session_status_desc, SS.attendance, SA.first_name, SA.last_name, SA.student_id " +
     "FROM Session S " +
     "LEFT JOIN Instructor I ON S.instructor_id = I.instructor_id " +
     "LEFT JOIN Session_Student SS ON S.session_id = SS.session_id " +
@@ -371,8 +340,7 @@ router.get("/admin-view-schedule", (req, res, next) => {
 
 //STUDENT VIEW OF THE CALENDER
 router.get("/student-view-schedule", (req, res, next) => {
-  let selectQuery =
-    `SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name,
+  let selectQuery = `SELECT S.session_id, S.date, S.time, I.first_name AS i_first_name, I.last_name AS i_last_name,
 I.instructor_id, SST.session_status_desc, SA.first_name, SA.last_name, SA.student_id
 FROM Session S
 LEFT JOIN Instructor I ON S.instructor_id = I.instructor_id
@@ -448,13 +416,8 @@ router.post("/instructor-signedup-schedule", (req, res, next) => {
 //REMOVING FROM SESSION
 router.post("/student-cancels-signup", (req, res, next) => {
   console.log("sent to server");
-  let selectQuery =
-    "DELETE FROM Session_Student " +
-    "WHERE student_id = ? AND session_id = ? AND attendance = 0 ;";
-  let query = mysql.format(selectQuery, [
-    req.body.student_id,
-    req.body.session_id,
-  ]);
+  let selectQuery = "DELETE FROM Session_Student " + "WHERE student_id = ? AND session_id = ? AND attendance = 0 ;";
+  let query = mysql.format(selectQuery, [req.body.student_id, req.body.session_id]);
   pool.query(query, (err, result) => {
     if (err) {
       console.error(err);
@@ -471,10 +434,7 @@ router.post("/student-cancels-signup", (req, res, next) => {
 //REGISTERING FOR A SESSION
 router.post("/set-schedule-signup", (req, res, next) => {
   let selectQuery = "INSERT INTO Session_Student " + "VALUES (?,?,0);";
-  let query = mysql.format(selectQuery, [
-    req.body.session_id,
-    req.body.student_id,
-  ]);
+  let query = mysql.format(selectQuery, [req.body.session_id, req.body.student_id]);
   pool.query(query, (err, result) => {
     if (err) {
       console.error(err);
@@ -491,9 +451,7 @@ router.post("/set-schedule-signup", (req, res, next) => {
 //POST - ADDING A NOTE
 router.post("/add-student-note", (req, res, next) => {
   console.log("reqest went through");
-  let selectQuery =
-    "INSERT INTO Notes (student_id, notes, date) " +
-    "VALUES (?, ?, sysdate());";
+  let selectQuery = "INSERT INTO Notes (student_id, notes, date) " + "VALUES (?, ?, sysdate());";
   let query = mysql.format(selectQuery, [req.body.student_id, req.body.notes]);
   console.log("Query went through");
   pool.query(query, (err, result) => {
@@ -517,12 +475,7 @@ router.post("/create-new-session", (req, res, next) => {
   console.log(req.body.startTime);
   console.log(req.body.instructor_id);
   console.log(req.body.session_status_id);
-  let query = mysql.format(selectQuery, [
-    req.body.startDate,
-    req.body.startTime,
-    req.body.instructor_id,
-    req.body.session_status_id,
-  ]);
+  let query = mysql.format(selectQuery, [req.body.startDate, req.body.startTime, req.body.instructor_id, req.body.session_status_id]);
   console.log("Query went through");
   pool.query(query, (err, result) => {
     if (err) {
@@ -585,8 +538,7 @@ router.post("/student-get-future-sessions", (req, res, next) => {
 
 // RETURNS TOTAL CREDITS FOR STUDENT
 router.post("/student-view-credits", (req, res, next) => {
-  let selectQuery =
-    "SELECT student_id, session_credits FROM Student_Account WHERE student_id = ?;";
+  let selectQuery = "SELECT student_id, session_credits FROM Student_Account WHERE student_id = ?;";
   let query = mysql.format(selectQuery, [req.body.student_id]);
   pool.query(query, (err, result) => {
     if (err) {
@@ -622,102 +574,89 @@ router.get("/student", async (req, res) => {
 //SEVICE TO FORGET PASSWORD
 router.post("/forgot-password", (req, res) => {
   console.log("Forgot password");
-  db.query(
-    `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
-    async (err, result) => {
-      // user does not exists
-      if (err) {
-        throw err;
-        return res.status(400).send({
-          msg: err,
-        });
-      }
-
-      if (!result.length) {
-        return res.status(401).send({
-          msg: "User with this email not found",
-        });
-      }
-
-      let password = Math.random().toString(36).substr(2, 10);
-      console.log("New password: " + password);
-
-      bcrypt.hash(password, 10, (err, hash) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).send({
-            msg: err,
-          });
-        } else {
-          let query = `UPDATE Student_Account SET password = ${db.escape(
-            hash
-          )} WHERE email = ${db.escape(req.body.email)};`;
-          db.query(query, (err, result) => {
-            if (err) {
-              console.log(err);
-              return res.status(400).send({
-                msg: err,
-              });
-            }
-
-            let mailOptions = {
-              from: "mw1996white@gmail.com",
-              to: req.body.email,
-              subject: "Forgot Password",
-              text: `Here is your new password: ${password}. Login and change it ASAP!`,
-            };
-
-            transporter.sendMail(mailOptions, function (err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Email sent succesfully ");
-              }
-            });
-          });
-        }
+  db.query(`SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`, async (err, result) => {
+    // user does not exists
+    if (err) {
+      throw err;
+      return res.status(400).send({
+        msg: err,
       });
     }
-  );
+
+    if (!result.length) {
+      return res.status(401).send({
+        msg: "User with this email not found",
+      });
+    }
+
+    let password = Math.random().toString(36).substr(2, 10);
+    console.log("New password: " + password);
+
+    bcrypt.hash(password, 10, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({
+          msg: err,
+        });
+      } else {
+        let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE email = ${db.escape(req.body.email)};`;
+        db.query(query, (err, result) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send({
+              msg: err,
+            });
+          }
+
+          let mailOptions = {
+            from: "mw1996white@gmail.com",
+            to: req.body.email,
+            subject: "Forgot Password",
+            text: `Here is your new password: ${password}. Login and change it ASAP!`,
+          };
+
+          transporter.sendMail(mailOptions, function (err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Email sent succesfully ");
+            }
+          });
+        });
+      }
+    });
+  });
 });
 
 //MAILSERVICE NEW ACCOUNT
-router.post("/new-account", async (req, res)=>{
-  db.query(
-    `SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`,
-    async (err, result) => {
-
-      if (err) {
-        throw err;
-        return res.status(400).send({
-          msg: err,
-        });
-      }
-
-
-
-      let mailOptions = {
-        from: "mw1996white@gmail.com",
-        to: req.body.email,
-        subject: "New Account",
-        html: ({path: './src/emailTemplate/newAcc.html'}),
-      };
-
-      transporter.sendMail(mailOptions, function (err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Email sent succesfully ");
-        }
+router.post("/new-account", async (req, res) => {
+  db.query(`SELECT * FROM Student_Account WHERE email = ${db.escape(req.body.email)};`, async (err, result) => {
+    if (err) {
+      throw err;
+      return res.status(400).send({
+        msg: err,
       });
+    }
 
+    let mailOptions = {
+      from: "mw1996white@gmail.com",
+      to: req.body.email,
+      subject: "New Account",
+      html: { path: "./src/emailTemplate/newAcc.html" },
+    };
 
-    }) // end query
-})
+    transporter.sendMail(mailOptions, function (err, success) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Email sent succesfully ");
+      }
+    });
+  }); // end query
+});
 
 //MAILSERVICE REMINDER (Alex fixed :) )
 router.post("/appt-reminder", async (req, res) => {
-
   var info = `SELECT S.session_id, SA.student_id, date, time, email, first_name, location_name
   FROM Session_Student SS
   JOIN Session S ON SS.session_id = S.session_id
@@ -725,28 +664,38 @@ router.post("/appt-reminder", async (req, res) => {
   JOIN Location L ON L.location_id = S.location_id
   WHERE S.date = DATE(CURRENT_DATE()+1) AND S.session_status_id = 1;  `;
 
-
-  pool.query(info, (err, results) =>{
-    if(err){
-      console.log(err)
+  pool.query(info, (err, results) => {
+    if (err) {
+      console.log(err);
     }
-    for(let i = 0; i < results.length; i++ ){
+    for (let i = 0; i < results.length; i++) {
       rec = results[i]["email"];
-      fname = results[i]["first_name"]
-      aDate = results[i]["date"]
-      aTime = results[i]["time"]
-      loc = results[i]["location_name"]
+      fname = results[i]["first_name"];
+      aDate = results[i]["date"];
+      aTime = results[i]["time"];
+      loc = results[i]["location_name"];
 
       let mailOptions = {
-       from: "mw1996white@gmail.com",
-       to: rec,
-       subject: fname + ", a friendly reminder...",
-       html: "Hi " + fname + ',<br> This is just a friendly reminder from FSMMA & Fitness of your private session at our ' + loc + ' location on ' + aDate + ' at ' + aTime + '.<br> Thanks!<br><br> <img src="cid:uniquefsmmamailer" width="80" />',
-       attachments:[{
-         filename: 'logo.png',
-         path: './src/emailTemplate/logo.png',
-         cid: 'uniquefsmmamailer'
-       }]
+        from: "mw1996white@gmail.com",
+        to: rec,
+        subject: fname + ", a friendly reminder...",
+        html:
+          "Hi " +
+          fname +
+          ",<br> This is just a friendly reminder from FSMMA & Fitness of your private session at our " +
+          loc +
+          " location on " +
+          aDate +
+          " at " +
+          aTime +
+          '.<br> Thanks!<br><br> <img src="cid:uniquefsmmamailer" width="80" />',
+        attachments: [
+          {
+            filename: "logo.png",
+            path: "./src/emailTemplate/logo.png",
+            cid: "uniquefsmmamailer",
+          },
+        ],
       };
 
       transporter.sendMail(mailOptions, function (err, success) {
@@ -759,14 +708,12 @@ router.post("/appt-reminder", async (req, res) => {
     }
   });
 
-
-// pool.query(info, function (err, fname, fields) {
-//   for (k in fname) {
-//     name.push(fname[k].first_name);
-//     fName = name.toString();
-//     console.log(fName)
-//   }})
-
+  // pool.query(info, function (err, fname, fields) {
+  //   for (k in fname) {
+  //     name.push(fname[k].first_name);
+  //     fName = name.toString();
+  //     console.log(fName)
+  //   }})
 
   // db.query(info, function (err, dateA, fields) {
   //   for (k in dateA) {
@@ -782,8 +729,6 @@ router.post("/appt-reminder", async (req, res) => {
   //     console.log(aTime)
   //   }
   // })
-
-
 });
 
 //MAILSERVICE PROMOTION
@@ -929,7 +874,6 @@ router.post("/studentid-get-months-membership", (req, res, next) => {
   });
 });
 
-
 router.post("/student-add-credits", (req, res, next) => {
   let selectQuery = `UPDATE Student_Account SA SET SA.session_credits = ?
  WHERE SA.student_id = ?;`;
@@ -976,7 +920,6 @@ router.post("/delete-session-from-db-admin-schedule", (req, res, next) => {
     res.status(200).send(result);
   });
 });
-
 
 //VERY IMPORTANT TO EXPORT ROUTER OR EXPRESS WON'T ROUTE!
 module.exports = router;

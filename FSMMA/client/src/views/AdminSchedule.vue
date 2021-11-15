@@ -223,13 +223,23 @@
               @click:date="viewDay"
             ></v-calendar>
             <!-- @change="updateRange" -->
-            <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x :nudge-left="140" min-width="auto">
+            <v-menu
+              v-model="selectedOpen"
+              :close-on-content-click="false"
+              label="hello"
+              :activator="selectedElement"
+              offset-x
+              :nudge-left="140"
+              min-width="auto"
+            >
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <v-btn icon>
                     <v-icon @click="selectedOpen = false">mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-toolbar-title v-html="'placeholder name'"></v-toolbar-title>
+                  <v-toolbar-title
+                    v-html="'Session with ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"
+                  ></v-toolbar-title>
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
@@ -244,7 +254,9 @@
                         '<br> session_status_desc: ' +
                         this.selectedEvent.session_status_desc +
                         '<br> session_id: ' +
-                        this.selectedEvent.session_id
+                        this.selectedEvent.session_id +
+                        '<br> Attendance: ' +
+                        this.selectedEvent.attendance
                     "
                   ></span>
                 </v-card-text>
@@ -268,6 +280,13 @@
           </v-sheet>
         </v-col>
       </v-row>
+      <p>
+        <small>
+          <span class="dotCancelled"></span> Cancelled Sessions <span class="dotUpNoStudent"></span> Upcoming + No Students
+          <span class="dotUpYesStudent"></span> Upcoming + Student Registered <span class="dotCompleted"></span>
+          Completed or Old
+        </small>
+      </p>
     </div>
     <!-- *** END OF CALENDAR VIEW *** -->
 
@@ -408,7 +427,9 @@ export default {
     selectedOpen: false,
 
     privateSessions: [],
-    colors: ["blue", "indigo", "deep-purple", "cyan", "green", "orange", "grey darken-1"],
+    //Color 0 - light green, Color 1 - Dark Green, Color 2 - light grey, Color 3 - red
+    // blue(#2E2FFFFF) is used to double check if any sessions are not part of the color-if-session
+    colors: ["#86DB86FF", "#43944FFF", "#BDBDBDFF", "#AD0000", "#2E2FFFFF"],
     msg: null,
   }),
   mounted() {
@@ -447,15 +468,6 @@ export default {
       this.editStudentName = this.s_first_name + " " + this.s_last_name;
       this.editSelectedInstructor = this.selectedInstructor;
     },
-    submitFormDateToDB() {
-      console.log("date:" + this.editSessionDate);
-      console.log("time:" + this.editSessionTime);
-      console.log("status:" + this.editSelectedStatus);
-      console.log("student name:" + this.editStudentName);
-      console.log("Instructor:" + this.editSelectedInstructor);
-
-      this.editSelectedInstructor.value === this.selectedInstructor["id"];
-    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
@@ -488,21 +500,6 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    //very buggy, might crash server side
-    async deleteSessionFromDB() {
-      try {
-        console.log("hello");
-        const pass_session_id = {
-          session_id: this.selectedEvent.session_id,
-        };
-        console.log(pass_session_id);
-        const response = await AdminService.deleteSessionFromDB(pass_session_id);
-        this.selectedOpen = false;
-        this.updateAdminCalenderInfo();
-      } catch (error) {
-        console.log(error);
-      }
-    },
     getInstructorKey() {
       let oneG = this.instructors.filter((obj) => {
         return obj.name === this.selectedInstructor;
@@ -521,6 +518,32 @@ export default {
         return null;
       } else {
         return oneG[0].id;
+      }
+    },
+    //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
+    //will throw errors if form is not finished, also need to be async
+    submitFormDateToDB() {
+      console.log("date:" + this.editSessionDate);
+      console.log("time:" + this.editSessionTime);
+      console.log("status:" + this.editSelectedStatus);
+      console.log("student name:" + this.editStudentName);
+      console.log("Instructor:" + this.editSelectedInstructor);
+
+      this.editSelectedInstructor.value === this.selectedInstructor["id"];
+    },
+    //very buggy, might crash server side
+    async deleteSessionFromDB() {
+      try {
+        const pass_session_id = {
+          session_id: this.selectedEvent.session_id,
+        };
+        console.log(pass_session_id);
+        // Very buggy
+        // const response = await AdminService.deleteSessionFromDB(pass_session_id);
+        this.selectedOpen = false;
+        this.updateAdminCalenderInfo();
+      } catch (error) {
+        console.log(error);
       }
     },
     async generateListInstructor() {
@@ -559,6 +582,8 @@ export default {
         const response = await AdminService.viewAdminSchedule();
         for (const session_student of response) {
           var obj = {
+            //name allows us to change the mini text on the event
+            name: session_student.i_first_name + " " + session_student.i_last_name,
             session_id: session_student.session_id,
             session_status_id: session_student.session_status_id,
             session_status_desc: session_student.session_status_desc,
@@ -568,6 +593,7 @@ export default {
             s_first_name: session_student.first_name,
             s_last_name: session_student.last_name,
             s_student_id: session_student.student_id,
+            attendance: session_student.attendance,
           };
 
           var date = new Date(session_student.date);
@@ -586,7 +612,37 @@ export default {
           date2.setHours(hour + 1);
           date2.setMinutes(minutes);
           obj["end"] = date2;
-          obj["color"] = this.colors[2];
+
+          //Color 0 - light green, Color 1 - Dark Green, Color 2 - light grey, Color 3 - red
+          if (session_student.session_status_desc == "Cancelled") {
+            obj["color"] = this.colors[3];
+            //red
+          }
+          //sessions where a student is not present but the class is upcoming
+          else if (session_student.student_id == null && session_student.session_status_desc == "Upcoming") {
+            obj["color"] = this.colors[2];
+            //light grey
+          }
+          //if the session has a student and is upcoming
+          else if (session_student.session_status_desc == "Upcoming") {
+            obj["color"] = this.colors[0];
+            //light green
+          }
+
+          //if the session is Completed
+          else if (session_student.session_status_desc == "Completed") {
+            obj["color"] = this.colors[1];
+            //Dark Green
+          }
+          //if the session is Completed and the status is set to available
+          else if (session_student.session_status_desc == "Completed" && session_student.attendance == 1) {
+            obj["color"] = this.colors[1];
+            //Dark Green
+          } else {
+            obj["colocr"] = this.colors[4];
+            //blue
+          }
+
           obj["timed"] = 1;
 
           this.privateSessions.push(obj);
@@ -635,8 +691,6 @@ export default {
       this.privateSessions = [];
       this.updateAdminCalenderInfo();
     },
-    //FUNCTION TO SUBMIT FORM DATA TO DB FOR UPDATE
-    //tied to a submit button so will throw errors if form is not finished
   },
 };
 </script>
@@ -653,7 +707,34 @@ export default {
 .bordered {
   border-left: 1px solid grey;
 }
-
+.dotCancelled {
+  height: 15px;
+  width: 15px;
+  background-color: #ad0000;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotUpNoStudent {
+  height: 15px;
+  width: 15px;
+  background-color: #bdbdbdff;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotUpYesStudent {
+  height: 15px;
+  width: 15px;
+  background-color: #86db86ff;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotCompleted {
+  height: 15px;
+  width: 15px;
+  background-color: #43944fff;
+  border-radius: 50%;
+  display: inline-block;
+}
 .footerBlank {
   height: 80px;
 }
