@@ -65,4 +65,8 @@ export default {
       .post(url + "create-new-session/", information)
       .then((response) => response.data);
   },
+  //STILL VERY BUGGY, BE CAREFUL
+  deleteSessionFromDB(pass_session_id) {
+    return axios.post(url + "delete-session-from-db-admin-schedule/", pass_session_id).then((response) => response.data);
+  },
 };
