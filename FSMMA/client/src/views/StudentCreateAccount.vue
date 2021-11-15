@@ -185,9 +185,6 @@ export default {
             student_location_id: 1 //katy
           };
 
-
-
-
           const response = await AuthService.signUp(credentials);
           this.msg = response.msg;
           this.$router.push('/student-login');

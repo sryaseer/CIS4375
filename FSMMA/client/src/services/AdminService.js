@@ -26,6 +26,16 @@ export default {
       .then((response) => response.data);
   },
 
+  listGoals() {
+    return axios
+      .get(url + "get-fitness-goals/")
+      .then((response) => response.data);
+  },
+
+  listSports() {
+    return axios.get(url + "get-sports/").then((response) => response.data);
+  },
+
   viewStudentTest(id) {
     return axios
       .get(url + "admin-view-student-test/" + id)
