@@ -26,6 +26,10 @@ export default {
     return axios.get(url + "get-sports/").then((response) => response.data);
   },
 
+  listStudentTypes(){
+    return axios.get(url + "get-student-types/").then((response) => response.data);
+  },
+
   viewStudentTest(id) {
     return axios.get(url + "admin-view-student-test/" + id).then((response) => response.data);
   },

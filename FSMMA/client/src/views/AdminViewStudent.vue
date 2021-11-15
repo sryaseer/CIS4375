@@ -91,19 +91,25 @@
 
             <v-col cols="12" sm="6" md="4">
               <validation-provider v-slot="{ errors }" name="student_type" >
-                <v-text-field v-model="student_type" label="Student Type" outlined required :disabled="disable"></v-text-field>
+                <v-select v-model="student_type" :items="student_types" :item-text="'student_type_desc'"
+                :error-messages="errors" label="Student type" data-vv-name="student_type" required outlined :disabled="disable">
+                </v-select>
               </validation-provider>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
-              <validation-provider v-slot="{ errors }" name="goal" >
-                <v-text-field v-model="goal" label="Fitness Goal" outlined required :disabled="disable"></v-text-field>
-              </validation-provider>
+                <validation-provider v-slot="{ errors }" name="Goal">
+                  <v-select v-model="goal" :items="goals" :item-text="'goal_desc'" :error-messages="errors"
+                  label="Fitness Goal (Optional)" data-vv-name="goal" outlined :disabled="disable">
+                  </v-select>
+                </validation-provider>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
-              <validation-provider v-slot="{ errors }" name="sport" >
-                <v-text-field v-model="sport" label="Sport" outlined required :disabled="disable"></v-text-field>
+              <validation-provider v-slot="{ errors }" name="Sport">
+                <v-select v-model="sport" :items="sports" :item-text="'sport_desc'" :error-messages="errors"
+                label="Sport (Optional)" data-vv-name="sport" outlined :disabled="disable">
+                </v-select>
               </validation-provider>
             </v-col>
           </v-row>
@@ -121,31 +127,31 @@
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="date" >
-                <v-text-field v-model="date" label="Date" outlined required disabled></v-text-field>
+                <v-text-field v-model="date" label="Date" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="bmi" >
-                <v-text-field v-model="bmi" label="BMI" outlined required disabled></v-text-field>
+                <v-text-field v-model="bmi" label="BMI" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="weight" >
-                <v-text-field v-model="weight" label="Weight (lbs)" outlined required disabled></v-text-field>
+                <v-text-field v-model="weight" label="Weight (lbs)" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="fat" >
-                <v-text-field v-model="fat" label="Fat percentage (00) %" outlined required disabled></v-text-field>
+                <v-text-field v-model="fat" label="Fat percentage (00) %" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
             <v-col cols="6" sm="4" md="4">
               <validation-provider v-slot="{ errors }" name="height" >
-                <v-text-field v-model="height" label="Height" outlined required disabled></v-text-field>
+                <v-text-field v-model="height" label="Height" outlined required :disabled="disableHealth"></v-text-field>
               </validation-provider>
             </v-col>
 
@@ -265,6 +271,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         admin_id: null,
         goals: [],
         sports: [],
+        student_types: [],
       }
     },
     components: {
@@ -274,6 +281,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
     async mounted(){
       this.listGoals();
       this.listSports();
+      this.listStudentTypes();
         try {
           const response = await AdminService.viewStudent(this.student_id);
           this.firstName = response.first_name;
@@ -288,8 +296,11 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           this.account_created_date = new Date(response.account_created_date).toLocaleDateString("en-US");
           this.session_credits = response.session_credits;
           this.phone = response.phone;
-          console.log(response);
+          this.goal = this.getGoalById(response.goal_id);
+          this.sport = this.getSportById(response.sport_id);
+          this.student_type = this.getTypeById(response.student_type_id);
 
+          console.log(response);
         } catch (error) {
           this.msg = error.response.data.msg;
       }
@@ -308,7 +319,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         else if (this.disableHealth == false) {this.disableHealth = true; }
       },
       submitContactChanges(){
-        console.log(this.getSportById(1));
+
       },
       submitHealthEntry(){
 
@@ -348,6 +359,19 @@ extend('between', {...between, message: '{_field_} is invalid.'})
           console.log(error);
         }
       },
+      async listStudentTypes(){
+        try{
+          const response = await AdminService.listStudentTypes();
+          for (var resp in response){
+            var obj = {}
+            obj['student_type_id'] = response[resp]['student_type_id'];
+            obj['student_type_desc'] = response[resp]['student_type_desc'];
+            this.student_types.push(obj);
+          }
+        } catch(error){
+          console.log(error);
+        }
+      },
       getSportById(id){
         let ans = this.sports.find(obj => obj.sport_id == id);
         if (ans){return ans;}
@@ -355,6 +379,11 @@ extend('between', {...between, message: '{_field_} is invalid.'})
       },
       getGoalById(id){
         let ans = this.goals.find(obj => obj.goal_id == id);
+        if (ans){return ans;}
+        else return null;
+      },
+      getTypeById(id){
+        let ans = this.student_types.find(obj => obj.student_type_id == id);
         if (ans){return ans;}
         else return null;
       }

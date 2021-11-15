@@ -76,7 +76,7 @@
           </div>
           <div class="addressFormItem" style="min-width: 100px; width: 280px;">
             <validation-provider v-slot="{ errors }" name="Zip Code" rules="max:10">
-              <v-text-field v-model="zip_code" :error-messages="errors" label="Zip Code" required outlined>
+              <v-text-field v-model="postal_code" :error-messages="errors" label="Zip Code" required outlined>
               </v-text-field>
             </validation-provider>
           </div>

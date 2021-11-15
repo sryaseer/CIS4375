@@ -118,6 +118,23 @@ router.get("/get-fitness-goals", (req, res, next) => {
     res.status(200).send(result);
   });
 });
+//Getting student_types from db
+router.get("/get-student-types", (req, res, next) => {
+  let selectQuery = "SELECT * FROM Student_type";
+  let query = mysql.format(selectQuery);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
+
 
 //Getting sports from db
 router.get("/get-sports", (req, res, next) => {
