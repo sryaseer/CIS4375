@@ -79,7 +79,7 @@ export default {
         const admin = response.admin;
 
         this.$store.dispatch('adminLogin', { adminToken, admin });
-        this.$router.push('/admin-home');
+        this.$router.push('/admin-schedule');
     } catch (error) {
         this.msg = error.response.data.msg;
       }
