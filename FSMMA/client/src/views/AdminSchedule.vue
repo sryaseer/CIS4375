@@ -280,13 +280,34 @@
           </v-sheet>
         </v-col>
       </v-row>
-      <p>
-        <small>
-          <span class="dotCancelled"></span> Cancelled Sessions <span class="dotUpNoStudent"></span> Upcoming + No Students
-          <span class="dotUpYesStudent"></span> Upcoming + Student Registered <span class="dotCompleted"></span>
-          Completed or Old
-        </small>
-      </p>
+      <v-row>
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotCancelled"></span> Cancelled Sessions </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotUpNoStudent"></span> Upcoming + No Students </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotUpYesStudent"></span> Upcoming + Student Registered </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small>
+              <span class="dotCompleted"></span>
+              Completed or Old
+            </small>
+          </p></v-col
+        >
+      </v-row>
     </div>
     <!-- *** END OF CALENDAR VIEW *** -->
 
@@ -737,29 +758,33 @@ export default {
   height: 15px;
   width: 15px;
   background-color: #ad0000;
-  border-radius: 50%;
+  border-radius: 27%;
   display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
 }
 .dotUpNoStudent {
   height: 15px;
   width: 15px;
   background-color: #bdbdbdff;
-  border-radius: 50%;
+  border-radius: 27%;
   display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
 }
 .dotUpYesStudent {
   height: 15px;
   width: 15px;
   background-color: #86db86ff;
-  border-radius: 50%;
+  border-radius: 27%;
   display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
 }
 .dotCompleted {
   height: 15px;
   width: 15px;
   background-color: #43944fff;
-  border-radius: 50%;
+  border-radius: 27%;
   display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
 }
 .footerBlank {
   height: 80px;
