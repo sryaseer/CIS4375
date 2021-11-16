@@ -615,7 +615,9 @@ router.post("/forgot-password", (req, res) => {
         return res.status(500).send({
           msg: err,
         });
-      } else {
+      }
+
+      else {
         let query = `UPDATE Student_Account SET password = ${db.escape(hash)} WHERE email = ${db.escape(req.body.email)};`;
         db.query(query, (err, result) => {
           if (err) {
@@ -636,6 +638,7 @@ router.post("/forgot-password", (req, res) => {
             if (err) {
               console.log(err);
             } else {
+              res.status(200).send({msg: "changed"});
               console.log("Email sent succesfully ");
             }
           });

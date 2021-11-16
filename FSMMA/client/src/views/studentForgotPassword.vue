@@ -51,6 +51,7 @@ export default {
         let response = await MailService.forgotPassword(credentials);
         console.log(response.data)
         this.msg = "Email was sent. Please check spam folder as well."
+        setTimeout( () => this.$router.push({path: '/student-login'}), 4000);
       } catch (error) {
         this.msg = error.response.data.msg;
       }
@@ -58,7 +59,8 @@ export default {
   },
   beforeMount(){
         this.$store.dispatch('logout');
-    },
+  },
+
 }
 
 </script>
