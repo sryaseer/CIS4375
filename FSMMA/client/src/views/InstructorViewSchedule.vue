@@ -1,26 +1,19 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-      <p style="text-align: center; font-size: 18px;">
-          UPCOMING SESSIONS FOR INSTRUCTOR - {{ this.$store.getters.getAdmin.first_name }}
-          {{ this.$store.getters.getAdmin.last_name }}
-      </p>
+    <p style="text-align: center; font-size: 18px;">
+      UPCOMING SESSIONS FOR INSTRUCTOR - {{ this.$store.getters.getAdmin.first_name }}
+      {{ this.$store.getters.getAdmin.last_name }}
+    </p>
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>
       <v-row class="fill-height">
         <v-col>
           <v-sheet height="64">
             <v-toolbar flat>
-              <v-switch v-model="viewCalenderSwitch">{{
-                dosomething
-              }}</v-switch>
+              <v-switch v-model="viewCalenderSwitch">{{ dosomething }}</v-switch>
 
-              <v-btn
-                outlined
-                class="mr-4"
-                color="grey darken-2"
-                @click="setToday"
-              >
+              <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
                 Today
               </v-btn>
               <v-btn fab text small color="grey darken-2" @click="prev">
@@ -40,12 +33,7 @@
 
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    outlined
-                    color="grey darken-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
+                  <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
                     <span>{{ typeToLabel[type] }}</span>
                     <v-icon right>
                       mdi-menu-down
@@ -83,29 +71,15 @@
               @click:date="viewDay"
             ></v-calendar>
             <!-- @change="updateRange" -->
-            <v-menu
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
-            >
+            <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
                   <!-- Should be able to pull first name and last name -->
                   <!-- Currently throwing errors: "TypeError: Cannot read properties of undefined (reading 'i_first_name')" -->
                   <v-btn icon>
-                    <v-icon @click="selectedOpen = false"
-                      >mdi-arrow-left</v-icon
-                    >
+                    <v-icon @click="selectedOpen = false">mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-toolbar-title
-                    v-html="
-                      'hello ' +
-                        this.selectedEvent.i_first_name +
-                        ' ' +
-                        this.selectedEvent.i_last_name
-                    "
-                  ></v-toolbar-title>
+                  <v-toolbar-title v-html="'hello ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"></v-toolbar-title>
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
@@ -134,12 +108,34 @@
         </v-col>
       </v-row>
 
-      <p>
-        <small>
-          &#128308; Cancelled Sessions &#128309; Upcoming + No Students
-          &#128994; Upcoming + Student Registered &#11044; Completed or Old
-        </small>
-      </p>
+      <v-row>
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotCancelled"></span> Cancelled Sessions </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotUpNoStudent"></span> Upcoming + No Students </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small> <span class="dotUpYesStudent"></span> Upcoming + Student Registered </small>
+          </p></v-col
+        >
+
+        <v-col>
+          <p class="text--primary">
+            <small>
+              <span class="dotCompleted"></span>
+              Completed or Old
+            </small>
+          </p></v-col
+        >
+      </v-row>
     </div>
 
     <!-- Middle - Form (when you click on an available slot, the form will auto populate info for session)  -->
@@ -227,9 +223,7 @@ export default {
       const open = () => {
         this.selectedEvent = event;
         this.selectedElement = nativeEvent.target;
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => (this.selectedOpen = true))
-        );
+        requestAnimationFrame(() => requestAnimationFrame(() => (this.selectedOpen = true)));
       };
 
       if (this.selectedOpen) {
@@ -344,10 +338,7 @@ export default {
             //red
           }
           //sessions where a student is not present but the class is upcoming
-          else if (
-            session_student.student_id == null &&
-            session_student.session_status_desc == "Upcoming"
-          ) {
+          else if (session_student.student_id == null && session_student.session_status_desc == "Upcoming") {
             obj["color"] = this.colors[0];
             // obj["buttonRegister"] = true;
             //blue
@@ -388,14 +379,10 @@ export default {
         const credentials = {
           instructor_id: this.$store.getters.getAdmin.admin_id,
         };
-        console.log(
-          "LEFT-store info: " + this.$store.getters.getAdmin.admin_id
-        );
+        console.log("LEFT-store info: " + this.$store.getters.getAdmin.admin_id);
         console.log("instructor: " + this.instructor_id);
         //pulling all the session for the instructor where student's signed up
-        const response = await AdminService.viewInstructorWithStudentSchedule(
-          credentials
-        );
+        const response = await AdminService.viewInstructorWithStudentSchedule(credentials);
         for (const session_student of response) {
           var obj = {
             session_id: session_student.session_id,
@@ -437,10 +424,7 @@ export default {
             //red
           }
           //sessions where a student is not present but the class is upcoming
-          else if (
-            session_student.student_id == null &&
-            session_student.session_status_desc == "Upcoming"
-          ) {
+          else if (session_student.student_id == null && session_student.session_status_desc == "Upcoming") {
             obj["color"] = this.colors[0];
             // obj["buttonRegister"] = true;
             //blue
@@ -487,5 +471,37 @@ export default {
   margin: auto;
   width: 50%;
   height: 50%;
+}
+.dotCancelled {
+  height: 15px;
+  width: 15px;
+  background-color: #ad0000;
+  border-radius: 27%;
+  display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
+}
+.dotUpNoStudent {
+  height: 15px;
+  width: 15px;
+  background-color: #677fb5;
+  border-radius: 27%;
+  display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
+}
+.dotUpYesStudent {
+  height: 15px;
+  width: 15px;
+  background-color: #86db86ff;
+  border-radius: 27%;
+  display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
+}
+.dotCompleted {
+  height: 15px;
+  width: 15px;
+  background-color: #43944fff;
+  border-radius: 27%;
+  display: inline-block;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
 }
 </style>
