@@ -1,8 +1,6 @@
 <template>
-<div id="mainDiv">
-  <div>
-    <p style="text-align: center; font-size: 16px;">BUY SESSION CREDITS</p>
-  </div>
+<v-container id="mainDiv">
+    <p style="text-align: center; font-size: 18px;">BUY SESSION CREDITS</p>
   <v-row dense>
     <v-col cols="12" align="center" dense>
       <v-card class="ma-5 pa-5 card1">
@@ -18,8 +16,8 @@
             <p>5+ sessions = $55 per session.</p>
             <p>10+ sessions = $50 per session.</p>
           </div>
-          <v-col cols="4" sm="4" md="4" align="center">
-                <v-text-field id="sessionsInput" v-model="sessions" label="total sessions" append-outer-icon="mdi-plus-box" min="0" max="100"
+          <v-col cols="5" sm="5" md="5" align="center">
+                <v-text-field id="sessionsInput" v-model="sessions" label="total sessions" append-outer-icon="mdi-plus-box"
                 @click:append-outer="increment" prepend-icon="mdi-minus-box" @click:prepend="decrement" :rules="[numberRules.required]" :readonly="true" required>
                 </v-text-field>
           </v-col>
@@ -44,7 +42,7 @@
       </v-card>
     </v-col>
   </v-row>
-</div>
+</v-container>
 </template>
 
 <script>
@@ -215,7 +213,6 @@ export default {
 }
 
 #mainDiv {
-  padding: 20px;
   margin-bottom: 50px;
 }
 

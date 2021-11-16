@@ -148,7 +148,7 @@ export default {
 
     adminLoginItems: [
       { title: "Admin", link: "/admin-login" },
-      { title: "Instructor", link: "/test" },
+      { title: "Instructor", link: "/admin-login" },
     ],
     drawer: null,
     menuIcon: 'mdi-menu',

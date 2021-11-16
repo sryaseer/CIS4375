@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <!-- Student will become <$Student> once connection to DB -->
-        <p class="titles"> Student History Page </p>
+        <p style="text-align: center; font-size: 18px;">STUDENT HISTORY PAGE </p>
 
         <!-- TOP - Show changes to bmi / weight / fat percentage per date -->
         <div class="container1">
@@ -123,7 +123,6 @@ export default {
         getPhysicalHistory() {},
     },
     async mounted() {
-        document.title = 'My History Info';
         this.student_id = this.$store.getters.getUser.student_id;
         try {
           const credentials = {

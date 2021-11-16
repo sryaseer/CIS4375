@@ -34,7 +34,7 @@ export default {
     computed: {
     },
     async mounted () {
-      document.title = 'FSMMA SESSIONS - HOME';
+      document.title = 'FSMMA SESSIONS';
       this.student_id = this.$store.getters.getUser.student_id;
       try {
         const credentials = {

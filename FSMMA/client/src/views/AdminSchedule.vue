@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <p class="pageTitle">Admin Create Sessions</p>
+    <p style="text-align: center; font-size: 18px;">ADMIN CREATE SESSIONS</p>
 
     <v-col>
       <v-expansion-panels focusable>

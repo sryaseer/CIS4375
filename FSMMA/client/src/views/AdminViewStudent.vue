@@ -1,7 +1,8 @@
 <template>
 <validation-observer ref="observer" v-slot="{ invalid }" >
-    <div class="ma-5 pa-5">
-        <p class = "pageTitle">Student Information</p>
+    <v-container>
+        <p style="text-align: center; font-size: 18px;">STUDENT INFORMATION</p>
+    </v-container>
 
         <!-- START STUDENT CONTACT CONTAINER -->
         <v-container class="container1">
@@ -9,7 +10,7 @@
           <v-row>
 
             <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Personal Info: </p>
+              <p class="rowSubTitle"> PERSONAL INFO: </p>
             </v-col>
 
             <v-col cols="4" lg="4" sm="4" md="4">
@@ -54,7 +55,7 @@
           <v-row>
 
             <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Student Address: </p>
+              <p class="rowSubTitle"> STUDENT ADDRESS: </p>
             </v-col>
 
               <v-col cols="6" sm="6" md="4">
@@ -86,7 +87,7 @@
             <!-- SPORT ROW -->
           <v-row>
             <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Student Type: </p>
+              <p class="rowSubTitle"> STUDENT TYPE: </p>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
@@ -164,7 +165,7 @@
         <v-container class="container1">
           <v-row>
             <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Sessions: </p>
+              <p class="rowSubTitle"> SESSIONS: </p>
             </v-col>
 
             <v-col cols="12" sm="6" md="4">
@@ -190,7 +191,7 @@
         <v-container class="container1">
           <v-row>
             <v-col cols="12" sm="12" md="12">
-              <p class="rowSubTitle"> Notes: </p>
+              <p class="rowSubTitle"> NOTES: </p>
               <v-data-table :headers="notesHeader" :items="notes" :items-per-page="5" class="elevation-1"></v-data-table>
             </v-col>
 
@@ -218,7 +219,7 @@
 
       </div>
 
-    </div>
+
   </validation-observer>
 </template>
 
@@ -478,7 +479,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
 
 
-<style>
+<style scoped>
 
 .pageTitle {
   text-align: center;
@@ -486,7 +487,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 }
 
 .rowSubTitle{
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .btn {

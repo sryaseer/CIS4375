@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <p class="pageTitle">Private Sessions Calendar</p>
+    <p style="text-align: center; font-size: 18px;">PRIVATE SESSIONS CALENDAR</p>
 
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>

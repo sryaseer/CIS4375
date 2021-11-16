@@ -2,7 +2,7 @@
   <validation-observer ref="observer" v-slot="{ invalid }" >
     <v-container>
       <v-form @submit.prevent="submit">
-      <p style="text-align: center; font-size: 28px;"> Student Login Page </p>
+      <p style="text-align: center; font-size: 16px;">STUDENT LOGIN PAGE</p>
 
       <div id="login-form">
 
@@ -89,6 +89,9 @@ export default {
   beforeMount(){
         this.$store.dispatch('logout');
     },
+  mounted(){
+    document.title = 'FSMMA SESSIONS - HOME';
+  },
 
 }
 

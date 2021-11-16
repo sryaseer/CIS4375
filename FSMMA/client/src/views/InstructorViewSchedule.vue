@@ -1,14 +1,10 @@
 <template>
   <v-container>
     <!-- Student will become <$Student> once connection to DB -->
-    <div>
-      <h1 class="pageTitle">
-        <small>
-          Upcoming sessions for {{ this.$store.getters.getAdmin.first_name }}
-          {{ this.$store.getters.getAdmin.last_name }}</small
-        >
-      </h1>
-    </div>
+      <p style="text-align: center; font-size: 18px;">
+          UPCOMING SESSIONS FOR INSTRUCTOR - {{ this.$store.getters.getAdmin.first_name }}
+          {{ this.$store.getters.getAdmin.last_name }}
+      </p>
     <!-- Top - This is the table of all the session upcoming for this stduent -->
     <div>
       <v-row class="fill-height">

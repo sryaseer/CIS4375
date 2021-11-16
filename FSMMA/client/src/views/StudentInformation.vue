@@ -1,7 +1,8 @@
 <template>
 <validation-observer ref="observer" v-slot="{ invalid }" >
-    <div class="ma-5 pa-5">
-        <p class = "pageTitle">Student Information</p>
+    <v-container>
+      <p style="text-align: center; font-size: 18px;">STUDENT INFORMATION</p>
+
 
         <!-- START STUDENT CONTACT CONTAINER -->
         <v-container class="container1">
@@ -156,7 +157,7 @@
           <p> {{databaseResponse}} </p>
 
 
-      </div>
+      </v-container>
 
   </validation-observer>
 </template>
@@ -297,7 +298,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
 
 
-<style>
+<style scoped>
 .pageTitle {
   text-align: center;
   font-size: 25px;

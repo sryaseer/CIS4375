@@ -2,7 +2,7 @@
   <validation-observer ref="observer" v-slot="{ invalid }" >
 
     <div id="form-div">
-      <p style="text-align: center; font-size: 28px;"> Create Student Account </p>
+      <p style="text-align: center; font-size: 18px;"> CREATE STUDENT ACCOUNT </p>
       <form @submit.prevent="submit" id="studentForm">
 
         <validation-provider v-slot="{ errors }" name="First Name" rules="required|max:20" >
@@ -239,7 +239,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
   #form-div {
     padding-top: 10px;
     padding-bottom: 60px;

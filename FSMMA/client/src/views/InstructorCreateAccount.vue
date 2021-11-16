@@ -1,70 +1,71 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
+    <v-container>
+      <p style="text-align: center; font-size: 18px;">CREATE INSTRUCTOR ACCOUNT </p>
+      <div id="form-div">
 
-    <div id="form-div">
-      <p style="text-align: center; font-size: 28px;"> Create Instructor Account </p>
-      <form @submit.prevent="submit" id="instructorForm">
+        <form @submit.prevent="submit" id="instructorForm">
 
-        <validation-provider v-slot="{ errors }" name="First Name" rules="required|max:20" >
-          <v-text-field v-model="firstName" :error-messages="errors" label="First Name" required outlined></v-text-field>
-        </validation-provider>
+          <validation-provider v-slot="{ errors }" name="First Name" rules="required|max:20" >
+            <v-text-field v-model="firstName" :error-messages="errors" label="First Name" required outlined></v-text-field>
+          </validation-provider>
 
-        <validation-provider v-slot="{ errors }" name="Last Name" rules="required|max:20" >
-          <v-text-field v-model="lastName" :error-messages="errors" label="Last Name" required outlined></v-text-field>
-        </validation-provider>
+          <validation-provider v-slot="{ errors }" name="Last Name" rules="required|max:20" >
+            <v-text-field v-model="lastName" :error-messages="errors" label="Last Name" required outlined></v-text-field>
+          </validation-provider>
 
-        <validation-provider v-slot="{ errors }" name="email" rules="required|email">
-          <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined hint="This will be your username to log in.">
-          </v-text-field>
-        </validation-provider>
+          <validation-provider v-slot="{ errors }" name="email" rules="required|email">
+            <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined hint="This will be your username to log in.">
+            </v-text-field>
+          </validation-provider>
 
-        <validation-provider v-slot="{ errors }" name="title" rules="required|email">
-          <v-text-field v-model="title" :error-messages="errors" label="Title" required outlined>
-          </v-text-field>
-        </validation-provider>
+          <validation-provider v-slot="{ errors }" name="title" rules="required|email">
+            <v-text-field v-model="title" :error-messages="errors" label="Title" required outlined>
+            </v-text-field>
+          </validation-provider>
 
-         <validation-provider v-slot="{ errors }" name="rate" rules="required|number">
-          <v-text-field type="number" v-model="rate" :error-messages="errors" label="Rate per session" required outlined>
-          </v-text-field>
-        </validation-provider>
+           <validation-provider v-slot="{ errors }" name="rate" rules="required|number">
+            <v-text-field type="number" v-model="rate" :error-messages="errors" label="Rate per session" required outlined>
+            </v-text-field>
+          </validation-provider>
 
-          <v-select
-            :items="locations"
-            v-model="location"
-            filled
-            label="Location"
-            :disabled="disable"
-          ></v-select>
+            <v-select
+              :items="locations"
+              v-model="location"
+              filled
+              label="Location"
+              :disabled="disable"
+            ></v-select>
 
-        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                        :type="show1 ? 'text' : 'password'"
-                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                        @click:append="show1 = !show1"></v-text-field>
-        </validation-provider>
+          <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
+            <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
+                          :type="show1 ? 'text' : 'password'"
+                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                          @click:append="show1 = !show1"></v-text-field>
+          </validation-provider>
 
-        <br><br>
+          <br><br>
 
-        <validation-provider v-slot="{ errors }" name="Phone Number" :rules="{ required: true, digits: 10}">
-          <v-text-field v-model="phoneNumber" :counter="10" :error-messages="errors" label="Phone Number" required outlined>
-          </v-text-field>
-        </validation-provider>
-            
+          <validation-provider v-slot="{ errors }" name="Phone Number" :rules="{ required: true, digits: 10}">
+            <v-text-field v-model="phoneNumber" :counter="10" :error-messages="errors" label="Phone Number" required outlined>
+            </v-text-field>
+          </validation-provider>
 
-        <p>{{ msg }}</p>
-        <div>
-          <v-btn style="margin: 5px" class="btn" @click="submit" :disabled="invalid">
-            submit
-          </v-btn>
-          <v-btn style="margin: 5px" class="btn" @click="clear">
-            clear
-          </v-btn>
-        </div>
 
-      </form>
-    </div>
-    
+          <p>{{ msg }}</p>
+          <div>
+            <v-btn style="margin: 5px" class="btn" @click="submit" :disabled="invalid">
+              submit
+            </v-btn>
+            <v-btn style="margin: 5px" class="btn" @click="clear">
+              clear
+            </v-btn>
+          </div>
 
+        </form>
+      </div>
+
+    </v-container>
   </validation-observer>
 </template>
 
@@ -139,7 +140,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
   #form-div {
     padding-top: 10px;
     padding-bottom: 60px;

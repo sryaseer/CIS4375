@@ -1,6 +1,6 @@
 <template>
-  <div class="ma-5 pa-5">
-      <p class = "pageTitle">Instructor Information</p>
+  <v-container>
+      <p style="text-align: center; font-size: 18px;">INSTRUCTOR SEARCH</p>
     <div id="instructorSearch">
       <v-autocomplete v-model="instructor" :items="instructors" :item-text="'name'" :loading="isLoading" :search-input.sync="search"
         color="white" hide-no-data hide-selected item-value="name" label="Search Instructor"
@@ -11,7 +11,7 @@
         </template>
     </v-autocomplete>
     </div>
-  </div>
+  </v-container>
 </template>
 
 
@@ -71,7 +71,7 @@ import AuthService from '@/services/AuthService.js';
 
 
 
-<style>
+<style scoped>
 #studentSearch{
   max-width: 70%;
   min-width: 60%;

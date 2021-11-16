@@ -1,9 +1,8 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
     <v-container>
+      <p style="text-align: center; font-size: 18px;"> ADMIN LOGIN </p>
       <v-form @submit.prevent="submit">
-      <br></br>
-      <p style="text-align: center; font-size: 28px;"> Admin Login </p>
       <div id="login-form">
 
         <validation-provider v-slot="{ errors }" name="email" rules="required|email">
@@ -30,9 +29,7 @@
         </v-btn>
         </v-col>
 
-          <br>
           <p> {{msg}} </p>
-          <br>
         </div>
       </v-form>
     </v-container>

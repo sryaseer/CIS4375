@@ -1,14 +1,15 @@
 <template>
   <validation-observer ref="observer" v-slot="{ invalid }" >
-    <v-container style="max-width: 400px; margin: auto; margin-top: 100px">
-      <p style="text-align: center; font-size: 28px;"> Forgot Password </p>
+    <v-container style="max-width: 400px; margin: auto;">
+      <p style="text-align: center; font-size: 18px;"> FORGOT PASSWORD </p>
+      <div style="padding-top: 100px;"> </div>
       <v-form>
         <validation-provider v-slot="{ errors }" name="email" rules="required|email">
           <v-text-field v-model="email" :error-messages="errors" label="E-mail" required outlined>
           </v-text-field>
         </validation-provider>
         <p> {{msg}} </p>
-        <v-btn class="mr-4" @click="resetPassword"> Send Email </v-btn>
+        <v-btn class="mr-5" @click="resetPassword"> Send Email </v-btn>
       </v-form>
     </v-container>
   </validation-observer >

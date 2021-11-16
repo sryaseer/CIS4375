@@ -1,6 +1,6 @@
 <template>
-  <div class="ma-5 pa-5">
-        <p class = "pageTitle">Admin View/Edit Instructor</p>
+  <v-container>
+        <p style="text-align: center; font-size: 18px;">ADMIN - EDIT INSTRUCTOR</p>
         <v-container class="container" style="max-width: 800px">
           <v-row>
             <v-col cols="12" md="6">
@@ -87,7 +87,7 @@
               <v-btn class="btn"  id="submitbtn" @click="submitChanges" dark> Submit Changes </v-btn>
             </v-col>
           </v-row>
-          
+
         </v-container>
 
          <!-- STUDENT SESSIONS CONTAINER -->
@@ -108,7 +108,7 @@
           </v-row>
         </v-container>
         <!-- END OF STUDENT SESSIONS CONTAINER -->
-      </div>
+      </v-container>
 </template>
 
 
@@ -212,7 +212,7 @@ extend('between', {...between, message: '{_field_} is invalid.'})
 
 
 
-<style>
+<style scoped>
 #studentSearch{
   max-width: 70%;
   min-width: 60%;
