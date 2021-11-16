@@ -460,6 +460,7 @@ export default {
     this.generateListStudents();
     this.getInstructorKey();
     this.getBackInstructorKey();
+    document.title = "FS MMA Admin's Schedule";
   },
   methods: {
     allowedMinutes: (v) => v % 30 === 0,

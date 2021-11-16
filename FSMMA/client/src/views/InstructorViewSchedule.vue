@@ -458,7 +458,9 @@ export default {
     },
   },
 
-  async mounted() {},
+  mounted() {
+    document.title = "FS MMA Instructor's Schedule";
+  },
 };
 </script>
 
