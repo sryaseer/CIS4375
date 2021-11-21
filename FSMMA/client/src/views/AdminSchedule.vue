@@ -581,13 +581,24 @@ export default {
     },
     //very buggy, might crash server side
     async deleteSessionFromDB() {
+      if (this.selectedEvent.s_student_id){
+        console.log("student to be unsigned up: " + this.selectedEvent.s_student_id);
+        try {
+          const pass_session_id = {
+            session_id: this.selectedEvent.session_id,
+          };
+          const response = await AdminService.deleteSignupFromDB(pass_session_id);
+        } catch (error) {
+          console.log(error);
+        }
+      }
       try {
         const pass_session_id = {
           session_id: this.selectedEvent.session_id,
         };
         console.log(pass_session_id);
         // Very buggy
-        // const response = await AdminService.deleteSessionFromDB(pass_session_id);
+        const response = await AdminService.deleteSessionFromDB(pass_session_id);
         this.selectedOpen = false;
         this.updateAdminCalenderInfo();
       } catch (error) {
@@ -613,6 +624,7 @@ export default {
       try {
         const res = await AdminService.listStudents();
         var response = res;
+        this.students.push({"id": null, "name": ""});
         for (const account of response) {
           var obj = {};
           obj["id"] = account.student_id;

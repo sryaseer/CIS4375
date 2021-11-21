@@ -65,6 +65,9 @@ export default {
   deleteSessionFromDB(pass_session_id) {
     return axios.post(url + "delete-session-from-db-admin-schedule/", pass_session_id).then((response) => response.data);
   },
+  deleteSignupFromDB(pass_session_id) {
+    return axios.post(url + "delete-signup-from-db-admin-schedule/", pass_session_id).then((response) => response.data);
+  },
   getLatestStudentHealth(credentials){
     return axios.post(url + "get-student-latest-health-entry/", credentials).then((response) => response.data);
   },

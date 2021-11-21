@@ -913,11 +913,9 @@ router.post("/student-add-credits", (req, res, next) => {
 
 //ADMIN SIDE - DELETE A SESSION FROM DB
 router.post("/delete-session-from-db-admin-schedule", (req, res, next) => {
-  let selectQuery1 = "DELETE FROM Session_Student " + "WHERE session_id = ?";
   let selectQuery2 = "DELETE FROM Session " + "WHERE session_id = ?;";
-  let query1 = mysql.format(selectQuery1, [req.body.session_id]);
   let query2 = mysql.format(selectQuery2, [req.body.session_id]);
-  pool.query(query1, (err, result) => {
+  pool.query(query2, (err, result) => {
     if (err) {
       console.error(err);
       throw err;
@@ -928,7 +926,14 @@ router.post("/delete-session-from-db-admin-schedule", (req, res, next) => {
     console.log(result);
     res.status(200).send(result);
   });
-  pool.query(query2, (err, result) => {
+});
+
+
+//ADMIN SIDE - DELETE A STUDENT SIGNUP FROM DB
+router.post("/delete-signup-from-db-admin-schedule", (req, res, next) => {
+  let selectQuery1 = "DELETE FROM Session_Student " + "WHERE session_id = ?";
+  let query1 = mysql.format(selectQuery1, [req.body.session_id]);
+  pool.query(query1, (err, result) => {
     if (err) {
       console.error(err);
       throw err;
