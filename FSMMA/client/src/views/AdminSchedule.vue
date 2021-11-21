@@ -702,11 +702,15 @@ export default {
       }
     },
     async createSession() {
-      const startDate = new Date(this.startAvailabilityDate + ":00:00");
-      const endDate = new Date(this.endAvailabilityDate + ":00:00");
-      var startTime = new Date("1990-11-15 " + this.reoccurringStartTime + ":00"); //from 5AM
-      var endTime = new Date("1990-11-15 " + this.reoccurringEndTime + ":00"); //to 1PM
+      const startDate = new Date(this.startAvailabilityDate + " 00:00:00");
+      const endDate = new Date(this.endAvailabilityDate + " 00:00:00");
+      var startTime = new Date("1990-11-15 " + this.reoccurringStartTime ); //from 5AM
+      var endTime = new Date("1990-11-15 " + this.reoccurringEndTime); //to 1PM
       const indexDate = startDate;
+
+      console.log(startTime);
+      console.log(endTime);
+
 
       var minuteChecker = startTime.getMinutes();
       if (minuteChecker == 0) {
@@ -717,8 +721,11 @@ export default {
       // var insertStartTime = startTime.getHours() + ":" + minuteChecker + ":00";
 
       while (indexDate <= endDate) {
+        console.log("inside first loop");
         var indexTime = startTime.getHours();
+        console.log(indexTime);
         while (indexTime < endTime.getHours()) {
+          console.log("inside second loop");
           var insertIndexTime = indexTime + ":" + minuteChecker + ":00";
           try {
             const information = {
