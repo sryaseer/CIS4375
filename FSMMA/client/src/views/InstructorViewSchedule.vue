@@ -79,7 +79,7 @@
                   <v-btn icon>
                     <v-icon @click="selectedOpen = false">mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-toolbar-title v-html="'hello ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"></v-toolbar-title>
+                  <v-toolbar-title v-html="'Session by ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"></v-toolbar-title>
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
@@ -88,9 +88,9 @@
                   <span
                     v-html="
                       'Start Time: ' +
-                        this.selectedEvent.start +
+                        this.selectedEvent.parseStartSession +
                         '<br> End time: ' +
-                        this.selectedEvent.end +
+                        this.selectedEvent.parseEndSession +
                         '<br> Student ID: ' +
                         this.selectedEvent.student_id +
                         '<br> session_status_desc: ' +
@@ -322,9 +322,30 @@ export default {
           date.setMinutes(minutes);
           obj["start"] = date;
 
+          var parseStartSession =
+            date.toLocaleString("default", { month: "long" }) +
+            " " +
+            date.getDate() +
+            " " +
+            date.getFullYear() +
+            " at " +
+            date.toLocaleTimeString("en-US");
+
+          obj["parseStartSession"] = parseStartSession;
+
           date2.setHours(hour + 1);
           date2.setMinutes(minutes);
           obj["end"] = date2;
+
+          var parseEndSession =
+            date2.toLocaleString("default", { month: "long" }) +
+            " " +
+            date2.getDate() +
+            " " +
+            date2.getFullYear() +
+            " at " +
+            date2.toLocaleTimeString("en-US");
+          obj["parseEndSession"] = parseEndSession;
 
           //if session is cancelled
           if (session_student.session_status_desc == "Cancelled") {
@@ -408,9 +429,30 @@ export default {
           date.setMinutes(minutes);
           obj["start"] = date;
 
+          var parseStartSession =
+            date.toLocaleString("default", { month: "long" }) +
+            " " +
+            date.getDate() +
+            " " +
+            date.getFullYear() +
+            " at " +
+            date.toLocaleTimeString("en-US");
+
+          obj["parseStartSession"] = parseStartSession;
+
           date2.setHours(hour + 1);
           date2.setMinutes(minutes);
           obj["end"] = date2;
+
+          var parseEndSession =
+            date2.toLocaleString("default", { month: "long" }) +
+            " " +
+            date2.getDate() +
+            " " +
+            date2.getFullYear() +
+            " at " +
+            date2.toLocaleTimeString("en-US");
+          obj["parseEndSession"] = parseEndSession;
 
           //if session is cancelled
           if (session_student.session_status_desc == "Cancelled") {

@@ -237,18 +237,16 @@
                   <v-btn icon>
                     <v-icon @click="selectedOpen = false">mdi-arrow-left</v-icon>
                   </v-btn>
-                  <v-toolbar-title
-                    v-html="'Session with ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"
-                  ></v-toolbar-title>
+                  <v-toolbar-title v-html="'Session by ' + this.selectedEvent.i_first_name + ' ' + this.selectedEvent.i_last_name"></v-toolbar-title>
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
                   <span
                     v-html="
                       'Start Time: ' +
-                        this.selectedEvent.start +
+                        this.selectedEvent.parseStartSession +
                         '<br> End time: ' +
-                        this.selectedEvent.end +
+                        this.selectedEvent.parseEndSession +
                         '<br> Student: ' +
                         this.selectedEvent.s_first_name +
                         ' ' +
@@ -411,7 +409,7 @@ export default {
     instructor: null,
     students: [],
     edit: true,
-    studentName: null,
+    checkStudentName: null,
 
     //EDIT form data
     editSessionDate: null,
@@ -461,6 +459,7 @@ export default {
     this.generateListStudents();
     this.getInstructorKey();
     this.getBackInstructorKey();
+
     // this.returnStudentName();
     document.title = "FS MMA Admin's Schedule";
   },
@@ -468,7 +467,7 @@ export default {
     returnStudentName() {
       // Function to return the Student: in the pop up from Fname & Lname from null null to "No Student Signed up"
       //  if (!this.selectedEvent.s_student_id) {
-      //   return (this.studentName = "");
+      //   return (this.checkStudentName = "");
       // } else {
       //   return this.selectedEvent.s_first_name + " " + this.selectedEvent.s_last_name;
       // }
@@ -679,9 +678,30 @@ export default {
           date.setMinutes(minutes);
           obj["start"] = date;
 
+          var parseStartSession =
+            date.toLocaleString("default", { month: "long" }) +
+            " " +
+            date.getDate() +
+            " " +
+            date.getFullYear() +
+            " at " +
+            date.toLocaleTimeString("en-US");
+
+          obj["parseStartSession"] = parseStartSession;
+
           date2.setHours(hour + 1);
           date2.setMinutes(minutes);
           obj["end"] = date2;
+
+          var parseEndSession =
+            date2.toLocaleString("default", { month: "long" }) +
+            " " +
+            date2.getDate() +
+            " " +
+            date2.getFullYear() +
+            " at " +
+            date2.toLocaleTimeString("en-US");
+          obj["parseEndSession"] = parseEndSession;
 
           //Color 0 - light green, Color 1 - Dark Green, Color 2 - light grey, Color 3 - red
           if (session_student.session_status_desc == "Cancelled") {
