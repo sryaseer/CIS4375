@@ -249,12 +249,12 @@
                         this.selectedEvent.start +
                         '<br> End time: ' +
                         this.selectedEvent.end +
-                        '<br> Student ID: ' +
-                        this.selectedEvent.s_student_id +
-                        '<br> session_status_desc: ' +
+                        '<br> Student: ' +
+                        this.selectedEvent.s_first_name +
+                        ' ' +
+                        this.selectedEvent.s_last_name +
+                        '<br> Desc. of Session: ' +
                         this.selectedEvent.session_status_desc +
-                        '<br> session_id: ' +
-                        this.selectedEvent.session_id +
                         '<br> Attendance: ' +
                         this.selectedEvent.attendance
                     "
@@ -411,6 +411,7 @@ export default {
     instructor: null,
     students: [],
     edit: true,
+    studentName: null,
 
     //EDIT form data
     editSessionDate: null,
@@ -450,7 +451,7 @@ export default {
     privateSessions: [],
     //Color 0 - light green, Color 1 - Dark Green, Color 2 - light grey, Color 3 - red
     // blue(#2E2FFFFF) is used to double check if any sessions are not part of the color-if-session
-    colors: ["#86DB86FF", "#43944FFF", "#BDBDBDFF", "#AD0000", "#2E2FFFFF"],
+    colors: ["#93c572", "#43944FFF", "#BDBDBDFF", "#AD0000", "#2E2FFFFF"],
     msg: null,
   }),
   mounted() {
@@ -460,9 +461,18 @@ export default {
     this.generateListStudents();
     this.getInstructorKey();
     this.getBackInstructorKey();
+    // this.returnStudentName();
     document.title = "FS MMA Admin's Schedule";
   },
   methods: {
+    returnStudentName() {
+      // Function to return the Student: in the pop up from Fname & Lname from null null to "No Student Signed up"
+      //  if (!this.selectedEvent.s_student_id) {
+      //   return (this.studentName = "");
+      // } else {
+      //   return this.selectedEvent.s_first_name + " " + this.selectedEvent.s_last_name;
+      // }
+    },
     allowedMinutes: (v) => v % 30 === 0,
     clearTopForm() {
       this.startAvailabilityDate = null;
@@ -581,7 +591,7 @@ export default {
     },
     //very buggy, might crash server side
     async deleteSessionFromDB() {
-      if (this.selectedEvent.s_student_id){
+      if (this.selectedEvent.s_student_id) {
         console.log("student to be unsigned up: " + this.selectedEvent.s_student_id);
         try {
           const pass_session_id = {
@@ -624,7 +634,7 @@ export default {
       try {
         const res = await AdminService.listStudents();
         var response = res;
-        this.students.push({"id": null, "name": ""});
+        this.students.push({ id: null, name: "" });
         for (const account of response) {
           var obj = {};
           obj["id"] = account.student_id;
@@ -716,13 +726,12 @@ export default {
     async createSession() {
       const startDate = new Date(this.startAvailabilityDate + " 00:00:00");
       const endDate = new Date(this.endAvailabilityDate + " 00:00:00");
-      var startTime = new Date("1990-11-15 " + this.reoccurringStartTime ); //from 5AM
+      var startTime = new Date("1990-11-15 " + this.reoccurringStartTime); //from 5AM
       var endTime = new Date("1990-11-15 " + this.reoccurringEndTime); //to 1PM
       const indexDate = startDate;
 
       console.log(startTime);
       console.log(endTime);
-
 
       var minuteChecker = startTime.getMinutes();
       if (minuteChecker == 0) {
@@ -793,7 +802,7 @@ export default {
 .dotUpYesStudent {
   height: 15px;
   width: 15px;
-  background-color: #86db86ff;
+  background-color: #93c572;
   border-radius: 27%;
   display: inline-block;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);

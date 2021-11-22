@@ -171,7 +171,7 @@ export default {
       colors: [
         "#677fb5", //taken by you (blue)
         "#8f1414", // cancelled (red)
-        "#659f6f", //available in general (green)
+        "#93c572", //available in general (green)
         "#bcbcbc", //not available (grey)
       ],
     };
@@ -309,12 +309,6 @@ export default {
             session_status_desc: session_student.session_status_desc,
           };
 
-          // Session Date (disabled)
-          // Session Time
-          // Instructor Name
-          // Session Status
-          // Student Name
-
           var date = new Date(session_student.date);
           var date2 = new Date(session_student.date);
 
@@ -336,6 +330,9 @@ export default {
           if (session_student.session_status_desc == "Cancelled") {
             obj["color"] = this.colors[1];
             //red
+          } else if (session_student.session_status_desc == "Completed") {
+            obj["color"] = this.colors[3];
+            //grey
           }
           //sessions where a student is not present but the class is upcoming
           else if (session_student.student_id == null && session_student.session_status_desc == "Upcoming") {
@@ -350,10 +347,7 @@ export default {
             //green
           }
           //if the session is Completed
-          else if (session_student.session_status_desc == "Completed") {
-            obj["color"] = this.colors[3];
-            //grey
-          }
+
           //avaliable session
           else {
             obj["colocr"] = this.colors[0];
@@ -493,7 +487,7 @@ export default {
 .dotUpYesStudent {
   height: 15px;
   width: 15px;
-  background-color: #86db86ff;
+  background-color: #93c572;
   border-radius: 27%;
   display: inline-block;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 255, 0.2);
