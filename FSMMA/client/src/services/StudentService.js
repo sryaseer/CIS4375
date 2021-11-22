@@ -86,6 +86,17 @@ export default {
     return axios
       .post(url + "student-add-credits/", credentials)
       .then((response) => response.data);
-  }
+  },
+  studentAddInvoice(credentials){
+    return axios
+      .post(url + "add-student-invoice/", credentials)
+      .then((response) => response.data);
+  },
+  CreditHistoryUpdate(credentials){
+    return axios
+      .post(url + "credit-hist-update/", credentials)
+      .then((response) => response.data);
+  },
+
 
 };

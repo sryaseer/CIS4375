@@ -557,6 +557,46 @@ router.post("/add-student-note", (req, res, next) => {
   });
 });
 
+//ADD INVOICE FROM ADMIN SIDE (under student services for easy access)
+router.post("/add-student-invoice", (req, res, next) => {
+  console.log("invoice reqest went through");
+  let selectQuery = `INSERT INTO Invoice
+  (invoice_id, student_id, date, number_of_sessions, total, is_paid, payment_method_id)
+  VALUES (0, ?, CURDATE(), ?, ?, 1, 1);`
+  let query = mysql.format(selectQuery, [req.body.student_id, req.body.session_credits, req.body.total, req.body.method_id]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
+//ADD Credit History Update
+router.post("/credit-hist-update", (req, res, next) => {
+  console.log("credit history reqest went through");
+  let selectQuery = `INSERT INTO Session_Credit_History
+(session_credit_history_id, student_id, date, credit_update) VALUES
+(0, ?, CURDATE(), ?);`
+  let query = mysql.format(selectQuery, [req.body.student_id, req.body.session_credits]);
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    res.status(200).send(result);
+  });
+});
+
+
+
 //POST - Create a Session from Admin Level
 router.post("/create-new-session", (req, res, next) => {
   console.log("request went through");
@@ -628,7 +668,7 @@ router.post("/student-get-future-sessions", (req, res, next) => {
 
 // RETURNS TOTAL CREDITS FOR STUDENT
 router.post("/student-view-credits", (req, res, next) => {
-  let selectQuery = "SELECT student_id, session_credits FROM Student_Account WHERE student_id = ?;";
+  let selectQuery = "SELECT session_credits FROM Student_Account WHERE student_id = ?;";
   let query = mysql.format(selectQuery, [req.body.student_id]);
   pool.query(query, (err, result) => {
     if (err) {
