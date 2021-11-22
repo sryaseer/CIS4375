@@ -133,6 +133,8 @@ export default {
 
     adminStudentTools: [
       { title: "View Student", icon: 'mdi-account-search', link: "/admin-view-student-search" },
+      { title: "Create Student", icon: 'mdi-account-multiple-plus', link: "/admin-create-student-account" },
+
     ],
 
     adminInstructorTools: [

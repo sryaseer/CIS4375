@@ -22,8 +22,8 @@ const pool = mysql.createPool({
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "mw1996white@gmail.com",
-    pass: "*Morgan12345white`",
+    user: "fsmmanotification@gmail.com",
+    pass: "password2@",
   },
   tls: {
     rejectUnauthorized: false,
@@ -74,6 +74,79 @@ router.post("/student-sign-up", (req, res, next) => {
           );
         }
       });
+    }
+  });
+});
+
+
+router.post("/admin-create-student", (req, res, next) => {
+  db.query(`SELECT * FROM Student_Account WHERE email = LOWER(${db.escape(req.body.email)});`, (err, result) => {
+    if (result.length) {
+      return res.status(409).send({
+        msg: "This email username is already in use.",
+      });
+    } else {
+      let password = Math.random().toString(36).substr(2, 10);
+      bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({
+            msg: err,
+          });
+        }
+        db.query(
+          `INSERT INTO Student_Account (first_name, last_name, email, password, phone, dob,
+          address, city, state, postal_code, student_type_id, goal_id, sport_id, location_id, session_credits,
+          waiver_signed_date, account_created_date) VALUES
+          (${db.escape(req.body.first_name)}, ${db.escape(req.body.last_name)}, ${db.escape(req.body.email)},
+          ${db.escape(hash)}, ${db.escape(req.body.phone)}, ${db.escape(req.body.dob)}, ${db.escape(req.body.address)},
+          ${db.escape(req.body.city)}, ${db.escape(req.body.state)}, ${db.escape(req.body.postal_code)}, 1,
+          ${db.escape(req.body.goal_id)}, ${db.escape(req.body.sport_id)}, 1, 0, current_date(), current_date())`,
+          (err, result) => {
+            if (err) {
+              throw err;
+              return res.status(400).send({
+                msg: err,
+              });
+            }
+            return res.status(200).send({
+              msg: "Registered!",
+            });
+          }
+        );
+
+
+        let mailOptions = {
+          from: "fsmmanotification@gmail.com",
+          to: req.body.email,
+          subject: req.body.first_name + ", your new FSMMA Private Sessions account",
+          html:
+            "Hi " +
+            req.body.first_name +
+            ",<br> A new account has been made for you at FSMMA Private Sessions " +
+            " your username is " +
+            req.body.email +
+            " and your temporary password is: " +
+            password +
+            ' . Please  + <a href="https://sessions.fsmmafitness.click">log in</a>, view your information, change your password, and start enjoying your private sessions! ' +
+            '.<br> See you soon!<br><br> <img src="cid:uniquefsmmamailer" width="80" />',
+          attachments: [
+            {
+              filename: "logo.png",
+              path: "./src/emailTemplate/logo.png",
+              cid: "uniquefsmmamailer",
+            },
+          ],
+        };
+
+        transporter.sendMail(mailOptions, function (err, success) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Email sent succesfully.");
+          }
+        });
+      })
     }
   });
 });
@@ -628,7 +701,7 @@ router.post("/forgot-password", (req, res) => {
           }
 
           let mailOptions = {
-            from: "mw1996white@gmail.com",
+            from: "fsmmanotification@gmail.com",
             to: req.body.email,
             subject: "Forgot Password",
             text: `Here is your new password: ${password}. Login and change it ASAP!`,
@@ -659,7 +732,7 @@ router.post("/new-account", async (req, res) => {
     }
 
     let mailOptions = {
-      from: "mw1996white@gmail.com",
+      from: "fsmmanotification@gmail.com",
       to: req.body.email,
       subject: "New Account",
       html: { path: "./src/emailTemplate/newAcc.html" },
@@ -696,7 +769,7 @@ router.post("/appt-reminder", async (req, res) => {
       loc = results[i]["location_name"];
 
       let mailOptions = {
-        from: "mw1996white@gmail.com",
+        from: "fsmmanotification@gmail.com",
         to: rec,
         subject: fname + ", a friendly reminder...",
         html:
@@ -763,7 +836,7 @@ router.post("/promotion-email", async (req, res) => {
   });
 
   let mailOptions = {
-    from: "mw1996white@gmail.com",
+    from: "fsmmanotification@gmail.com",
     to: to_list,
     subject: "Check out this deal!",
 
@@ -790,19 +863,8 @@ router.post("/out-of-session", async (req, res) => {
     }
   });
 
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "mw1996white@gmail.com",
-      pass: "*Morgan12345white`",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
   let mailOptions = {
-    from: "mw1996white@gmail.com",
+    from: "fsmmanotification@gmail.com",
     to: to_list,
     subject: "You're out of sessions!",
 
@@ -823,19 +885,9 @@ router.post("/out-of-session", async (req, res) => {
 router.post("/mail-service-request", async (req, res) => {
   console.log("request works.");
 
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "mw1996white@gmail.com",
-      pass: "*Morgan12345white`",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
 
   let mailOptions = {
-    from: "mw1996white@gmail.com",
+    from: "fsmmanotification@gmail.com",
     to: "lippmanry@gmail.com",
     subject: "testing",
 

@@ -68,18 +68,24 @@ export default {
   deleteSignupFromDB(pass_session_id) {
     return axios.post(url + "delete-signup-from-db-admin-schedule/", pass_session_id).then((response) => response.data);
   },
+
   getLatestStudentHealth(credentials){
     return axios.post(url + "get-student-latest-health-entry/", credentials).then((response) => response.data);
   },
+
   InsertStudentHealth(credentials){
     return axios.post(url + "insert-student-new-health-entry/", credentials).then((response) => response.data);
   },
+
   getStudentNotes(credentials){
     return axios.post(url + "get-student-notes/", credentials).then((response) => response.data);
   },
 
   addNotes(credentials){
     return axios.post(url + "admin-add-notes/", credentials).then((response) => response.data);
+  },
+  AdminStudentSignUp(credentials){
+    return axios.post(url + "admin-create-student/", credentials).then((response) => response.data);
   },
 
 };

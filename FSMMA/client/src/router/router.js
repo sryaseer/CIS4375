@@ -115,6 +115,11 @@ const routes = [
     name: "StudentForgotPassword",
     component: () => import("../views/studentForgotPassword.vue"),
   },
+  {
+    path: "/admin-create-student-account",
+    name: "AdminCreateStudentAccount",
+    component: () => import("../views/AdminCreateStudentAccount.vue"),
+  },
 ];
 
 const router = new VueRouter({

@@ -18,15 +18,6 @@
           </v-text-field>
         </validation-provider>
 
-        <validation-provider v-slot="{ errors }" name="Password" rules="required|max:24|min:8">
-          <v-text-field v-model="password" :error-messages="errors" label="Password" required outlined
-                        :type="show1 ? 'text' : 'password'"
-                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                        @click:append="show1 = !show1"></v-text-field>
-        </validation-provider>
-
-        <br><br>
-
         <validation-provider v-slot="{ errors }" name="Phone Number" :rules="{ required: true, digits: 10}">
           <v-text-field v-model="phoneNumber" :counter="10" :error-messages="errors" label="Phone Number" required outlined>
           </v-text-field>
@@ -101,6 +92,10 @@
         </v-btn>
 
         <p>{{ msg }}</p>
+        <br><br>
+        <v-alert v-if="flag" outlined type="success" text >
+          Successfully created account for {{firstName}} with email {{email}}
+        </v-alert>
 
       </form>
     </div>
@@ -113,7 +108,7 @@
 
 
 <script>
-import AuthService from '@/services/AuthService.js';
+import AdminService from '@/services/AdminService.js';
 import StudentService from '@/services/StudentService.js';
 import MailService from '@/services/MailService.js'
 import { required, digits, email, max, regex, between, min } from 'vee-validate/dist/rules'
@@ -129,7 +124,7 @@ extend('email', {...email, message: 'Email must be valid', })
 extend('between', {...between, message: '{_field_} is invalid.'})
 
 export default {
-  name: 'StudentCreateAccount',
+  name: 'AdminCreateStudentAccount',
   components: {
       ValidationProvider,
       ValidationObserver,
@@ -161,6 +156,7 @@ export default {
       show1: false,
       msg: '',
       msg2: '',
+      flag: false,
     }
   },
 
@@ -185,15 +181,14 @@ export default {
             student_location_id: 1 //katy
           };
 
-          const response = await AuthService.signUp(credentials);
+          const response = await AdminService.AdminStudentSignUp(credentials);
           this.msg = response.msg;
-          this.$router.push('/student-login');
-
-          const reply = await MailService.newAcc(credentials);
-            console.log(reply)
+          this.flag = true;
 
         } catch (error) {
           this.msg = error.response.data.msg;
+          console.log(error);
+          this.flag = false;
         }
       },
       clear() {
@@ -234,6 +229,12 @@ export default {
         console.log(error);
         this.msg = error.response.data.msg;
       }
+    },
+    async created() {
+      if (!this.$store.getters.isAdminLoggedIn) {
+          this.$router.push('/admin-login');
+      }
+
     },
 }
 
