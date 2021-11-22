@@ -86,11 +86,6 @@ const routes = [
     //component: () => import('../views/InstructorCreate.vue')
   },
   {
-    path: "/test",
-    name: "test",
-    component: () => import("../views/test.vue"),
-  },
-  {
     path: "/admin-home",
     name: "AdminHome",
     component: () => import("../views/AdminHome.vue"),
@@ -119,6 +114,11 @@ const routes = [
     path: "/admin-create-student-account",
     name: "AdminCreateStudentAccount",
     component: () => import("../views/AdminCreateStudentAccount.vue"),
+  },
+  {
+    path: "/admin-add-credits/:id",
+    name: "AdminAddCredits",
+    component: () => import("../views/AdminAddCredits.vue"),
   },
 ];
 

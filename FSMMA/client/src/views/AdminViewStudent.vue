@@ -351,10 +351,12 @@ extend('between', {...between, message: '{_field_} is invalid.'})
         this.enableHealthFields = true;
       },
       addCredits(){
-
+        var url = '/admin-add-credits/' + this.student_id;
+        this.$router.push(url);
       },
       signUpForSession(){
-
+        var url = '/admin-schedule'
+        this.$router.push(url);
       },
       async addNotes(){
         if (this.newNote && this.newNote != ''){
